@@ -1,5 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { ConfigService } from '@nestjs/config';
 import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
 import { exec } from 'child_process';
@@ -14,6 +15,7 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -45,7 +47,7 @@ export class AuthService {
       const dbName = dto.login.toLowerCase().replace(/[^a-z0-9_]/g, '');
       await this.prisma.$executeRawUnsafe(`CREATE DATABASE ${dbName}`);
 
-      const baseUrl = process.env.DATABASE_URL;
+      const baseUrl = this.configService.get<string>('DATABASE_URL');
       if (!baseUrl) throw new Error('DATABASE_URL is not defined in environment');
       
       const url = new URL(baseUrl);

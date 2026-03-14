@@ -9,45 +9,411 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id        String   @id @default(uuid())
-  login     String   @unique
-  password  String
-  name      String?
-  role      UserRole @default(OWNER)
-  
-  businessId String
-  business   Business @relation(fields: [businessId], references: [id])
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// Enums
+
+enum S_Employee_Role {
+  ADMIN // Admin role has full access to all features
+  MANAGER // Manager role has access to all features except system settings
+  CASHIER // Cashier role has access to all features except system settings and employee management
 }
 
-enum UserRole {
-  OWNER
-  ADMIN
-  MANAGER
-  CASHIER
+enum S_Logs_Type {
+  SYSTEM // System log error saved when system or related tables creation or update failed
+  USER // User log error saved when user creation or update failed
+  EMPLOYEE // Employee log error saved when employee creation or update failed
+  PAYMENT_DEVICE // Payment device log error saved when payment device creation or update failed
+  ORDER // Order log error saved when order creation or update failed
 }
 
-model Business {
+enum S_Item_Type {
+  ITEM
+  ITEM_GROUP
+  ITEM_SUBCATEGORY
+  MODIFIER
+  MODIFIER_GROUP
+  MODIFIER_SUBCATEGORY
+}
+
+enum S_Tax_Fee_Type {
+  TAX
+  FEE
+}
+
+enum T_Delivery_Type {
+  TAKE_AWAY
+  DELIVERY
+}
+
+enum T_Delivery_Status {
+  PENDING
+  SHIPPED
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  FAILED_ATTEMPT
+  CANCELLED
+}
+
+// Business Related
+
+model A_User {
+  id          String  @id @default(uuid())
+  login       String  @unique
+  password    String
+  full_name   String?
+  role        String  @default("OWNER")
+  time_zone   String  @default("Asia/Tashkent")
+  public_name String?
+  language    String  @default("uz")
+  details     String?
+
+  is_deleted Boolean  @default(false)
+  dt_created DateTime @default(now())
+  dt_updated DateTime @updatedAt
+}
+
+model A_Automated_Point {
+  id         String   @id @default(uuid())
+  name       String
+  guid       String?
+  is_deleted Boolean  @default(false)
+  dt_created DateTime @default(now())
+  dt_updated DateTime @updatedAt
+}
+
+model A_Workplace {
+  id                 String   @id @default(uuid())
+  name               String
+  guid               String?
+  automated_point_id String
+  employee_id        String
+  is_deleted         Boolean  @default(false)
+  dt_created         DateTime @default(now())
+  dt_updated         DateTime @updatedAt
+}
+
+model A_Business {
   id          String   @id @default(uuid())
   name        String
   address     String?
   phoneNumber String?
   email       String?
-  users       User[]
-  stores      Store[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  is_deleted  Boolean  @default(false)
+  dt_created  DateTime @default(now())
+  dt_updated  DateTime @updatedAt
 }
 
-model Store {
+model Access_Resouces {
   id         String   @id @default(uuid())
   name       String
-  address    String?
-  businessId String
-  business   Business @relation(fields: [businessId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  guid       String?
+  is_deleted Boolean  @default(false)
+  dt_created DateTime @default(now())
+  dt_updated DateTime @updatedAt
+}
+
+model S_Employee {
+  id               String          @id @default(uuid())
+  full_name        String
+  guid             String?
+  role             S_Employee_Role
+  password         String
+  employee_address String?
+  telegram_id      String?
+  phone_number     String?
+  notes            String?
+  email            String?
+  is_deleted       Boolean         @default(false)
+  dt_created       DateTime        @default(now())
+  dt_updated       DateTime        @updatedAt
+}
+
+// Items & Menu & Categories
+
+model S_Item {
+  id             String      @id @default(uuid())
+  group_id       String?
+  name           String
+  description    String?
+  search_name    String?
+  measurement    String
+  price          String
+  cost           String?
+  shtrix         String?
+  color          String?
+  type           S_Item_Type
+  pictures       String[]    @default([])
+  is_menu        Boolean     @default(false)
+  is_service     Boolean     @default(false)
+  allow_pickup   Boolean     @default(false)
+  allow_delivery Boolean     @default(false)
+  is_deleted     Boolean     @default(false)
+  dt_created     DateTime    @default(now())
+  dt_updated     DateTime    @updatedAt
+}
+
+model S_Item_Group {
+  id                 String      @id @default(uuid())
+  name               String
+  description        String?
+  search_name        String?
+  measurement        String
+  price              String
+  cost               String?
+  shtrix             String?
+  color              String?
+  pictures           String[]    @default([])
+  is_menu            Boolean     @default(false)
+  is_service         Boolean     @default(false)
+  allow_pickup       Boolean     @default(false)
+  allow_delivery     Boolean     @default(false)
+  id_automated_point String?
+  type               S_Item_Type
+  is_deleted         Boolean     @default(false)
+  dt_created         DateTime    @default(now())
+  dt_updated         DateTime    @updatedAt
+}
+
+model S_Subcategory {
+  id             String      @id @default(uuid())
+  group_id       String?
+  name           String
+  description    String?
+  search_name    String?
+  measurement    String
+  price          String
+  cost           String?
+  shtrix         String?
+  color          String?
+  pictures       String[]    @default([])
+  type           S_Item_Type
+  is_menu        Boolean     @default(false)
+  is_service     Boolean     @default(false)
+  allow_pickup   Boolean     @default(false)
+  allow_delivery Boolean     @default(false)
+  is_deleted     Boolean     @default(false)
+  dt_created     DateTime    @default(now())
+  dt_updated     DateTime    @updatedAt
+}
+
+model S_Modifier {
+  id             String      @id @default(uuid())
+  group_id       String?
+  name           String
+  description    String?
+  search_name    String?
+  measurement    String
+  price          String
+  cost           String?
+  shtrix         String?
+  color          String?
+  type           S_Item_Type
+  pictures       String[]    @default([])
+  is_menu        Boolean     @default(false)
+  is_service     Boolean     @default(false)
+  allow_pickup   Boolean     @default(false)
+  allow_delivery Boolean     @default(false)
+  is_deleted     Boolean     @default(false)
+  dt_created     DateTime    @default(now())
+  dt_updated     DateTime    @updatedAt
+}
+
+model S_ModifierGroup {
+  id                 String      @id @default(uuid())
+  name               String
+  description        String?
+  search_name        String?
+  measurement        String
+  price              String
+  cost               String?
+  shtrix             String?
+  color              String?
+  pictures           String[]    @default([])
+  type               S_Item_Type
+  is_menu            Boolean     @default(false)
+  is_service         Boolean     @default(false)
+  allow_pickup       Boolean     @default(false)
+  allow_delivery     Boolean     @default(false)
+  id_automated_point String?
+  is_deleted         Boolean     @default(false)
+  dt_created         DateTime    @default(now())
+  dt_updated         DateTime    @updatedAt
+}
+
+model S_Measurement {
+  id         String   @id @default(uuid())
+  name       String
+  is_deleted Boolean  @default(false)
+  dt_created DateTime @default(now())
+  dt_updated DateTime @updatedAt
+}
+
+model S_Payment_Type {
+  id         String   @id @default(uuid())
+  name       String
+  is_deleted Boolean  @default(false)
+  dt_created DateTime @default(now())
+  dt_updated DateTime @updatedAt
+}
+
+//Logs & Configs
+
+model S_Base_Config {
+  id         String   @id @default(uuid())
+  key_name   String
+  key_value  String
+  is_deleted Boolean  @default(false)
+  dt_created DateTime @default(now())
+  dt_updated DateTime @updatedAt
+}
+
+model S_Logs {
+  id         String      @id @default(uuid())
+  user_id    String?
+  type       S_Logs_Type
+  action     String
+  details    String?
+  is_deleted Boolean     @default(false)
+  dt_created DateTime    @default(now())
+  dt_updated DateTime    @updatedAt
+}
+
+// Taxes & Discounts
+
+model S_Tax_Fee {
+  id                 String         @id @default(uuid())
+  guid               String?
+  name               String
+  value              String
+  type               S_Tax_Fee_Type
+  id_automated_point String?
+  is_deleted         Boolean        @default(false)
+  dt_created         DateTime       @default(now())
+  dt_updated         DateTime       @updatedAt
+}
+
+model S_Discount {
+  id                 String   @id @default(uuid())
+  guid               String?
+  name               String
+  value              String
+  id_automated_point String?
+  is_deleted         Boolean  @default(false)
+  dt_created         DateTime @default(now())
+  dt_updated         DateTime @updatedAt
+}
+
+// Printers & Payments
+
+model S_Printer {
+  id         String   @id @default(uuid())
+  name       String
+  guid       String?
+  is_deleted Boolean  @default(false)
+  dt_created DateTime @default(now())
+  dt_updated DateTime @updatedAt
+}
+
+model S_Payment_Devices {
+  id         String   @id @default(uuid())
+  name       String
+  guid       String?
+  ip_address String?
+  port       String?
+  provider   String?
+  is_deleted Boolean  @default(false)
+  dt_created DateTime @default(now())
+  dt_updated DateTime @updatedAt
+}
+
+// Order create 
+
+model D_Order {
+  id                 String    @id @default(uuid())
+  guid               String?
+  order_id           String
+  order_name         String?
+  total_discount     String?
+  total_tax          String?
+  total_paid         String?
+  total_change       String?
+  subtotal           String
+  total_sum          String
+  discount_percent   String?
+  discount_sum       String?
+  employee_id        String
+  client_id          String?
+  payment_id         String?
+  automated_point_id String
+  workplace_id       String
+  barcode            String?
+  delivery_fee       String?
+  payment_type_id    String
+  dt_closed          DateTime?
+  is_voided          Boolean   @default(false)
+  is_refunded        Boolean   @default(false)
+  is_closed          Boolean   @default(false)
+  is_deleted         Boolean   @default(false)
+  dt_created         DateTime  @default(now())
+  dt_updated         DateTime  @updatedAt
+}
+
+model T_Order_Item {
+  id          String   @id @default(uuid())
+  order_id    String
+  item_id     String
+  quantity    String
+  price       String
+  subtotal    String
+  note        String?
+  employee_id String
+  discount_id String?
+  is_voided   Boolean  @default(false)
+  is_refunded Boolean  @default(false)
+  is_deleted  Boolean  @default(false)
+  dt_created  DateTime @default(now())
+  dt_updated  DateTime @updatedAt
+}
+
+model T_Order_Discount {
+  id               String   @id @default(uuid())
+  order_id         String?
+  item_id          String?
+  discount_amount  String?
+  discount_percent String?
+  discount_id      String?
+  is_deleted       Boolean  @default(false)
+  dt_created       DateTime @default(now())
+  dt_updated       DateTime @updatedAt
+}
+
+model T_Order_Item_Tax {
+  id         String         @id @default(uuid())
+  order_id   String?
+  item_id    String?
+  tax_id     String
+  type       S_Tax_Fee_Type
+  is_deleted Boolean        @default(false)
+  dt_created DateTime       @default(now())
+  dt_updated DateTime       @updatedAt
+}
+
+model T_Order_Delivery {
+  id                String            @id @default(uuid())
+  order_id          String            @unique
+  customer_name     String
+  contact_phone     String
+  shipping_address  String
+  city              String
+  postal_code       String
+  country           String            @default("USA")
+  courier_name      String?
+  tracking_number   String?           @unique
+  delivery_status   T_Delivery_Status @default(PENDING)
+  delivery_type     T_Delivery_Type   @default(DELIVERY)
+  estimated_arrival DateTime?
+  actual_delivery   DateTime?
+  is_deleted        Boolean           @default(false)
+  dt_created        DateTime          @default(now())
+  dt_updated        DateTime          @updatedAt
 }

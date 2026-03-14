@@ -8,7 +8,6 @@ import { PrismaPg } from '@prisma/adapter-pg';
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   constructor(config: ConfigService) {
     const pool = new Pool({ connectionString: config.get('DATABASE_URL') });
-    // Using 'as any' to bypass type mismatches between different versions of @types/pg
     const adapter = new PrismaPg(pool as any);
     super({ adapter });
   }
@@ -21,12 +20,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     await this.$disconnect();
   }
 
-  // Helper to get a client for a specific database
   async getTenantClient(dbName: string) {
     const baseUrl = process.env.DATABASE_URL;
     if (!baseUrl) throw new Error('DATABASE_URL not found');
     
-    // Construct the URL for the new DB
     const url = new URL(baseUrl);
     url.pathname = `/${dbName}`;
     

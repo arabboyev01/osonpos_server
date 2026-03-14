@@ -1,7 +1,8 @@
-import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException, Get, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -19,5 +20,11 @@ export class AuthController {
       throw new UnauthorizedException('Invalid credentials');
     }
     return user;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('user/info')
+  getProfile(@Request() req) {
+    return req.user;
   }
 }
