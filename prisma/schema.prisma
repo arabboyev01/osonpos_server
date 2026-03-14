@@ -62,6 +62,7 @@ model A_User {
   password    String
   full_name   String?
   role        String  @default("OWNER")
+  business_id String?
   time_zone   String  @default("Asia/Tashkent")
   public_name String?
   language    String  @default("uz")
@@ -95,6 +96,7 @@ model A_Workplace {
 model A_Business {
   id          String   @id @default(uuid())
   name        String
+  db_name     String?
   address     String?
   phoneNumber String?
   email       String?
