@@ -124,12 +124,22 @@ export class AuthService {
     });
     if (user && await bcrypt.compare(pass, user.password)) {
       const { password, ...result } = user;
+      
+      let dbName: string | null = null;
+      if (user.business_id) {
+        const business = await this.prisma.a_Business.findUnique({
+          where: { id: user.business_id },
+        });
+        dbName = business?.db_name || null;
+      }
+
       return {
         ...result,
         access_token: this.jwtService.sign({
           sub: user.id,
           login: user.login,
           businessId: user.business_id,
+          dbName: dbName,
         }),
       };
     }

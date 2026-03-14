@@ -26,7 +26,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException();
     }
 
+    let dbName = payload.dbName;
+    let businessId = payload.businessId || user.business_id;
+
+    if (!dbName && businessId) {
+      const business = await this.prisma.a_Business.findUnique({
+        where: { id: businessId },
+      });
+      dbName = business?.db_name;
+    }
+
     const { password, ...result } = user;
-    return result;
+    return {
+      ...result,
+      dbName,
+      businessId,
+    };
   }
 }

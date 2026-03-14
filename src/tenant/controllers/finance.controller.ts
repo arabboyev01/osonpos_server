@@ -1,0 +1,58 @@
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { FinanceService } from '../services/finance.service';
+import { 
+  CreateTaxFeeDto, UpdateTaxFeeDto,
+  CreateDiscountDto, UpdateDiscountDto
+} from '../dto/finance.dto';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { RolesGuard } from '../../auth/roles.guard';
+import { Roles } from '../../auth/roles.decorator';
+
+@Controller('finance')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('OWNER', 'ADMIN')
+export class FinanceController {
+  constructor(private readonly financeService: FinanceService) {}
+
+  // Tax & Fees
+  @Post('taxes/create')
+  createTaxFee(@Request() req, @Body() dto: CreateTaxFeeDto) {
+    return this.financeService.createTaxFee(req.user.dbName, dto);
+  }
+
+  @Get('taxes/all')
+  findAllTaxFees(@Request() req) {
+    return this.financeService.findAllTaxFees(req.user.dbName);
+  }
+
+  @Patch('taxes/update/:id')
+  updateTaxFee(@Request() req, @Param('id') id: string, @Body() dto: UpdateTaxFeeDto) {
+    return this.financeService.updateTaxFee(req.user.dbName, id, dto);
+  }
+
+  @Delete('taxes/delete/:id')
+  removeTaxFee(@Request() req, @Param('id') id: string) {
+    return this.financeService.removeTaxFee(req.user.dbName, id);
+  }
+
+  // Discounts
+  @Post('discounts/create')
+  createDiscount(@Request() req, @Body() dto: CreateDiscountDto) {
+    return this.financeService.createDiscount(req.user.dbName, dto);
+  }
+
+  @Get('discounts/all')
+  findAllDiscounts(@Request() req) {
+    return this.financeService.findAllDiscounts(req.user.dbName);
+  }
+
+  @Patch('discounts/update/:id')
+  updateDiscount(@Request() req, @Param('id') id: string, @Body() dto: UpdateDiscountDto) {
+    return this.financeService.updateDiscount(req.user.dbName, id, dto);
+  }
+
+  @Delete('discounts/delete/:id')
+  removeDiscount(@Request() req, @Param('id') id: string) {
+    return this.financeService.removeDiscount(req.user.dbName, id);
+  }
+}

@@ -12,6 +12,7 @@ datasource db {
 // Enums
 
 enum S_Employee_Role {
+  OWNER // Owner role has full access to all features
   ADMIN // Admin role has full access to all features
   MANAGER // Manager role has access to all features except system settings
   CASHIER // Cashier role has access to all features except system settings and employee management
