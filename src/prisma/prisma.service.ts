@@ -5,7 +5,10 @@ import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
 
 @Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+export class PrismaService
+  extends PrismaClient
+  implements OnModuleInit, OnModuleDestroy
+{
   constructor(config: ConfigService) {
     const pool = new Pool({ connectionString: config.get('DATABASE_URL') });
     const adapter = new PrismaPg(pool as any);
@@ -23,13 +26,13 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   async getTenantClient(dbName: string) {
     const baseUrl = process.env.DATABASE_URL;
     if (!baseUrl) throw new Error('DATABASE_URL not found');
-    
+
     const url = new URL(baseUrl);
     url.pathname = `/${dbName}`;
-    
+
     const pool = new Pool({ connectionString: url.toString() });
     const adapter = new PrismaPg(pool as any);
-    
+
     const client = new PrismaClient({ adapter });
     await client.$connect();
     return client;

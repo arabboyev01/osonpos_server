@@ -10,7 +10,7 @@ export class EmployeeService {
   async create(dbName: string, dto: CreateEmployeeDto) {
     const client = await this.tenantService.getClient(dbName);
     const hashedPassword = await bcrypt.hash(dto.password, 10);
-    
+
     return client.s_Employee.create({
       data: {
         ...dto,
@@ -41,7 +41,7 @@ export class EmployeeService {
     if (dto.password) {
       updateData.password = await bcrypt.hash(dto.password, 10);
     }
-    
+
     return client.s_Employee.update({
       where: { id },
       data: updateData,

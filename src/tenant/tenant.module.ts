@@ -12,24 +12,28 @@ import { OrderService } from './services/order.service';
 import { OrderController } from './controllers/order.controller';
 import { LogService } from './services/log.service';
 import { LogController } from './controllers/log.controller';
+import { EmployeeRoleService } from './services/employee-role.service';
+import { EmployeeRoleController } from './controllers/employee-role.controller';
 
 @Module({
   providers: [
-    TenantService, 
-    EmployeeService, 
-    BusinessService, 
-    InventoryService, 
-    FinanceService, 
-    OrderService, 
-    LogService
+    TenantService,
+    EmployeeService,
+    BusinessService,
+    InventoryService,
+    FinanceService,
+    OrderService,
+    LogService,
+    EmployeeRoleService,
   ],
   controllers: [
-    EmployeeController, 
-    BusinessController, 
-    InventoryController, 
-    FinanceController, 
-    OrderController, 
-    LogController
+    EmployeeController,
+    BusinessController,
+    InventoryController,
+    FinanceController,
+    OrderController,
+    LogController,
+    EmployeeRoleController,
   ],
   exports: [TenantService],
 })

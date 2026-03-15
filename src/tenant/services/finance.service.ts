@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { TenantService } from '../tenant.service';
-import { 
-  CreateTaxFeeDto, UpdateTaxFeeDto,
-  CreateDiscountDto, UpdateDiscountDto
+import {
+  CreateTaxFeeDto,
+  UpdateTaxFeeDto,
+  CreateDiscountDto,
+  UpdateDiscountDto,
 } from '../dto/finance.dto';
 
 @Injectable()
@@ -32,7 +34,10 @@ export class FinanceService {
 
   async removeTaxFee(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Tax_Fee.update({ where: { id }, data: { is_deleted: true } });
+    return client.s_Tax_Fee.update({
+      where: { id },
+      data: { is_deleted: true },
+    });
   }
 
   // Discount
@@ -58,6 +63,9 @@ export class FinanceService {
 
   async removeDiscount(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Discount.update({ where: { id }, data: { is_deleted: true } });
+    return client.s_Discount.update({
+      where: { id },
+      data: { is_deleted: true },
+    });
   }
 }

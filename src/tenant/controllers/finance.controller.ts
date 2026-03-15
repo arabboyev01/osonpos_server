@@ -1,8 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { FinanceService } from '../services/finance.service';
-import { 
-  CreateTaxFeeDto, UpdateTaxFeeDto,
-  CreateDiscountDto, UpdateDiscountDto
+import {
+  CreateTaxFeeDto,
+  UpdateTaxFeeDto,
+  CreateDiscountDto,
+  UpdateDiscountDto,
 } from '../dto/finance.dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
@@ -26,7 +38,11 @@ export class FinanceController {
   }
 
   @Patch('taxes/update/:id')
-  updateTaxFee(@Request() req, @Param('id') id: string, @Body() dto: UpdateTaxFeeDto) {
+  updateTaxFee(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdateTaxFeeDto,
+  ) {
     return this.financeService.updateTaxFee(req.user.dbName, id, dto);
   }
 
@@ -47,7 +63,11 @@ export class FinanceController {
   }
 
   @Patch('discounts/update/:id')
-  updateDiscount(@Request() req, @Param('id') id: string, @Body() dto: UpdateDiscountDto) {
+  updateDiscount(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdateDiscountDto,
+  ) {
     return this.financeService.updateDiscount(req.user.dbName, id, dto);
   }
 

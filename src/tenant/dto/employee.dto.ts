@@ -1,5 +1,11 @@
-import { IsString, IsNotEmpty, IsOptional, IsEnum, MinLength, IsEmail, MaxLength } from 'class-validator';
-import { S_Employee_Role } from '@prisma/client';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  MinLength,
+  IsEmail,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateEmployeeDto {
   @IsString()
@@ -10,8 +16,9 @@ export class CreateEmployeeDto {
   @IsOptional()
   guid?: string;
 
-  @IsEnum(S_Employee_Role)
-  role: S_Employee_Role;
+  @IsString()
+  @IsNotEmpty()
+  role_id: string;
 
   @IsString()
   @IsNotEmpty()
@@ -45,13 +52,14 @@ export class UpdateEmployeeDto {
   @IsOptional()
   full_name?: string;
 
-  @IsEnum(S_Employee_Role)
+  @IsString()
   @IsOptional()
-  role?: S_Employee_Role;
+  role_id?: string;
 
   @IsString()
   @IsOptional()
-  @MinLength(6)
+  @MinLength(4)
+  @MaxLength(4)
   password?: string;
 
   @IsString()
@@ -73,4 +81,16 @@ export class UpdateEmployeeDto {
   @IsEmail()
   @IsOptional()
   email?: string;
+}
+
+export class CreateEmployeeRoleDto {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+}
+
+export class UpdateEmployeeRoleDto {
+  @IsString()
+  @IsOptional()
+  name?: string;
 }

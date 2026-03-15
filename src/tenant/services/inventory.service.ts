@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { TenantService } from '../tenant.service';
-import { 
-  CreateItemDto, UpdateItemDto,
-  CreateItemGroupDto, UpdateItemGroupDto,
-  CreateModifierDto, UpdateModifierDto,
-  CreateModifierGroupDto, UpdateModifierGroupDto
+import {
+  CreateItemDto,
+  UpdateItemDto,
+  CreateItemGroupDto,
+  UpdateItemGroupDto,
+  CreateModifierDto,
+  UpdateModifierDto,
+  CreateModifierGroupDto,
+  UpdateModifierGroupDto,
 } from '../dto/inventory.dto';
 
 @Injectable()
@@ -60,7 +64,10 @@ export class InventoryService {
 
   async removeItemGroup(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Item_Group.update({ where: { id }, data: { is_deleted: true } });
+    return client.s_Item_Group.update({
+      where: { id },
+      data: { is_deleted: true },
+    });
   }
 
   // Modifiers
@@ -86,7 +93,10 @@ export class InventoryService {
 
   async removeModifier(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Modifier.update({ where: { id }, data: { is_deleted: true } });
+    return client.s_Modifier.update({
+      where: { id },
+      data: { is_deleted: true },
+    });
   }
 
   // Modifier Groups
@@ -102,16 +112,25 @@ export class InventoryService {
 
   async findOneModifierGroup(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_ModifierGroup.findFirst({ where: { id, is_deleted: false } });
+    return client.s_ModifierGroup.findFirst({
+      where: { id, is_deleted: false },
+    });
   }
 
-  async updateModifierGroup(dbName: string, id: string, dto: UpdateModifierGroupDto) {
+  async updateModifierGroup(
+    dbName: string,
+    id: string,
+    dto: UpdateModifierGroupDto,
+  ) {
     const client = await this.tenantService.getClient(dbName);
     return client.s_ModifierGroup.update({ where: { id }, data: dto });
   }
 
   async removeModifierGroup(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_ModifierGroup.update({ where: { id }, data: { is_deleted: true } });
+    return client.s_ModifierGroup.update({
+      where: { id },
+      data: { is_deleted: true },
+    });
   }
 }

@@ -11,13 +11,6 @@ datasource db {
 
 // Enums
 
-enum S_Employee_Role {
-  OWNER // Owner role has full access to all features
-  ADMIN // Admin role has full access to all features
-  MANAGER // Manager role has access to all features except system settings
-  CASHIER // Cashier role has access to all features except system settings and employee management
-}
-
 enum S_Logs_Type {
   SYSTEM // System log error saved when system or related tables creation or update failed
   USER // User log error saved when user creation or update failed
@@ -116,19 +109,27 @@ model Access_Resouces {
 }
 
 model S_Employee {
-  id               String          @id @default(uuid())
+  id               String   @id @default(uuid())
   full_name        String
   guid             String?
-  role             S_Employee_Role
+  role_id          String   @default("0")
   password         String
   employee_address String?
   telegram_id      String?
   phone_number     String?
   notes            String?
   email            String?
-  is_deleted       Boolean         @default(false)
-  dt_created       DateTime        @default(now())
-  dt_updated       DateTime        @updatedAt
+  is_deleted       Boolean  @default(false)
+  dt_created       DateTime @default(now())
+  dt_updated       DateTime @updatedAt
+}
+
+model S_Employee_Role {
+  id         String   @id @default(uuid())
+  name       String
+  is_deleted Boolean  @default(false)
+  dt_created DateTime @default(now())
+  dt_updated DateTime @updatedAt
 }
 
 // Items & Menu & Categories

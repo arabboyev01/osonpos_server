@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { EmployeeService } from '../services/employee.service';
 import { CreateEmployeeDto, UpdateEmployeeDto } from '../dto/employee.dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
@@ -9,7 +19,7 @@ import { Roles } from '../../auth/roles.decorator';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('OWNER', 'ADMIN')
 export class EmployeeController {
-  constructor(private readonly employeeService: EmployeeService) { }
+  constructor(private readonly employeeService: EmployeeService) {}
 
   @Post('create')
   create(@Request() req, @Body() dto: CreateEmployeeDto) {
@@ -27,7 +37,11 @@ export class EmployeeController {
   }
 
   @Patch('update/:id')
-  update(@Request() req, @Param('id') id: string, @Body() dto: UpdateEmployeeDto) {
+  update(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdateEmployeeDto,
+  ) {
     return this.employeeService.update(req.user.dbName, id, dto);
   }
 

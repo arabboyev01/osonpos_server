@@ -1,10 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { InventoryService } from '../services/inventory.service';
-import { 
-  CreateItemDto, UpdateItemDto,
-  CreateItemGroupDto, UpdateItemGroupDto,
-  CreateModifierDto, UpdateModifierDto,
-  CreateModifierGroupDto, UpdateModifierGroupDto
+import {
+  CreateItemDto,
+  UpdateItemDto,
+  CreateItemGroupDto,
+  UpdateItemGroupDto,
+  CreateModifierDto,
+  UpdateModifierDto,
+  CreateModifierGroupDto,
+  UpdateModifierGroupDto,
 } from '../dto/inventory.dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
@@ -28,7 +42,11 @@ export class InventoryController {
   }
 
   @Patch('items/update/:id')
-  updateItem(@Request() req, @Param('id') id: string, @Body() dto: UpdateItemDto) {
+  updateItem(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdateItemDto,
+  ) {
     return this.inventoryService.updateItem(req.user.dbName, id, dto);
   }
 
@@ -49,7 +67,11 @@ export class InventoryController {
   }
 
   @Patch('item-groups/update/:id')
-  updateItemGroup(@Request() req, @Param('id') id: string, @Body() dto: UpdateItemGroupDto) {
+  updateItemGroup(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdateItemGroupDto,
+  ) {
     return this.inventoryService.updateItemGroup(req.user.dbName, id, dto);
   }
 
@@ -70,7 +92,11 @@ export class InventoryController {
   }
 
   @Patch('modifiers/update/:id')
-  updateModifier(@Request() req, @Param('id') id: string, @Body() dto: UpdateModifierDto) {
+  updateModifier(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdateModifierDto,
+  ) {
     return this.inventoryService.updateModifier(req.user.dbName, id, dto);
   }
 
@@ -91,7 +117,11 @@ export class InventoryController {
   }
 
   @Patch('modifier-groups/update/:id')
-  updateModifierGroup(@Request() req, @Param('id') id: string, @Body() dto: UpdateModifierGroupDto) {
+  updateModifierGroup(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdateModifierGroupDto,
+  ) {
     return this.inventoryService.updateModifierGroup(req.user.dbName, id, dto);
   }
 

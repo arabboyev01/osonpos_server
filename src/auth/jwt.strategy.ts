@@ -19,9 +19,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: any) {
     const user = await this.prisma.a_User.findFirst({
-      where: { 
+      where: {
         id: payload.sub,
-        is_deleted: false
+        is_deleted: false,
       },
     });
 
@@ -34,9 +34,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     if (!dbName && businessId) {
       const business = await this.prisma.a_Business.findFirst({
-        where: { 
+        where: {
           id: businessId,
-          is_deleted: false
+          is_deleted: false,
         },
       });
       dbName = business?.db_name;

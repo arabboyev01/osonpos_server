@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { RegisterDto } from './dto/register.dto';
@@ -21,9 +25,9 @@ export class AuthService {
 
   async register(dto: RegisterDto) {
     const existingUser = await this.prisma.a_User.findFirst({
-      where: { 
+      where: {
         login: dto.login,
-        is_deleted: false 
+        is_deleted: false,
       },
     });
     if (existingUser) {
@@ -35,7 +39,7 @@ export class AuthService {
     // Using transaction to ensure both are created
     const { business, user } = await this.prisma.$transaction(async (tx) => {
       const dbName = dto.login.toLowerCase().replace(/[^a-z0-9_]/g, '');
-      
+
       const business = await tx.a_Business.create({
         data: {
           name: dto.businessName,
@@ -61,15 +65,16 @@ export class AuthService {
     try {
       const dbName = business.db_name;
       if (!dbName) throw new Error('Database name not generated');
-      
+
       await this.prisma.$executeRawUnsafe(`CREATE DATABASE ${dbName}`);
 
       const baseUrl = this.configService.get<string>('DATABASE_URL');
-      if (!baseUrl) throw new Error('DATABASE_URL is not defined in environment');
-      
+      if (!baseUrl)
+        throw new Error('DATABASE_URL is not defined in environment');
+
       const url = new URL(baseUrl);
       url.pathname = `/${dbName}`;
-      
+
       const command = `DATABASE_URL="${url.toString()}" npx prisma db push`;
       await execPromise(command);
 
@@ -82,15 +87,17 @@ export class AuthService {
     } catch (error) {
       console.error('Error creating database:', error);
       // Note: In a production app, you might want to rollback the business/user creation if DB creation fails
-      throw new BadRequestException(`Failed to create user database: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to create user database: ${error.message}`,
+      );
     }
   }
 
   async createUser(dto: CreateUserDto) {
     const existingUser = await this.prisma.a_User.findFirst({
-      where: { 
+      where: {
         login: dto.login,
-        is_deleted: false
+        is_deleted: false,
       },
     });
     if (existingUser) {
@@ -108,11 +115,11 @@ export class AuthService {
   }
 
   async updateUser(id: string, dto: UpdateUserDto) {
-    const user = await this.prisma.a_User.findFirst({ 
-      where: { 
+    const user = await this.prisma.a_User.findFirst({
+      where: {
         id,
-        is_deleted: false
-      } 
+        is_deleted: false,
+      },
     });
     if (!user) {
       throw new NotFoundException('User not found');
@@ -131,20 +138,20 @@ export class AuthService {
 
   async login(login: string, pass: string) {
     const user = await this.prisma.a_User.findFirst({
-      where: { 
+      where: {
         login,
-        is_deleted: false
+        is_deleted: false,
       },
     });
-    if (user && await bcrypt.compare(pass, user.password)) {
+    if (user && (await bcrypt.compare(pass, user.password))) {
       const { password, ...result } = user;
-      
+
       let dbName: string | null = null;
       if (user.business_id) {
         const business = await this.prisma.a_Business.findFirst({
-          where: { 
+          where: {
             id: user.business_id,
-            is_deleted: false
+            is_deleted: false,
           },
         });
         dbName = business?.db_name || null;
@@ -164,11 +171,11 @@ export class AuthService {
   }
 
   async removeUser(id: string) {
-    const user = await this.prisma.a_User.findFirst({ 
-      where: { 
+    const user = await this.prisma.a_User.findFirst({
+      where: {
         id,
-        is_deleted: false
-      } 
+        is_deleted: false,
+      },
     });
     if (!user) {
       throw new NotFoundException('User not found');

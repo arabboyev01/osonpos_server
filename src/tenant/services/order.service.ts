@@ -43,7 +43,9 @@ export class OrderService {
           data: {
             ...delivery,
             order_id: order.id,
-            estimated_arrival: delivery.estimated_arrival ? new Date(delivery.estimated_arrival) : undefined,
+            estimated_arrival: delivery.estimated_arrival
+              ? new Date(delivery.estimated_arrival)
+              : undefined,
           },
         });
       }
@@ -63,10 +65,10 @@ export class OrderService {
   async findOne(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
     return client.d_Order.findFirst({
-      where: { 
+      where: {
         id,
-        is_deleted: false
-      }
+        is_deleted: false,
+      },
     });
   }
 

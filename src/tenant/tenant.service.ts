@@ -9,9 +9,13 @@ export class TenantService implements OnModuleDestroy {
   private pools: Map<string, Pool> = new Map();
 
   async getClient(dbName: string): Promise<PrismaClient> {
-    console.log(`[TenantService] getClient called with dbName: "${dbName}" (type: ${typeof dbName})`);
+    console.log(
+      `[TenantService] getClient called with dbName: "${dbName}" (type: ${typeof dbName})`,
+    );
     if (!dbName || dbName === 'undefined') {
-      throw new Error('Tenant database name is missing or invalid ("undefined"). Please ensure you are logged in correctly.');
+      throw new Error(
+        'Tenant database name is missing or invalid ("undefined"). Please ensure you are logged in correctly.',
+      );
     }
 
     if (this.clients.has(dbName)) {
@@ -29,7 +33,7 @@ export class TenantService implements OnModuleDestroy {
     const client = new PrismaClient({ adapter });
 
     await client.$connect();
-    
+
     this.clients.set(dbName, client);
     this.pools.set(dbName, pool);
 

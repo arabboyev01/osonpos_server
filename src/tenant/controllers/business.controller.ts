@@ -1,10 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { BusinessService } from '../services/business.service';
-import { 
-  CreateAutomatedPointDto, UpdateAutomatedPointDto,
-  CreateWorkplaceDto, UpdateWorkplaceDto,
-  CreatePrinterDto, UpdatePrinterDto,
-  CreatePaymentDeviceDto, UpdatePaymentDeviceDto
+import {
+  CreateAutomatedPointDto,
+  UpdateAutomatedPointDto,
+  CreateWorkplaceDto,
+  UpdateWorkplaceDto,
+  CreatePrinterDto,
+  UpdatePrinterDto,
+  CreatePaymentDeviceDto,
+  UpdatePaymentDeviceDto,
 } from '../dto/business.dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
@@ -28,7 +42,11 @@ export class BusinessController {
   }
 
   @Patch('points/update/:id')
-  updatePoint(@Request() req, @Param('id') id: string, @Body() dto: UpdateAutomatedPointDto) {
+  updatePoint(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdateAutomatedPointDto,
+  ) {
     return this.businessService.updatePoint(req.user.dbName, id, dto);
   }
 
@@ -49,7 +67,11 @@ export class BusinessController {
   }
 
   @Patch('workplaces/update/:id')
-  updateWorkplace(@Request() req, @Param('id') id: string, @Body() dto: UpdateWorkplaceDto) {
+  updateWorkplace(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdateWorkplaceDto,
+  ) {
     return this.businessService.updateWorkplace(req.user.dbName, id, dto);
   }
 
@@ -70,7 +92,11 @@ export class BusinessController {
   }
 
   @Patch('printers/update/:id')
-  updatePrinter(@Request() req, @Param('id') id: string, @Body() dto: UpdatePrinterDto) {
+  updatePrinter(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdatePrinterDto,
+  ) {
     return this.businessService.updatePrinter(req.user.dbName, id, dto);
   }
 
@@ -91,7 +117,11 @@ export class BusinessController {
   }
 
   @Patch('payment-devices/update/:id')
-  updatePaymentDevice(@Request() req, @Param('id') id: string, @Body() dto: UpdatePaymentDeviceDto) {
+  updatePaymentDevice(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdatePaymentDeviceDto,
+  ) {
     return this.businessService.updatePaymentDevice(req.user.dbName, id, dto);
   }
 

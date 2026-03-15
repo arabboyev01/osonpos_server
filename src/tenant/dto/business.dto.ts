@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsOptional, IsIP, IsPort } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsIP,
+  IsPort,
+} from 'class-validator';
 
 // Automated Point
 export class CreateAutomatedPointDto {

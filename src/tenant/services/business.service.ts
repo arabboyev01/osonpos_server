@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { TenantService } from '../tenant.service';
-import { 
-  CreateAutomatedPointDto, UpdateAutomatedPointDto,
-  CreateWorkplaceDto, UpdateWorkplaceDto,
-  CreatePrinterDto, UpdatePrinterDto,
-  CreatePaymentDeviceDto, UpdatePaymentDeviceDto
+import {
+  CreateAutomatedPointDto,
+  UpdateAutomatedPointDto,
+  CreateWorkplaceDto,
+  UpdateWorkplaceDto,
+  CreatePrinterDto,
+  UpdatePrinterDto,
+  CreatePaymentDeviceDto,
+  UpdatePaymentDeviceDto,
 } from '../dto/business.dto';
 
 @Injectable()
@@ -24,7 +28,9 @@ export class BusinessService {
 
   async findOnePoint(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.a_Automated_Point.findFirst({ where: { id, is_deleted: false } });
+    return client.a_Automated_Point.findFirst({
+      where: { id, is_deleted: false },
+    });
   }
 
   async updatePoint(dbName: string, id: string, dto: UpdateAutomatedPointDto) {
@@ -34,7 +40,10 @@ export class BusinessService {
 
   async removePoint(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.a_Automated_Point.update({ where: { id }, data: { is_deleted: true } });
+    return client.a_Automated_Point.update({
+      where: { id },
+      data: { is_deleted: true },
+    });
   }
 
   // Workplace
@@ -60,7 +69,10 @@ export class BusinessService {
 
   async removeWorkplace(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.a_Workplace.update({ where: { id }, data: { is_deleted: true } });
+    return client.a_Workplace.update({
+      where: { id },
+      data: { is_deleted: true },
+    });
   }
 
   // Printer
@@ -86,7 +98,10 @@ export class BusinessService {
 
   async removePrinter(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Printer.update({ where: { id }, data: { is_deleted: true } });
+    return client.s_Printer.update({
+      where: { id },
+      data: { is_deleted: true },
+    });
   }
 
   // Payment Device
@@ -102,16 +117,25 @@ export class BusinessService {
 
   async findOnePaymentDevice(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Payment_Devices.findFirst({ where: { id, is_deleted: false } });
+    return client.s_Payment_Devices.findFirst({
+      where: { id, is_deleted: false },
+    });
   }
 
-  async updatePaymentDevice(dbName: string, id: string, dto: UpdatePaymentDeviceDto) {
+  async updatePaymentDevice(
+    dbName: string,
+    id: string,
+    dto: UpdatePaymentDeviceDto,
+  ) {
     const client = await this.tenantService.getClient(dbName);
     return client.s_Payment_Devices.update({ where: { id }, data: dto });
   }
 
   async removePaymentDevice(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Payment_Devices.update({ where: { id }, data: { is_deleted: true } });
+    return client.s_Payment_Devices.update({
+      where: { id },
+      data: { is_deleted: true },
+    });
   }
 }
