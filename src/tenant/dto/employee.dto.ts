@@ -5,6 +5,7 @@ import {
   MinLength,
   IsEmail,
   MaxLength,
+  IsArray,
 } from 'class-validator';
 
 export class CreateEmployeeDto {
@@ -88,8 +89,9 @@ export class CreateEmployeeRoleDto {
   @IsNotEmpty()
   name: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
   access_resources: string[];
 }
 
@@ -98,7 +100,8 @@ export class UpdateEmployeeRoleDto {
   @IsOptional()
   name?: string;
 
-  @IsString()
+  @IsArray()
+  @IsString({ each: true })
   @IsOptional()
   access_resources?: string[];
 }

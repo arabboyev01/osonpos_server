@@ -106,12 +106,14 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
-    return this.prisma.a_User.create({
+    const user = await this.prisma.a_User.create({
       data: {
         ...dto,
         password: hashedPassword,
       },
     });
+    const { password, ...result } = user;
+    return result;
   }
 
   async updateUser(id: string, dto: UpdateUserDto) {
@@ -130,10 +132,12 @@ export class AuthService {
       updateData.password = await bcrypt.hash(dto.password, 10);
     }
 
-    return this.prisma.a_User.update({
+    const updatedUser = await this.prisma.a_User.update({
       where: { id },
       data: updateData,
     });
+    const { password, ...result } = updatedUser;
+    return result;
   }
 
   async login(login: string, pass: string) {
@@ -181,9 +185,11 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
 
-    return this.prisma.a_User.update({
+    const deletedUser = await this.prisma.a_User.update({
       where: { id },
       data: { is_deleted: true },
     });
+    const { password, ...result } = deletedUser;
+    return result;
   }
 }

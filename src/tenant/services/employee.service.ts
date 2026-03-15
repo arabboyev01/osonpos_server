@@ -11,19 +11,22 @@ export class EmployeeService {
     const client = await this.tenantService.getClient(dbName);
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
-    return client.s_Employee.create({
+    const employee = await client.s_Employee.create({
       data: {
         ...dto,
         password: hashedPassword,
       },
     });
+    const { password, ...result } = employee;
+    return result;
   }
 
   async findAll(dbName: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Employee.findMany({
+    const employees = await client.s_Employee.findMany({
       where: { is_deleted: false },
     });
+    return employees.map(({ password, ...rest }) => rest);
   }
 
   async findOne(dbName: string, id: string) {
@@ -32,7 +35,8 @@ export class EmployeeService {
       where: { id, is_deleted: false },
     });
     if (!employee) throw new NotFoundException('Employee not found');
-    return employee;
+    const { password, ...result } = employee;
+    return result;
   }
 
   async update(dbName: string, id: string, dto: UpdateEmployeeDto) {
@@ -42,17 +46,21 @@ export class EmployeeService {
       updateData.password = await bcrypt.hash(dto.password, 10);
     }
 
-    return client.s_Employee.update({
+    const employee = await client.s_Employee.update({
       where: { id },
       data: updateData,
     });
+    const { password, ...result } = employee;
+    return result;
   }
 
   async remove(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Employee.update({
+    const employee = await client.s_Employee.update({
       where: { id },
       data: { is_deleted: true },
     });
+    const { password, ...result } = employee;
+    return result;
   }
 }
