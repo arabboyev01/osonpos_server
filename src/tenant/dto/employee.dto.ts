@@ -87,10 +87,18 @@ export class CreateEmployeeRoleDto {
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  access_resources: string[];
 }
 
 export class UpdateEmployeeRoleDto {
   @IsString()
   @IsOptional()
   name?: string;
+
+  @IsString()
+  @IsOptional()
+  access_resources?: string[];
 }
