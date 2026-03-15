@@ -62,8 +62,19 @@ export class OrderService {
 
   async findOne(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.d_Order.findUnique({
+    return client.d_Order.findFirst({
+      where: { 
+        id,
+        is_deleted: false
+      }
+    });
+  }
+
+  async remove(dbName: string, id: string) {
+    const client = await this.tenantService.getClient(dbName);
+    return client.d_Order.update({
       where: { id },
+      data: { is_deleted: true },
     });
   }
 }

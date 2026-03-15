@@ -28,10 +28,10 @@ export class EmployeeService {
 
   async findOne(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    const employee = await client.s_Employee.findUnique({
-      where: { id },
+    const employee = await client.s_Employee.findFirst({
+      where: { id, is_deleted: false },
     });
-    if (!employee || employee.is_deleted) throw new NotFoundException('Employee not found');
+    if (!employee) throw new NotFoundException('Employee not found');
     return employee;
   }
 

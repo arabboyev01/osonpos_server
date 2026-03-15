@@ -14,6 +14,7 @@ export class LogService {
   async findAll(dbName: string) {
     const client = await this.tenantService.getClient(dbName);
     return client.s_Logs.findMany({
+      where: { is_deleted: false },
       orderBy: { dt_created: 'desc' },
       take: 100,
     });

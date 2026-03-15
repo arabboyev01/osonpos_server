@@ -18,8 +18,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    const user = await this.prisma.a_User.findUnique({
-      where: { id: payload.sub },
+    const user = await this.prisma.a_User.findFirst({
+      where: { 
+        id: payload.sub,
+        is_deleted: false
+      },
     });
 
     if (!user) {
@@ -30,8 +33,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     let businessId = payload.businessId || user.business_id;
 
     if (!dbName && businessId) {
-      const business = await this.prisma.a_Business.findUnique({
-        where: { id: businessId },
+      const business = await this.prisma.a_Business.findFirst({
+        where: { 
+          id: businessId,
+          is_deleted: false
+        },
       });
       dbName = business?.db_name;
     }

@@ -20,6 +20,11 @@ export class FinanceService {
     return client.s_Tax_Fee.findMany({ where: { is_deleted: false } });
   }
 
+  async findOneTaxFee(dbName: string, id: string) {
+    const client = await this.tenantService.getClient(dbName);
+    return client.s_Tax_Fee.findFirst({ where: { id, is_deleted: false } });
+  }
+
   async updateTaxFee(dbName: string, id: string, dto: UpdateTaxFeeDto) {
     const client = await this.tenantService.getClient(dbName);
     return client.s_Tax_Fee.update({ where: { id }, data: dto });
@@ -39,6 +44,11 @@ export class FinanceService {
   async findAllDiscounts(dbName: string) {
     const client = await this.tenantService.getClient(dbName);
     return client.s_Discount.findMany({ where: { is_deleted: false } });
+  }
+
+  async findOneDiscount(dbName: string, id: string) {
+    const client = await this.tenantService.getClient(dbName);
+    return client.s_Discount.findFirst({ where: { id, is_deleted: false } });
   }
 
   async updateDiscount(dbName: string, id: string, dto: UpdateDiscountDto) {

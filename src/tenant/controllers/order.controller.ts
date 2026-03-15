@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, Request, Delete } from '@nestjs/common';
 import { OrderService } from '../services/order.service';
 import { CreateOrderDto } from '../dto/order.dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
@@ -24,5 +24,10 @@ export class OrderController {
   @Get(':id')
   findOne(@Request() req, @Param('id') id: string) {
     return this.orderService.findOne(req.user.dbName, id);
+  }
+
+  @Delete('delete/:id')
+  remove(@Request() req, @Param('id') id: string) {
+    return this.orderService.remove(req.user.dbName, id);
   }
 }

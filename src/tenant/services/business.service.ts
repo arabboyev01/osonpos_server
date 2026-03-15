@@ -22,6 +22,11 @@ export class BusinessService {
     return client.a_Automated_Point.findMany({ where: { is_deleted: false } });
   }
 
+  async findOnePoint(dbName: string, id: string) {
+    const client = await this.tenantService.getClient(dbName);
+    return client.a_Automated_Point.findFirst({ where: { id, is_deleted: false } });
+  }
+
   async updatePoint(dbName: string, id: string, dto: UpdateAutomatedPointDto) {
     const client = await this.tenantService.getClient(dbName);
     return client.a_Automated_Point.update({ where: { id }, data: dto });
@@ -41,6 +46,11 @@ export class BusinessService {
   async findAllWorkplaces(dbName: string) {
     const client = await this.tenantService.getClient(dbName);
     return client.a_Workplace.findMany({ where: { is_deleted: false } });
+  }
+
+  async findOneWorkplace(dbName: string, id: string) {
+    const client = await this.tenantService.getClient(dbName);
+    return client.a_Workplace.findFirst({ where: { id, is_deleted: false } });
   }
 
   async updateWorkplace(dbName: string, id: string, dto: UpdateWorkplaceDto) {
@@ -64,6 +74,11 @@ export class BusinessService {
     return client.s_Printer.findMany({ where: { is_deleted: false } });
   }
 
+  async findOnePrinter(dbName: string, id: string) {
+    const client = await this.tenantService.getClient(dbName);
+    return client.s_Printer.findFirst({ where: { id, is_deleted: false } });
+  }
+
   async updatePrinter(dbName: string, id: string, dto: UpdatePrinterDto) {
     const client = await this.tenantService.getClient(dbName);
     return client.s_Printer.update({ where: { id }, data: dto });
@@ -83,6 +98,11 @@ export class BusinessService {
   async findAllPaymentDevices(dbName: string) {
     const client = await this.tenantService.getClient(dbName);
     return client.s_Payment_Devices.findMany({ where: { is_deleted: false } });
+  }
+
+  async findOnePaymentDevice(dbName: string, id: string) {
+    const client = await this.tenantService.getClient(dbName);
+    return client.s_Payment_Devices.findFirst({ where: { id, is_deleted: false } });
   }
 
   async updatePaymentDevice(dbName: string, id: string, dto: UpdatePaymentDeviceDto) {

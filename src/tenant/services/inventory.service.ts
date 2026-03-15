@@ -22,6 +22,11 @@ export class InventoryService {
     return client.s_Item.findMany({ where: { is_deleted: false } });
   }
 
+  async findOneItem(dbName: string, id: string) {
+    const client = await this.tenantService.getClient(dbName);
+    return client.s_Item.findFirst({ where: { id, is_deleted: false } });
+  }
+
   async updateItem(dbName: string, id: string, dto: UpdateItemDto) {
     const client = await this.tenantService.getClient(dbName);
     return client.s_Item.update({ where: { id }, data: dto });
@@ -41,6 +46,11 @@ export class InventoryService {
   async findAllItemGroups(dbName: string) {
     const client = await this.tenantService.getClient(dbName);
     return client.s_Item_Group.findMany({ where: { is_deleted: false } });
+  }
+
+  async findOneItemGroup(dbName: string, id: string) {
+    const client = await this.tenantService.getClient(dbName);
+    return client.s_Item_Group.findFirst({ where: { id, is_deleted: false } });
   }
 
   async updateItemGroup(dbName: string, id: string, dto: UpdateItemGroupDto) {
@@ -64,6 +74,11 @@ export class InventoryService {
     return client.s_Modifier.findMany({ where: { is_deleted: false } });
   }
 
+  async findOneModifier(dbName: string, id: string) {
+    const client = await this.tenantService.getClient(dbName);
+    return client.s_Modifier.findFirst({ where: { id, is_deleted: false } });
+  }
+
   async updateModifier(dbName: string, id: string, dto: UpdateModifierDto) {
     const client = await this.tenantService.getClient(dbName);
     return client.s_Modifier.update({ where: { id }, data: dto });
@@ -83,6 +98,11 @@ export class InventoryService {
   async findAllModifierGroups(dbName: string) {
     const client = await this.tenantService.getClient(dbName);
     return client.s_ModifierGroup.findMany({ where: { is_deleted: false } });
+  }
+
+  async findOneModifierGroup(dbName: string, id: string) {
+    const client = await this.tenantService.getClient(dbName);
+    return client.s_ModifierGroup.findFirst({ where: { id, is_deleted: false } });
   }
 
   async updateModifierGroup(dbName: string, id: string, dto: UpdateModifierGroupDto) {

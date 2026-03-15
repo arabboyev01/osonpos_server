@@ -15,7 +15,7 @@ export class CreateEmployeeDto {
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(6)
+  @MinLength(4)
   password: string;
 
   @IsString()

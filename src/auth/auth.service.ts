@@ -20,8 +20,11 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
-    const existingUser = await this.prisma.a_User.findUnique({
-      where: { login: dto.login },
+    const existingUser = await this.prisma.a_User.findFirst({
+      where: { 
+        login: dto.login,
+        is_deleted: false 
+      },
     });
     if (existingUser) {
       throw new BadRequestException('User already exists');
@@ -84,8 +87,11 @@ export class AuthService {
   }
 
   async createUser(dto: CreateUserDto) {
-    const existingUser = await this.prisma.a_User.findUnique({
-      where: { login: dto.login },
+    const existingUser = await this.prisma.a_User.findFirst({
+      where: { 
+        login: dto.login,
+        is_deleted: false
+      },
     });
     if (existingUser) {
       throw new BadRequestException('User already exists');
@@ -102,7 +108,12 @@ export class AuthService {
   }
 
   async updateUser(id: string, dto: UpdateUserDto) {
-    const user = await this.prisma.a_User.findUnique({ where: { id } });
+    const user = await this.prisma.a_User.findFirst({ 
+      where: { 
+        id,
+        is_deleted: false
+      } 
+    });
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -119,16 +130,22 @@ export class AuthService {
   }
 
   async login(login: string, pass: string) {
-    const user = await this.prisma.a_User.findUnique({
-      where: { login },
+    const user = await this.prisma.a_User.findFirst({
+      where: { 
+        login,
+        is_deleted: false
+      },
     });
     if (user && await bcrypt.compare(pass, user.password)) {
       const { password, ...result } = user;
       
       let dbName: string | null = null;
       if (user.business_id) {
-        const business = await this.prisma.a_Business.findUnique({
-          where: { id: user.business_id },
+        const business = await this.prisma.a_Business.findFirst({
+          where: { 
+            id: user.business_id,
+            is_deleted: false
+          },
         });
         dbName = business?.db_name || null;
       }
@@ -144,5 +161,22 @@ export class AuthService {
       };
     }
     return null;
+  }
+
+  async removeUser(id: string) {
+    const user = await this.prisma.a_User.findFirst({ 
+      where: { 
+        id,
+        is_deleted: false
+      } 
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return this.prisma.a_User.update({
+      where: { id },
+      data: { is_deleted: true },
+    });
   }
 }
