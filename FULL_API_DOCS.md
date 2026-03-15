@@ -168,3 +168,16 @@ Returns available discount templates.
 1. **Decimal handling**: Always send and receive prices as **strings** to avoid floating point precision issues.
 2. **Date Format**: Standard ISO-8601 (`YYYY-MM-DDTHH:mm:ss.sssZ`).
 3. **Multi-tenancy**: You don't need to specify which database to use. The server detects it automatically from the `access_token`.
+
+
+Created Employee Role Controller
+Implemented 
+
+src/tenant/controllers/employee-role.controller.ts
+ with the following endpoints:
+
+POST /employee-role/create: Create a new role.
+GET /employee-role/all: List all roles.
+GET /employee-role/:id: Get role details.
+PATCH /employee-role/update/:id: Update a role.
+DELETE /employee-role/delete/:id: Soft delete a role.

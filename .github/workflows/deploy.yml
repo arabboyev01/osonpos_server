@@ -1,0 +1,48 @@
+name: Deploy OsonPOS Server
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/osonpos_server/
+            git pull origin main
+            npm install --omit=dev
+            # We need prisma to generate types on the server even in prod
+            npx prisma generate
+            npm run build
+            
+            # Apply migrations to Admin DB
+            export DATABASE_URL=${{ secrets.DATABASE_URL }}
+            npx prisma db push --accept-data-loss
+            
+            # Migrate all tenants
+            npm run migrate:tenants
+            
+            # Restart Application
+            pm2 reload ecosystem.config.js --env production
