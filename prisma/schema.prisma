@@ -125,11 +125,12 @@ model S_Employee {
 }
 
 model S_Employee_Role {
-  id         String   @id @default(uuid())
-  name       String
-  is_deleted Boolean  @default(false)
-  dt_created DateTime @default(now())
-  dt_updated DateTime @updatedAt
+  id               String   @id @default(uuid())
+  name             String
+  access_resources String[]
+  is_deleted       Boolean  @default(false)
+  dt_created       DateTime @default(now())
+  dt_updated       DateTime @updatedAt
 }
 
 // Items & Menu & Categories

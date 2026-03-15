@@ -6,7 +6,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: [
-      'https://your-frontend-domain.com', // Your production frontend
       'http://localhost:3000', // For local testing
       'http://localhost:8080', // For local testing
       'https://osonpos.com', // Example domain
