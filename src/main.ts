@@ -2,14 +2,20 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
+// Global fix: PostgreSQL raw queries return BigInt for aggregate functions.
+// Patch BigInt.prototype.toJSON so JSON.stringify handles them automatically.
+(BigInt.prototype as any).toJSON = function () {
+  return Number(this);
+};
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: [
-      'http://localhost:3000', // For local testing
-      'http://localhost:8080', // For local testing
-      'https://osonpos.com', // Example domain
-      'https://dashboard.osonpos.com', // Example domain
+      'http://localhost:3000',
+      'http://localhost:8080',
+      'https://osonpos.com',
+      'https://dashboard.osonpos.com',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,

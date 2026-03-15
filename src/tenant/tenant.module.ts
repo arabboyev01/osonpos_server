@@ -14,6 +14,8 @@ import { LogService } from './services/log.service';
 import { LogController } from './controllers/log.controller';
 import { EmployeeRoleService } from './services/employee-role.service';
 import { EmployeeRoleController } from './controllers/employee-role.controller';
+import { QueryService } from './services/query.service';
+import { QueryController } from './controllers/query.controller';
 
 @Module({
   providers: [
@@ -25,6 +27,7 @@ import { EmployeeRoleController } from './controllers/employee-role.controller';
     OrderService,
     LogService,
     EmployeeRoleService,
+    QueryService,
   ],
   controllers: [
     EmployeeController,
@@ -34,6 +37,7 @@ import { EmployeeRoleController } from './controllers/employee-role.controller';
     OrderController,
     LogController,
     EmployeeRoleController,
+    QueryController,
   ],
   exports: [TenantService],
 })
