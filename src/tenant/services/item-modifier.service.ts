@@ -9,10 +9,10 @@ import {
   UpdateModifierDto,
   CreateModifierGroupDto,
   UpdateModifierGroupDto,
-} from '../dto/inventory.dto';
+} from '../dto/item-modifier.dto';
 
 @Injectable()
-export class InventoryService {
+export class ItemModifierService {
   constructor(private tenantService: TenantService) {}
 
   // Items

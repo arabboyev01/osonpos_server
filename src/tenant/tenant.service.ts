@@ -9,9 +9,6 @@ export class TenantService implements OnModuleDestroy {
   private pools: Map<string, Pool> = new Map();
 
   async getClient(dbName: string): Promise<PrismaClient> {
-    console.log(
-      `[TenantService] getClient called with dbName: "${dbName}" (type: ${typeof dbName})`,
-    );
     if (!dbName || dbName === 'undefined') {
       throw new Error(
         'Tenant database name is missing or invalid ("undefined"). Please ensure you are logged in correctly.',

@@ -52,29 +52,34 @@ All requests except registration and login require a **Bearer Token** in the `Au
 
 ---
 
-## 📦 Inventory Management
+## 📦 Item & Modifier Management
 | Action | Method | Endpoint | Roles Required |
 | :--- | :--- | :--- | :--- |
 | **Items** | | | |
-| Create Item | POST | `/inventory/items/create` | OWNER, ADMIN |
-| List Items | GET | `/inventory/items/all` | OWNER, ADMIN |
-| Update Item | PATCH | `/inventory/items/update/:id` | OWNER, ADMIN |
-| Delete Item | DELETE | `/inventory/items/delete/:id` | OWNER, ADMIN |
-| **Item Groups** | | | |
-| Create Group | POST | `/inventory/item-groups/create` | OWNER, ADMIN |
-| List Groups | GET | `/inventory/item-groups/all` | OWNER, ADMIN |
-| Update Group | PATCH | `/inventory/item-groups/update/:id` | OWNER, ADMIN |
-| Delete Group | DELETE | `/inventory/item-groups/delete/:id` | OWNER, ADMIN |
+| Create Item | POST | `/item-modifier/items/create` | OWNER, ADMIN |
+| List Items | GET | `/item-modifier/items/all` | OWNER, ADMIN |
+| Update Item | PATCH | `/item-modifier/items/update/:id` | OWNER, ADMIN |
+| Delete Item | DELETE | `/item-modifier/items/delete/:id` | OWNER, ADMIN |
+| **Item Groups & Subcategories** | | | |
+| Create Group/Subcategory | POST | `/item-modifier/item-groups/create` | OWNER, ADMIN |
+| List Groups & Subcategories | GET | `/item-modifier/item-groups/all` | OWNER, ADMIN |
+| Update Group/Subcategory | PATCH | `/item-modifier/item-groups/update/:id` | OWNER, ADMIN |
+| Delete Group/Subcategory | DELETE | `/item-modifier/item-groups/delete/:id` | OWNER, ADMIN |
 | **Modifiers** | | | |
-| Create Modifier | POST | `/inventory/modifiers/create` | OWNER, ADMIN |
-| List Modifiers | GET | `/inventory/modifiers/all` | OWNER, ADMIN |
-| Update Modifier | PATCH | `/inventory/modifiers/update/:id` | OWNER, ADMIN |
-| Delete Modifier | DELETE | `/inventory/modifiers/delete/:id` | OWNER, ADMIN |
-| **Modifier Groups** | | | |
-| Create Mod Group | POST | `/inventory/modifier-groups/create` | OWNER, ADMIN |
-| List Mod Groups | GET | `/inventory/modifier-groups/all` | OWNER, ADMIN |
-| Update Mod Group | PATCH | `/inventory/modifier-groups/update/:id` | OWNER, ADMIN |
-| Delete Mod Group | DELETE | `/inventory/modifier-groups/delete/:id` | OWNER, ADMIN |
+| Create Modifier | POST | `/item-modifier/modifiers/create` | OWNER, ADMIN |
+| List Modifiers | GET | `/item-modifier/modifiers/all` | OWNER, ADMIN |
+| Update Modifier | PATCH | `/item-modifier/modifiers/update/:id` | OWNER, ADMIN |
+| Delete Modifier | DELETE | `/item-modifier/modifiers/delete/:id` | OWNER, ADMIN |
+| **Modifier Groups & Subgroups** | | | |
+| Create Mod Group/Subgroup | POST | `/item-modifier/modifier-groups/create` | OWNER, ADMIN |
+| List Mod Groups & Subgroups | GET | `/item-modifier/modifier-groups/all` | OWNER, ADMIN |
+| Update Mod Group/Subgroup | PATCH | `/item-modifier/modifier-groups/update/:id` | OWNER, ADMIN |
+| Delete Mod Group/Subgroup | DELETE | `/item-modifier/modifier-groups/delete/:id` | OWNER, ADMIN |
+| **Measurements** | | | |
+| Create Measurement | POST | `/measurements/create` | OWNER, ADMIN |
+| List Measurements | GET | `/measurements/all` | OWNER, ADMIN |
+| Update Measurement | PATCH | `/measurements/update/:id` | OWNER, ADMIN |
+| Delete Measurement | DELETE | `/measurements/delete/:id` | OWNER, ADMIN |
 
 ---
 

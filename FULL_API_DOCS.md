@@ -70,29 +70,160 @@ Returns an array of all employees for the business.
 
 ---
 
-## 📦 3. Inventory Management
+## 📦 3. Item & Modifier Management
 
-### POST `/inventory/items/create`
+### 🏷️ 3.1 Items (Products)
+
+**POST `/item-modifier/items/create`**
 **Body:**
 ```json
 {
   "name": "string",
   "measurement": "string (e.g., pcs, kg, l)",
   "price": "string (numeric string)",
-  "type": "ITEM | ITEM_GROUP | MODIFIER",
+  "type": "ITEM",
   "group_id": "uuid (optional)",
   "description": "string (optional)",
+  "search_name": "string (optional)",
   "cost": "string (optional)",
   "shtrix": "string (optional)",
-  "is_menu": "boolean (default: false)"
+  "color": "string (optional)",
+  "pictures": ["url1", "url2"],
+  "is_menu": "boolean (optional)",
+  "is_service": "boolean (optional)",
+  "allow_pickup": "boolean (optional)",
+  "allow_delivery": "boolean (optional)"
 }
 ```
 
-### GET `/inventory/items/all`
+**GET `/item-modifier/items/all`**
 Returns all products/services.
 
-### GET `/inventory/item-groups/all`
-Returns all categories/groups.
+**PATCH `/item-modifier/items/update/:id`** | **DELETE `/item-modifier/items/delete/:id`**
+
+---
+
+### 📁 3.2 Item Groups & Item Subcategories
+
+Categories and their Subcategories share the same endpoints. 
+
+**POST `/item-modifier/item-groups/create`**
+Create an Item Group (Category) or an Item Subcategory. Use `type: "ITEM_SUBCATEGORY"` to create a subgroup and link it using `group_id`.
+**Body:**
+```json
+{
+  "name": "string",
+  "measurement": "string",
+  "price": "string",
+  "type": "ITEM_GROUP | ITEM_SUBCATEGORY",
+  "description": "string (optional)",
+  "search_name": "string (optional)",
+  "cost": "string (optional)",
+  "shtrix": "string (optional)",
+  "color": "string (optional)",
+  "pictures": ["url1"],
+  "is_menu": "boolean (optional)",
+  "is_service": "boolean (optional)",
+  "allow_pickup": "boolean (optional)",
+  "allow_delivery": "boolean (optional)",
+  "id_automated_point": "uuid (optional)"
+}
+```
+
+**GET `/item-modifier/item-groups/all`**
+Returns all categories/groups and subgroups.
+
+**PATCH `/item-modifier/item-groups/update/:id`** | **DELETE `/item-modifier/item-groups/delete/:id`**
+
+---
+
+### 🔧 3.3 Modifiers
+
+**POST `/item-modifier/modifiers/create`**
+Create an individual modifier for your items.
+**Body:**
+```json
+{
+  "name": "string",
+  "measurement": "string",
+  "price": "string",
+  "type": "MODIFIER",
+  "group_id": "uuid (optional, ID of modifier group or subgroup)",
+  "description": "string (optional)",
+  "search_name": "string (optional)",
+  "cost": "string (optional)",
+  "shtrix": "string (optional)",
+  "color": "string (optional)",
+  "pictures": ["url1"],
+  "is_menu": "boolean (optional)",
+  "is_service": "boolean (optional)",
+  "allow_pickup": "boolean (optional)",
+  "allow_delivery": "boolean (optional)"
+}
+```
+
+**GET `/item-modifier/modifiers/all`**
+Returns all modifiers.
+
+**PATCH `/item-modifier/modifiers/update/:id`** | **DELETE `/item-modifier/modifiers/delete/:id`**
+
+---
+
+### 📂 3.4 Modifier Groups & Modifier Subgroups
+
+**POST `/item-modifier/modifier-groups/create`**
+Create a group or subgroup for your modifiers. 
+**Body:**
+```json
+{
+  "name": "string",
+  "measurement": "string",
+  "price": "string",
+  "type": "ITEM_GROUP | ITEM_SUBCATEGORY | MODIFIER",
+  "description": "string (optional)",
+  "search_name": "string (optional)",
+  "cost": "string (optional)",
+  "shtrix": "string (optional)",
+  "color": "string (optional)",
+  "pictures": ["url1"],
+  "is_menu": "boolean (optional)",
+  "is_service": "boolean (optional)",
+  "allow_pickup": "boolean (optional)",
+  "allow_delivery": "boolean (optional)",
+  "id_automated_point": "uuid (optional)"
+}
+```
+
+**GET `/item-modifier/modifier-groups/all`**
+Returns all modifier groups and subgroups.
+
+**PATCH `/item-modifier/modifier-groups/update/:id`** | **DELETE `/item-modifier/modifier-groups/delete/:id`**
+
+---
+
+### 📏 3.5 Measurements
+
+**POST `/measurements/create`**
+Create custom measurement units (e.g., kg, liters, units) to assign to items.
+**Body:**
+```json
+{
+  "name": "string (e.g., 'kg')"
+}
+```
+
+**GET `/measurements/all`**
+Returns all defined measurement units.
+
+**PATCH `/measurements/update/:id`**
+**Body:**
+```json
+{
+  "name": "string (optional)"
+}
+```
+
+**DELETE `/measurements/delete/:id`**
 
 ---
 
@@ -143,13 +274,68 @@ Returns all integrated payment terminals.
 
 ---
 
-## 💰 6. Finance
+## 💰 6. Finance & Marketing
 
-### GET `/finance/taxes/all`
-Returns configured taxes and fees.
+### 📊 6.1 Taxes and Fees
+Create standard taxes or custom fees. Use them to apply percentages or fixed amounts on orders later.
 
-### GET `/finance/discounts/all`
-Returns available discount templates.
+**POST `/finance/taxes/create`**
+**Body:**
+```json
+{
+  "name": "string",
+  "value": "string (numeric string, e.g., '15' for 15%)",
+  "type": "TAX | FEE",
+  "guid": "string (optional sync identifier)",
+  "id_automated_point": "uuid (optional, specific point)"
+}
+```
+
+**GET `/finance/taxes/all`**
+Returns all configured taxes and fees.
+
+**PATCH `/finance/taxes/update/:id`**
+**Body:** (Partial object of creation body)
+```json
+{
+  "name": "string (optional)",
+  "value": "string (optional)",
+  "type": "TAX | FEE (optional)"
+}
+```
+
+**DELETE `/finance/taxes/delete/:id`**
+
+---
+
+### 🎁 6.2 Discounts
+Create custom discounts to be applied to specific products or whole checks.
+
+**POST `/finance/discounts/create`**
+**Body:**
+```json
+{
+  "name": "string",
+  "value": "string (numeric string, e.g., '10' for 10% off or fixed sum)",
+  "guid": "string (optional sync identifier)",
+  "id_automated_point": "uuid (optional, restrict to a specific point)"
+}
+```
+
+**GET `/finance/discounts/all`**
+Returns all available discount templates.
+
+**PATCH `/finance/discounts/update/:id`**
+**Body:** (Partial object of creation body)
+```json
+{
+  "name": "string (optional)",
+  "value": "string (optional)",
+  "id_automated_point": "uuid (optional)"
+}
+```
+
+**DELETE `/finance/discounts/delete/:id`**
 
 ---
 
