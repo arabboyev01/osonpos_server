@@ -13,6 +13,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3000',
+      'http://localhost:5173',
       'http://localhost:8080',
       'https://osonpos.com',
       'https://dashboard.osonpos.com',
