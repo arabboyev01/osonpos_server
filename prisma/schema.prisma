@@ -28,11 +28,6 @@ enum S_Item_Type {
   MODIFIER_SUBCATEGORY
 }
 
-enum S_Tax_Fee_Type {
-  TAX
-  FEE
-}
-
 enum T_Delivery_Type {
   TAKE_AWAY
   DELIVERY
@@ -277,22 +272,25 @@ model S_Logs {
 // Taxes & Discounts
 
 model S_Tax_Fee {
-  id                 String         @id @default(uuid())
+  id                 String   @id @default(uuid())
   guid               String?
   name               String
-  value              String
-  type               S_Tax_Fee_Type
+  tax_percent        String?
+  tax_value          String?
+  fee_percent        String?
+  fee_value          String?
   id_automated_point String?
-  is_deleted         Boolean        @default(false)
-  dt_created         DateTime       @default(now())
-  dt_updated         DateTime       @updatedAt
+  is_deleted         Boolean  @default(false)
+  dt_created         DateTime @default(now())
+  dt_updated         DateTime @updatedAt
 }
 
 model S_Discount {
   id                 String   @id @default(uuid())
   guid               String?
   name               String
-  value              String
+  discount_percent   String?
+  discount_value     String?
   id_automated_point String?
   is_deleted         Boolean  @default(false)
   dt_created         DateTime @default(now())
@@ -302,24 +300,31 @@ model S_Discount {
 // Printers & Payments
 
 model S_Printer {
-  id         String   @id @default(uuid())
-  name       String
-  guid       String?
-  is_deleted Boolean  @default(false)
-  dt_created DateTime @default(now())
-  dt_updated DateTime @updatedAt
+  id          String   @id @default(uuid())
+  name        String
+  ip_address  String?
+  port        String?
+  provider    String?
+  mac_address String?
+  guid        String?
+  type        String?
+  is_deleted  Boolean  @default(false)
+  dt_created  DateTime @default(now())
+  dt_updated  DateTime @updatedAt
 }
 
 model S_Payment_Devices {
-  id         String   @id @default(uuid())
-  name       String
-  guid       String?
-  ip_address String?
-  port       String?
-  provider   String?
-  is_deleted Boolean  @default(false)
-  dt_created DateTime @default(now())
-  dt_updated DateTime @updatedAt
+  id          String   @id @default(uuid())
+  name        String
+  guid        String?
+  ip_address  String?
+  mac_address String?
+  port        String?
+  provider    String?
+  type        String?
+  is_deleted  Boolean  @default(false)
+  dt_created  DateTime @default(now())
+  dt_updated  DateTime @updatedAt
 }
 
 // Order create 
@@ -384,14 +389,17 @@ model T_Order_Discount {
 }
 
 model T_Order_Item_Tax {
-  id         String         @id @default(uuid())
-  order_id   String?
-  item_id    String?
-  tax_id     String
-  type       S_Tax_Fee_Type
-  is_deleted Boolean        @default(false)
-  dt_created DateTime       @default(now())
-  dt_updated DateTime       @updatedAt
+  id          String   @id @default(uuid())
+  order_id    String?
+  item_id     String?
+  tax_id      String
+  tax_percent String?
+  tax_value   String?
+  fee_percent String?
+  fee_value   String?
+  is_deleted  Boolean  @default(false)
+  dt_created  DateTime @default(now())
+  dt_updated  DateTime @updatedAt
 }
 
 model T_Order_Delivery {

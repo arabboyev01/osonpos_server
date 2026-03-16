@@ -8,7 +8,7 @@ export class OrderService {
 
   async create(dbName: string, dto: CreateOrderDto) {
     const client = await this.tenantService.getClient(dbName);
-    const { items, discounts, delivery, ...orderData } = dto;
+    const { items, discounts, taxes, delivery, ...orderData } = dto;
 
     return client.$transaction(async (tx) => {
       // 1. Create Order
@@ -32,6 +32,16 @@ export class OrderService {
         await tx.t_Order_Discount.createMany({
           data: discounts.map((d) => ({
             ...d,
+            order_id: order.id,
+          })),
+        });
+      }
+
+      // 4. Create Taxes
+      if (taxes && taxes.length > 0) {
+        await tx.t_Order_Item_Tax.createMany({
+          data: taxes.map((t) => ({
+            ...t,
             order_id: order.id,
           })),
         });

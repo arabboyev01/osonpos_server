@@ -73,6 +73,26 @@ export class CreatePrinterDto {
   @IsString()
   @IsOptional()
   guid?: string;
+
+  @IsString()
+  @IsOptional()
+  ip_address?: string;
+
+  @IsString()
+  @IsOptional()
+  port?: string;
+
+  @IsString()
+  @IsOptional()
+  provider?: string;
+
+  @IsString()
+  @IsOptional()
+  mac_address?: string;
+
+  @IsString()
+  @IsOptional()
+  type?: string;
 }
 
 export class UpdatePrinterDto {
@@ -83,6 +103,26 @@ export class UpdatePrinterDto {
   @IsString()
   @IsOptional()
   guid?: string;
+
+  @IsString()
+  @IsOptional()
+  ip_address?: string;
+
+  @IsString()
+  @IsOptional()
+  port?: string;
+
+  @IsString()
+  @IsOptional()
+  provider?: string;
+
+  @IsString()
+  @IsOptional()
+  mac_address?: string;
+
+  @IsString()
+  @IsOptional()
+  type?: string;
 }
 
 // Payment Device
@@ -106,6 +146,14 @@ export class CreatePaymentDeviceDto {
   @IsString()
   @IsOptional()
   provider?: string;
+
+  @IsString()
+  @IsOptional()
+  mac_address?: string;
+
+  @IsString()
+  @IsOptional()
+  type?: string;
 }
 
 export class UpdatePaymentDeviceDto {
@@ -128,4 +176,12 @@ export class UpdatePaymentDeviceDto {
   @IsString()
   @IsOptional()
   provider?: string;
+
+  @IsString()
+  @IsOptional()
+  mac_address?: string;
+
+  @IsString()
+  @IsOptional()
+  type?: string;
 }

@@ -1,5 +1,4 @@
 import { IsString, IsNotEmpty, IsOptional, IsEnum } from 'class-validator';
-import { S_Tax_Fee_Type } from '@prisma/client';
 
 // Tax & Fee
 export class CreateTaxFeeDto {
@@ -12,12 +11,20 @@ export class CreateTaxFeeDto {
   name: string;
 
   @IsString()
-  @IsNotEmpty()
-  value: string;
+  @IsOptional()
+  tax_percent?: string;
 
-  @IsEnum(S_Tax_Fee_Type)
-  @IsNotEmpty()
-  type: S_Tax_Fee_Type;
+  @IsString()
+  @IsOptional()
+  tax_value?: string;
+
+  @IsString()
+  @IsOptional()
+  fee_percent?: string;
+
+  @IsString()
+  @IsOptional()
+  fee_value?: string;
 
   @IsString()
   @IsOptional()
@@ -35,11 +42,19 @@ export class UpdateTaxFeeDto {
 
   @IsString()
   @IsOptional()
-  value?: string;
+  tax_percent?: string;
 
-  @IsEnum(S_Tax_Fee_Type)
+  @IsString()
   @IsOptional()
-  type?: S_Tax_Fee_Type;
+  tax_value?: string;
+
+  @IsString()
+  @IsOptional()
+  fee_percent?: string;
+
+  @IsString()
+  @IsOptional()
+  fee_value?: string;
 
   @IsString()
   @IsOptional()
@@ -57,8 +72,12 @@ export class CreateDiscountDto {
   name: string;
 
   @IsString()
-  @IsNotEmpty()
-  value: string;
+  @IsOptional()
+  discount_percent?: string;
+
+  @IsString()
+  @IsOptional()
+  discount_value?: string;
 
   @IsString()
   @IsOptional()
@@ -76,7 +95,11 @@ export class UpdateDiscountDto {
 
   @IsString()
   @IsOptional()
-  value?: string;
+  discount_percent?: string;
+
+  @IsString()
+  @IsOptional()
+  discount_value?: string;
 
   @IsString()
   @IsOptional()

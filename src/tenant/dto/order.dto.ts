@@ -42,7 +42,7 @@ export class OrderDiscountDto {
 
   @IsString()
   @IsOptional()
-  discount_amount?: string;
+  discount_value?: string;
 
   @IsString()
   @IsOptional()
@@ -51,6 +51,32 @@ export class OrderDiscountDto {
   @IsString()
   @IsOptional()
   discount_id?: string;
+}
+
+export class OrderItemTaxDto {
+  @IsString()
+  @IsOptional()
+  item_id?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  tax_id: string;
+
+  @IsString()
+  @IsOptional()
+  tax_percent?: string;
+
+  @IsString()
+  @IsOptional()
+  tax_value?: string;
+
+  @IsString()
+  @IsOptional()
+  fee_percent?: string;
+
+  @IsString()
+  @IsOptional()
+  fee_value?: string;
 }
 
 export class OrderDeliveryDto {
@@ -174,6 +200,12 @@ export class CreateOrderDto {
   @ValidateNested({ each: true })
   @Type(() => OrderDiscountDto)
   discounts?: OrderDiscountDto[];
+
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => OrderItemTaxDto)
+  taxes?: OrderItemTaxDto[];
 
   @IsOptional()
   @ValidateNested()
