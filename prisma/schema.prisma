@@ -189,6 +189,7 @@ model S_Subcategory {
 
 model S_Modifier {
   id             String      @id @default(uuid())
+  item_id        String?
   group_id       String?
   name           String
   description    String?
@@ -421,3 +422,5 @@ model T_Order_Delivery {
   dt_created        DateTime          @default(now())
   dt_updated        DateTime          @updatedAt
 }
+
+// PosterPOS - 29$

@@ -268,6 +268,10 @@ export class CreateModifierDto {
 
   @IsString()
   @IsOptional()
+  item_id?: string;
+
+  @IsString()
+  @IsOptional()
   description?: string;
 
   @IsString()
@@ -326,6 +330,10 @@ export class UpdateModifierDto {
   @IsString()
   @IsOptional()
   name?: string;
+
+  @IsString()
+  @IsOptional()
+  item_id?: string;
 
   @IsString()
   @IsOptional()
