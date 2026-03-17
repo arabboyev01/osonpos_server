@@ -43,8 +43,10 @@ async function migrateAllTenants() {
       
       try {
         console.log(`Starting migration for ${dbName}...`);
-        // Use local prisma binary and skip-generate to avoid redundant client generation
-        execSync(`./node_modules/.bin/prisma db push --accept-data-loss`, {
+        
+        // Limit Node memory for the prisma CLI process to 256MB to avoid freezing 1GB servers
+        // use --max-old-space-size=256
+        execSync(`node --max-old-space-size=256 ./node_modules/.bin/prisma db push --accept-data-loss`, {
           env: {
             ...process.env,
             DATABASE_URL: url.toString(),
