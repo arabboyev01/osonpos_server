@@ -16,7 +16,23 @@ async function migrateAllTenants() {
   const adapter = new PrismaPg(pool as any);
   const prisma = new PrismaClient({ adapter });
 
-  console.log('Fetching tenants from admin database...');
+  console.log('--- Migrating Main (Admin) Database ---');
+  try {
+    execSync(`node --max-old-space-size=256 ./node_modules/.bin/prisma db push --accept-data-loss`, {
+      env: {
+        ...process.env,
+        DATABASE_URL: baseUrl,
+        PRISMA_SKIP_POSTINSTALL_GENERATE: 'true',
+      },
+      stdio: 'inherit',
+    });
+    console.log('Main database migrated successfully.');
+  } catch (error) {
+    console.error('Failed to migrate main database:', error.message);
+    process.exit(1);
+  }
+
+  console.log('\nFetching tenants from admin database...');
   
   try {
     const businesses = await prisma.a_Business.findMany({
@@ -39,13 +55,11 @@ async function migrateAllTenants() {
       console.log(`\n--- Migrating tenant: ${business.name} (DB: ${dbName}) ---`);
       
       const url = new URL(baseUrl);
+      // Keep the search params (like ?schema=public) but change the pathname (DB name)
       url.pathname = `/${dbName}`;
       
       try {
         console.log(`Starting migration for ${dbName}...`);
-        
-        // Limit Node memory for the prisma CLI process to 256MB to avoid freezing 1GB servers
-        // use --max-old-space-size=256
         execSync(`node --max-old-space-size=256 ./node_modules/.bin/prisma db push --accept-data-loss`, {
           env: {
             ...process.env,
