@@ -101,6 +101,7 @@ model S_Employee {
   role_id          String   @default("0")
   password         String
   employee_address String?
+  workplace_id     String?
   telegram_id      String?
   phone_number     String?
   notes            String?

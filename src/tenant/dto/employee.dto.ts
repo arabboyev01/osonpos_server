@@ -33,6 +33,10 @@ export class CreateEmployeeDto {
 
   @IsString()
   @IsOptional()
+  workplace_id?: string;
+
+  @IsString()
+  @IsOptional()
   telegram_id?: string;
 
   @IsString()
@@ -66,6 +70,10 @@ export class UpdateEmployeeDto {
   @IsString()
   @IsOptional()
   employee_address?: string;
+
+  @IsString()
+  @IsOptional()
+  workplace_id?: string;
 
   @IsString()
   @IsOptional()
