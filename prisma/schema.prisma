@@ -46,16 +46,18 @@ enum T_Delivery_Status {
 // Business Related
 
 model A_User {
-  id          String  @id @default(uuid())
-  login       String  @unique
-  password    String
-  full_name   String?
-  role        String  @default("OWNER")
-  business_id String?
-  time_zone   String  @default("Asia/Tashkent")
-  public_name String?
-  language    String  @default("uz")
-  details     String?
+  id                           String  @id @default(uuid())
+  login                        String  @unique
+  password                     String
+  full_name                    String?
+  role                         String  @default("OWNER")
+  business_id                  String?
+  time_zone                    String  @default("Asia/Tashkent")
+  public_name                  String?
+  language                     String  @default("uz")
+  details                      String?
+  second_verification          Boolean @default(false)
+  second_verification_password String?
 
   is_deleted Boolean  @default(false)
   dt_created DateTime @default(now())

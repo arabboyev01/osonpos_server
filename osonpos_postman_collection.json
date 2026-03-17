@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "osonpos-api-collection",
 		"name": "OsonPOS API",
-		"description": "Full API collection for OsonPOS Server, including the new POS Authentication flow.",
+		"description": "Full API collection for OsonPOS Server, including POS Auth and Second Verification.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -12,32 +12,16 @@
 				{
 					"name": "Register",
 					"request": {
-						"auth": {
-							"type": "noauth"
-						},
+						"auth": { "type": "noauth" },
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"login\": \"test_owner\",\n  \"password\": \"password123\",\n  \"businessName\": \"Test Business\",\n  \"name\": \"John Doe\",\n  \"phoneNumber\": \"+998901234567\",\n  \"address\": \"Tashkent, Uzbekistan\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n  \"login\": \"test_owner\",\n  \"password\": \"password123\",\n  \"businessName\": \"Test Business\",\n  \"name\": \"John Doe\"\n}",
+							"options": { "raw": { "language": "json" } }
 						},
-						"url": {
-							"raw": "{{base_url}}/auth/register",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"auth",
-								"register"
-							]
-						}
-					},
-					"response": []
+						"url": { "raw": "{{base_url}}/auth/register", "host": ["{{base_url}}"], "path": ["auth", "register"] }
+					}
 				},
 				{
 					"name": "Login (Owner)",
@@ -56,71 +40,87 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "noauth"
-						},
+						"auth": { "type": "noauth" },
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"login\": \"test_owner\",\n  \"password\": \"password123\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"options": { "raw": { "language": "json" } }
 						},
-						"url": {
-							"raw": "{{base_url}}/auth/login",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"auth",
-								"login"
-							]
-						}
-					},
-					"response": []
+						"url": { "raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"] }
+					}
 				},
 				{
-					"name": "Get User Info",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/auth/user/info",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"auth",
-								"user",
-								"info"
-							]
+					"name": "Verify Second Step (Login)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"if (response.access_token) {",
+									"    pm.collectionVariables.set(\"owner_token\", response.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
 						}
+					],
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "POST",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"login\": \"test_owner\",\n  \"password\": \"123456\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": { "raw": "{{base_url}}/auth/second-verification/verify", "host": ["{{base_url}}"], "path": ["auth", "second-verification", "verify"] }
 					},
-					"response": []
+					"description": "Call this if Login returns require_second_verification: true"
+				},
+				{
+					"name": "Settings: Second Verification",
+					"item": [
+						{
+							"name": "Enable (Turn On)",
+							"request": {
+								"method": "PATCH",
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"password\": \"123456\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/auth/user/second-verification/enable", "host": ["{{base_url}}"], "path": ["auth", "user", "second-verification", "enable"] }
+							}
+						},
+						{
+							"name": "Disable (Turn Off)",
+							"request": {
+								"method": "PATCH",
+								"url": { "raw": "{{base_url}}/auth/user/second-verification/disable", "host": ["{{base_url}}"], "path": ["auth", "user", "second-verification", "disable"] }
+							}
+						},
+						{
+							"name": "Update Password",
+							"request": {
+								"method": "PATCH",
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"password\": \"654321\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/auth/user/second-verification/update-password", "host": ["{{base_url}}"], "path": ["auth", "user", "second-verification", "update-password"] }
+							}
+						}
+					]
 				},
 				{
 					"name": "POS: Fetch Workplaces",
 					"request": {
 						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/auth/pos/workplaces",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"auth",
-								"pos",
-								"workplaces"
-							]
-						},
-						"description": "Step 2: After owner login, fetch workplaces using the owner token."
-					},
-					"response": []
+						"url": { "raw": "{{base_url}}/auth/pos/workplaces", "host": ["{{base_url}}"], "path": ["auth", "pos", "workplaces"] }
+					}
 				},
 				{
 					"name": "POS: Employee Login (Pincode)",
@@ -140,505 +140,24 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"workplaceId\": \"WORKPLACE_UUID_FROM_PREVIOUS_STEP\",\n  \"pincode\": \"1234\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n  \"workplaceId\": \"WORKPLACE_UUID\",\n  \"pincode\": \"1234\"\n}",
+							"options": { "raw": { "language": "json" } }
 						},
-						"url": {
-							"raw": "{{base_url}}/auth/pos/login",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"auth",
-								"pos",
-								"login"
-							]
-						},
-						"description": "Step 3: Authenticate employee using workplace selection and pincode. Requires Owner Token."
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "2. Employee Management",
-			"item": [
-				{
-					"name": "Employees",
-					"item": [
-						{
-							"name": "Create Employee",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"full_name\": \"Cashier One\",\n  \"role_id\": \"CASHIER_ROLE_ID\",\n  \"password\": \"1234\",\n  \"phone_number\": \"+998901112233\",\n  \"email\": \"cashier1@example.com\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{base_url}}/employee/create",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"employee",
-										"create"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get All Employees",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{base_url}}/employee/all",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"employee",
-										"all"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Roles",
-					"item": [
-						{
-							"name": "Create Role",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"name\": \"CASHIER\",\n  \"access_resources\": [\"POS\", \"ORDERS\"]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{base_url}}/employee-role/create",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"employee-role",
-										"create"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get All Roles",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{base_url}}/employee-role/all",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"employee-role",
-										"all"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				}
-			]
-		},
-		{
-			"name": "3. Item & Modifier Management",
-			"item": [
-				{
-					"name": "Items",
-					"item": [
-						{
-							"name": "Create Item",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"name\": \"Espresso\",\n  \"measurement\": \"カップ\",\n  \"price\": \"15000\",\n  \"type\": \"ITEM\",\n  \"is_menu\": true\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{base_url}}/item-modifier/items/create",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"item-modifier",
-										"items",
-										"create"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get All Items",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{base_url}}/item-modifier/items/all",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"item-modifier",
-										"items",
-										"all"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Categories (Groups)",
-					"item": [
-						{
-							"name": "Create Category",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"name\": \"Coffee\",\n  \"measurement\": \"unit\",\n  \"price\": \"0\",\n  \"type\": \"ITEM_GROUP\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{base_url}}/item-modifier/item-groups/create",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"item-modifier",
-										"item-groups",
-										"create"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get All Categories",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{base_url}}/item-modifier/item-groups/all",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"item-modifier",
-										"item-groups",
-										"all"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				}
-			]
-		},
-		{
-			"name": "4. Orders",
-			"item": [
-				{
-					"name": "Create Order",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"order_id\": \"#1001\",\n  \"subtotal\": \"15000\",\n  \"total_sum\": \"15000\",\n  \"employee_id\": \"EMPLOYEE_UUID\",\n  \"automated_point_id\": \"POINT_UUID\",\n  \"workplace_id\": \"WORKPLACE_UUID\",\n  \"payment_type_id\": \"CASH_PAYMENT_UUID\",\n  \"items\": [\n    {\n      \"item_id\": \"ITEM_UUID\",\n      \"quantity\": \"1\",\n      \"price\": \"15000\",\n      \"subtotal\": \"15000\"\n    }\n  ]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/orders/create",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"orders",
-								"create"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "5. Business Settings (Config)",
-			"item": [
-				{
-					"name": "Points",
-					"item": [
-						{
-							"name": "Create Point",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"name\": \"Main Branch\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{base_url}}/business-config/points/create",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"business-config",
-										"points",
-										"create"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get All Points",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{base_url}}/business-config/points/all",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"business-config",
-										"points",
-										"all"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Workplaces",
-					"item": [
-						{
-							"name": "Create Workplace",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"name\": \"Counter 1\",\n  \"automated_point_id\": \"POINT_UUID\",\n  \"employee_id\": \"EMPLOYEE_UUID\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{base_url}}/business-config/workplaces/create",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"business-config",
-										"workplaces",
-										"create"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get All Workplaces",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{base_url}}/business-config/workplaces/all",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"business-config",
-										"workplaces",
-										"all"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				}
-			]
-		},
-		{
-			"name": "6. Finance & Marketing",
-			"item": [
-				{
-					"name": "Taxes",
-					"item": [
-						{
-							"name": "Create Tax",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"name\": \"VAT\",\n  \"tax_percent\": \"15\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{base_url}}/finance/taxes/create",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"finance",
-										"taxes",
-										"create"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Discounts",
-					"item": [
-						{
-							"name": "Create Discount",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"name\": \"Grand Opening\",\n  \"discount_percent\": \"10\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{base_url}}/finance/discounts/create",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"finance",
-										"discounts",
-										"create"
-									]
-								}
-							},
-							"response": []
-						}
-					]
+						"url": { "raw": "{{base_url}}/auth/pos/login", "host": ["{{base_url}}"], "path": ["auth", "pos", "login"] }
+					}
 				}
 			]
 		}
 	],
 	"auth": {
 		"type": "bearer",
-		"bearer": [
-			{
-				"key": "token",
-				"value": "{{owner_token}}",
-				"type": "string"
-			}
-		]
+		"bearer": [{ "key": "token", "value": "{{owner_token}}", "type": "string" }]
 	},
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
 	"variable": [
-		{
-			"key": "base_url",
-			"value": "http://localhost:3000/api/v1",
-			"type": "string"
-		},
-		{
-			"key": "owner_token",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"key": "employee_token",
-			"value": "",
-			"type": "string"
-		}
+		{ "key": "base_url", "value": "http://localhost:3000/api/v1", "type": "string" },
+		{ "key": "owner_token", "value": "", "type": "string" },
+		{ "key": "employee_token", "value": "", "type": "string" }
 	]
 }

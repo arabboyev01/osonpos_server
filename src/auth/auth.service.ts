@@ -14,6 +14,12 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import { JwtService } from '@nestjs/jwt';
 
+import {
+  EnableSecondVerificationDto,
+  UpdateSecondVerificationPasswordDto,
+  VerifySecondVerificationDto,
+} from './dto/second-verification.dto';
+
 const execPromise = promisify(exec);
 
 import { TenantService } from '../tenant/tenant.service';
@@ -26,7 +32,7 @@ export class AuthService {
     private jwtService: JwtService,
     private configService: ConfigService,
     private tenantService: TenantService,
-  ) {}
+  ) { }
 
   async register(dto: RegisterDto) {
     const existingUser = await this.prisma.a_User.findFirst({
@@ -207,17 +213,10 @@ export class AuthService {
 
     const workplacesWithEmployees = await Promise.all(
       workplaces.map(async (wp) => {
-        const employee = await client.s_Employee.findFirst({
-          where: { id: wp.employee_id, is_deleted: false },
-          select: {
-            id: true,
-            full_name: true,
-            role_id: true,
-            phone_number: true,
-            email: true,
-          },
+        const employees = await client.s_Employee.findMany({
+          where: { workplace_id: wp.id }
         });
-        return { ...wp, employee };
+        return { ...wp, employees };
       }),
     );
 
@@ -266,5 +265,92 @@ export class AuthService {
         workplaceId: workplace.id,
       }),
     };
+  }
+
+  // Second Verification Logic
+  async enableSecondVerification(id: string, dto: EnableSecondVerificationDto) {
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+    return this.prisma.a_User.update({
+      where: { id },
+      data: {
+        second_verification: true,
+        second_verification_password: hashedPassword,
+      },
+      select: {
+        id: true,
+        login: true,
+        second_verification: true,
+      },
+    });
+  }
+
+  async disableSecondVerification(id: string) {
+    return this.prisma.a_User.update({
+      where: { id },
+      data: {
+        second_verification: false,
+        second_verification_password: null,
+      },
+      select: {
+        id: true,
+        login: true,
+        second_verification: true,
+      },
+    });
+  }
+
+  async updateSecondVerificationPassword(
+    id: string,
+    dto: UpdateSecondVerificationPasswordDto,
+  ) {
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+    return this.prisma.a_User.update({
+      where: { id },
+      data: {
+        second_verification_password: hashedPassword,
+      },
+      select: {
+        id: true,
+        login: true,
+        second_verification: true,
+      },
+    });
+  }
+
+  async verifySecondVerificationPassword(dto: VerifySecondVerificationDto) {
+    const user = await this.prisma.a_User.findFirst({
+      where: {
+        login: dto.login,
+        is_deleted: false,
+      },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    if (!user.second_verification || !user.second_verification_password) {
+      throw new BadRequestException('Ikkinchi tekshiruv yoqilgan');
+    }
+
+    const isMatch = await bcrypt.compare(dto.password, user.second_verification_password);
+    if (!isMatch) {
+      throw new UnauthorizedException('Parol noto\'g\'ri');
+    }
+
+    const { password: _, second_verification_password: __, ...result } = user;
+
+    let dbName: string | null = null;
+    if (user.business_id) {
+      const business = await this.prisma.a_Business.findFirst({
+        where: {
+          id: user.business_id,
+          is_deleted: false,
+        },
+      });
+      dbName = business?.db_name || null;
+    }
+
+    return result;
   }
 }

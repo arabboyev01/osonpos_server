@@ -16,6 +16,11 @@ import { LoginDto } from './dto/login.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PosLoginDto } from './dto/pos-auth.dto';
+import {
+  EnableSecondVerificationDto,
+  UpdateSecondVerificationPasswordDto,
+  VerifySecondVerificationDto,
+} from './dto/second-verification.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
@@ -75,5 +80,34 @@ export class AuthController {
       req.user.businessId,
       dto,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('user/second-verification/enable')
+  async enableSecondVerification(
+    @Request() req,
+    @Body() dto: EnableSecondVerificationDto,
+  ) {
+    return this.authService.enableSecondVerification(req.user.id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('user/second-verification/disable')
+  async disableSecondVerification(@Request() req) {
+    return this.authService.disableSecondVerification(req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('user/second-verification/update-password')
+  async updateSecondVerificationPassword(
+    @Request() req,
+    @Body() dto: UpdateSecondVerificationPasswordDto,
+  ) {
+    return this.authService.updateSecondVerificationPassword(req.user.id, dto);
+  }
+
+  @Post('second-verification/verify')
+  async verifySecondVerification(@Body() dto: VerifySecondVerificationDto) {
+    return this.authService.verifySecondVerificationPassword(dto);
   }
 }
