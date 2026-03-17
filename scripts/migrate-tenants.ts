@@ -42,11 +42,13 @@ async function migrateAllTenants() {
       url.pathname = `/${dbName}`;
       
       try {
-        // We use db push to keep all tenants in sync with the latest schema
-        execSync(`npx prisma db push --accept-data-loss`, {
+        console.log(`Starting migration for ${dbName}...`);
+        // Use local prisma binary and skip-generate to avoid redundant client generation
+        execSync(`./node_modules/.bin/prisma db push --accept-data-loss`, {
           env: {
             ...process.env,
             DATABASE_URL: url.toString(),
+            PRISMA_SKIP_POSTINSTALL_GENERATE: 'true',
           },
           stdio: 'inherit',
         });

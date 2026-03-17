@@ -159,6 +159,15 @@ export class AuthService {
       },
     });
     if (user && (await bcrypt.compare(pass, user.password))) {
+      // Check if second verification is enabled
+      if (user.second_verification) {
+        return {
+          id: user.id,
+          login: user.login,
+          require_second_verification: true,
+        };
+      }
+
       const { password, ...result } = user;
 
       let dbName: string | null = null;
@@ -330,7 +339,7 @@ export class AuthService {
     }
 
     if (!user.second_verification || !user.second_verification_password) {
-      throw new BadRequestException('Ikkinchi tekshiruv yoqilgan');
+      throw new BadRequestException('Ikkinchi tekshiruv yoqilmagan');
     }
 
     const isMatch = await bcrypt.compare(dto.password, user.second_verification_password);
@@ -351,6 +360,14 @@ export class AuthService {
       dbName = business?.db_name || null;
     }
 
-    return result;
+    return {
+      ...result,
+      access_token: this.jwtService.sign({
+        sub: user.id,
+        login: user.login,
+        businessId: user.business_id,
+        dbName: dbName,
+      }),
+    };
   }
 }
