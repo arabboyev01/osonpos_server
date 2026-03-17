@@ -26,6 +26,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
 
     if (!user) {
+      if (payload.role === 'EMPLOYEE') {
+        return {
+          id: payload.sub,
+          login: payload.login,
+          role: 'EMPLOYEE',
+          businessId: payload.businessId,
+          dbName: payload.dbName,
+          workplaceId: payload.workplaceId,
+        };
+      }
       throw new UnauthorizedException();
     }
 

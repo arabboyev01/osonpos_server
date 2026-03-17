@@ -15,6 +15,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { PosLoginDto } from './dto/pos-auth.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
@@ -57,5 +58,22 @@ export class AuthController {
   @Delete('user/:id')
   async deleteUser(@Param('id') id: string) {
     return this.authService.removeUser(id);
+  }
+
+  // POS Authentication Endpoints
+  @UseGuards(JwtAuthGuard)
+  @Get('pos/workplaces')
+  async getPosWorkplaces(@Request() req) {
+    return this.authService.getPosWorkplaces(req.user.dbName);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('pos/login')
+  async posLogin(@Request() req, @Body() dto: PosLoginDto) {
+    return this.authService.employeeLogin(
+      req.user.dbName,
+      req.user.businessId,
+      dto,
+    );
   }
 }

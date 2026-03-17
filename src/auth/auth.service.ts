@@ -2,6 +2,7 @@ import {
   Injectable,
   BadRequestException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
@@ -15,12 +16,16 @@ import { JwtService } from '@nestjs/jwt';
 
 const execPromise = promisify(exec);
 
+import { TenantService } from '../tenant/tenant.service';
+import { PosLoginDto } from './dto/pos-auth.dto';
+
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private tenantService: TenantService,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -191,5 +196,75 @@ export class AuthService {
     });
     const { password, ...result } = deletedUser;
     return result;
+  }
+
+  async getPosWorkplaces(dbName: string) {
+    const client = await this.tenantService.getClient(dbName);
+
+    const workplaces = await client.a_Workplace.findMany({
+      where: { is_deleted: false },
+    });
+
+    const workplacesWithEmployees = await Promise.all(
+      workplaces.map(async (wp) => {
+        const employee = await client.s_Employee.findFirst({
+          where: { id: wp.employee_id, is_deleted: false },
+          select: {
+            id: true,
+            full_name: true,
+            role_id: true,
+            phone_number: true,
+            email: true,
+          },
+        });
+        return { ...wp, employee };
+      }),
+    );
+
+    return workplacesWithEmployees;
+  }
+
+  async employeeLogin(dbName: string, businessId: string, dto: PosLoginDto) {
+    const client = await this.tenantService.getClient(dbName);
+
+    const workplace = await client.a_Workplace.findFirst({
+      where: { id: dto.workplaceId, is_deleted: false },
+    });
+    if (!workplace) {
+      throw new NotFoundException('Workplace not found');
+    }
+
+    const employees = await client.s_Employee.findMany({
+      where: { is_deleted: false },
+    });
+
+    let authenticatedEmployee: any = null;
+    for (const employee of employees) {
+      const isMatch = await bcrypt.compare(dto.pincode, employee.password);
+      if (isMatch) {
+        authenticatedEmployee = employee;
+        break;
+      }
+    }
+
+    if (!authenticatedEmployee) {
+      throw new UnauthorizedException('Invalid pincode');
+    }
+
+    const { password, ...employeeInfo } = authenticatedEmployee;
+    return {
+      message: 'Login successful',
+      employee: employeeInfo,
+      workplaceId: workplace.id,
+      dbName: dbName,
+      access_token: this.jwtService.sign({
+        sub: authenticatedEmployee.id,
+        login: authenticatedEmployee.full_name, // Using name as login identifier
+        businessId: businessId,
+        dbName: dbName,
+        role: 'EMPLOYEE',
+        workplaceId: workplace.id,
+      }),
+    };
   }
 }
