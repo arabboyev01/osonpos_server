@@ -24,6 +24,8 @@ const execPromise = promisify(exec);
 
 import { TenantService } from '../tenant/tenant.service';
 import { PosLoginDto } from './dto/pos-auth.dto';
+import { LogService } from '../tenant/services/log.service';
+import { S_Logs_Type } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -32,7 +34,8 @@ export class AuthService {
     private jwtService: JwtService,
     private configService: ConfigService,
     private tenantService: TenantService,
-  ) { }
+    private logService: LogService,
+  ) {}
 
   async register(dto: RegisterDto) {
     const existingUser = await this.prisma.a_User.findFirst({
@@ -172,6 +175,25 @@ export class AuthService {
         dbName = business?.db_name || null;
       }
 
+      if (user.second_verification) {
+        if (dbName) {
+          this.log(
+            dbName,
+            user.id,
+            'Owner login - Step 1 (Second verification required)',
+          );
+        }
+        return {
+          id: user.id,
+          login: user.login,
+          require_second_verification: true,
+        };
+      }
+
+      if (dbName) {
+        this.log(dbName, user.id, 'Owner login successful');
+      }
+
       return {
         ...result,
         access_token: this.jwtService.sign({
@@ -183,6 +205,26 @@ export class AuthService {
       };
     }
     return null;
+  }
+
+  // Safe background logging
+  private log(
+    dbName: string,
+    userId: string | undefined,
+    action: string,
+    type: S_Logs_Type = S_Logs_Type.AUTH,
+    details?: string,
+  ) {
+    this.logService
+      .create(dbName, {
+        user_id: userId,
+        type,
+        action,
+        details,
+      })
+      .catch((err) =>
+        console.error(`Background log failed for ${dbName}: ${err.message}`),
+      );
   }
 
   async removeUser(id: string) {
@@ -214,7 +256,7 @@ export class AuthService {
     const workplacesWithEmployees = await Promise.all(
       workplaces.map(async (wp) => {
         const employees = await client.s_Employee.findMany({
-          where: { workplace_id: wp.id }
+          where: { workplace_id: wp.id },
         });
         return { ...wp, employees };
       }),
@@ -251,6 +293,10 @@ export class AuthService {
     }
 
     const { password, ...employeeInfo } = authenticatedEmployee;
+
+    // Log employee login
+    this.log(dbName, authenticatedEmployee.id, 'Employee PIN login successful', S_Logs_Type.AUTH, `Workplace: ${workplace.name}`);
+
     return {
       message: 'Login successful',
       employee: employeeInfo,
@@ -333,9 +379,12 @@ export class AuthService {
       throw new BadRequestException('Ikkinchi tekshiruv yoqilmagan');
     }
 
-    const isMatch = await bcrypt.compare(dto.password, user.second_verification_password);
+    const isMatch = await bcrypt.compare(
+      dto.password,
+      user.second_verification_password,
+    );
     if (!isMatch) {
-      throw new UnauthorizedException('Parol noto\'g\'ri');
+      throw new UnauthorizedException("Parol noto'g'ri");
     }
 
     const { password: _, second_verification_password: __, ...result } = user;
@@ -351,6 +400,18 @@ export class AuthService {
       dbName = business?.db_name || null;
     }
 
-    return result;
+    if (dbName) {
+      this.log(dbName, user.id, 'Second verification successful');
+    }
+
+    return {
+      ...result,
+      access_token: this.jwtService.sign({
+        sub: user.id,
+        login: user.login,
+        businessId: user.business_id,
+        dbName: dbName,
+      }),
+    };
   }
 }

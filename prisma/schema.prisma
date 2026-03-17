@@ -17,6 +17,7 @@ enum S_Logs_Type {
   EMPLOYEE // Employee log error saved when employee creation or update failed
   PAYMENT_DEVICE // Payment device log error saved when payment device creation or update failed
   ORDER // Order log error saved when order creation or update failed
+  AUTH // Authentication related logs
 }
 
 enum S_Item_Type {

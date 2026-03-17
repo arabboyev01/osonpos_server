@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { TenantService } from '../tenant.service';
 import { CreateOrderDto } from '../dto/order.dto';
+import { LogService } from './log.service';
+import { S_Logs_Type } from '@prisma/client';
 
 @Injectable()
 export class OrderService {
-  constructor(private tenantService: TenantService) {}
+  constructor(
+    private tenantService: TenantService,
+    private logService: LogService,
+  ) { }
 
   async create(dbName: string, dto: CreateOrderDto) {
     const client = await this.tenantService.getClient(dbName);
@@ -59,6 +64,14 @@ export class OrderService {
           },
         });
       }
+      
+      // Log order creation
+      this.logService.create(dbName, {
+        user_id: order.employee_id,
+        type: S_Logs_Type.ORDER,
+        action: 'Order created',
+        details: `Order ID: ${order.id}, Amount: ${order.total_sum}`
+      }).catch(err => console.error(`Failed to log order creation in ${dbName}: ${err.message}`));
 
       return order;
     });

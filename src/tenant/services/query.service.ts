@@ -18,7 +18,7 @@ function serializeBigInt(value: any): any {
 
 @Injectable()
 export class QueryService {
-  constructor(private tenantService: TenantService) { }
+  constructor(private tenantService: TenantService) {}
 
   async executeQuery(dbName: string, sql: string) {
     const normalized = sql.trim().toLowerCase();

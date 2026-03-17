@@ -43,6 +43,6 @@ import { MeasurementService } from './services/measurement.service';
     QueryController,
     MeasurementController,
   ],
-  exports: [TenantService],
+  exports: [TenantService, LogService],
 })
 export class TenantModule {}
