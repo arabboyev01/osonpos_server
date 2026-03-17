@@ -256,7 +256,7 @@ export class AuthService {
       employee: employeeInfo,
       workplaceId: workplace.id,
       dbName: dbName,
-      access_token: this.jwtService.sign({
+      pos_access_token: this.jwtService.sign({
         sub: authenticatedEmployee.id,
         login: authenticatedEmployee.full_name, // Using name as login identifier
         businessId: businessId,
