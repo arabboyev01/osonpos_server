@@ -175,21 +175,6 @@ export class AuthService {
         dbName = business?.db_name || null;
       }
 
-      if (user.second_verification) {
-        if (dbName) {
-          this.log(
-            dbName,
-            user.id,
-            'Owner login - Step 1 (Second verification required)',
-          );
-        }
-        return {
-          id: user.id,
-          login: user.login,
-          require_second_verification: true,
-        };
-      }
-
       if (dbName) {
         this.log(dbName, user.id, 'Owner login successful');
       }
