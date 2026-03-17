@@ -159,15 +159,6 @@ export class AuthService {
       },
     });
     if (user && (await bcrypt.compare(pass, user.password))) {
-      // Check if second verification is enabled
-      if (user.second_verification) {
-        return {
-          id: user.id,
-          login: user.login,
-          require_second_verification: true,
-        };
-      }
-
       const { password, ...result } = user;
 
       let dbName: string | null = null;
@@ -360,14 +351,6 @@ export class AuthService {
       dbName = business?.db_name || null;
     }
 
-    return {
-      ...result,
-      access_token: this.jwtService.sign({
-        sub: user.id,
-        login: user.login,
-        businessId: user.business_id,
-        dbName: dbName,
-      }),
-    };
+    return result;
   }
 }
