@@ -79,7 +79,6 @@ model A_Workplace {
   name               String
   guid               String?
   automated_point_id String
-  employee_id        String
   is_deleted         Boolean  @default(false)
   dt_created         DateTime @default(now())
   dt_updated         DateTime @updatedAt

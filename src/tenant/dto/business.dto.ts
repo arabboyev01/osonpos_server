@@ -40,10 +40,6 @@ export class CreateWorkplaceDto {
   @IsString()
   @IsNotEmpty()
   automated_point_id: string;
-
-  @IsString()
-  @IsNotEmpty()
-  employee_id: string;
 }
 
 export class UpdateWorkplaceDto {
@@ -58,10 +54,6 @@ export class UpdateWorkplaceDto {
   @IsString()
   @IsOptional()
   automated_point_id?: string;
-
-  @IsString()
-  @IsOptional()
-  employee_id?: string;
 }
 
 // Printer

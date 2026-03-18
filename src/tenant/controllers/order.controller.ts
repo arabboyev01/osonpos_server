@@ -9,7 +9,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { OrderService } from '../services/order.service';
-import { CreateOrderDto } from '../dto/order.dto';
+import { CreateOrderDto, UpdateOrderDto } from '../dto/order.dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
@@ -23,6 +23,11 @@ export class OrderController {
   @Post('create')
   create(@Request() req, @Body() dto: CreateOrderDto) {
     return this.orderService.create(req.user.dbName, dto);
+  }
+
+  @Post('update/:id')
+  update(@Request() req, @Param('id') id: string, @Body() dto: UpdateOrderDto) {
+    return this.orderService.update(req.user.dbName, id, dto);
   }
 
   @Get('all')

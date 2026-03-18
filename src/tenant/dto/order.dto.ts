@@ -212,3 +212,93 @@ export class CreateOrderDto {
   @Type(() => OrderDeliveryDto)
   delivery?: OrderDeliveryDto;
 }
+
+export class UpdateOrderDto {
+  @IsString()
+  @IsOptional()
+  order_name?: string;
+
+  @IsString()
+  @IsOptional()
+  total_discount?: string;
+
+  @IsString()
+  @IsOptional()
+  total_tax?: string;
+
+  @IsString()
+  @IsOptional()
+  total_paid?: string;
+
+  @IsString()
+  @IsOptional()
+  total_change?: string;
+
+  @IsString()
+  @IsOptional()
+  subtotal?: string;
+
+  @IsString()
+  @IsOptional()
+  total_sum?: string;
+
+  @IsString()
+  @IsOptional()
+  discount_percent?: string;
+
+  @IsString()
+  @IsOptional()
+  discount_sum?: string;
+
+  @IsString()
+  @IsOptional()
+  client_id?: string;
+
+  @IsString()
+  @IsOptional()
+  payment_id?: string;
+
+  @IsString()
+  @IsOptional()
+  delivery_fee?: string;
+
+  @IsString()
+  @IsOptional()
+  payment_type_id?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  is_closed?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  is_voided?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  is_refunded?: boolean;
+
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => OrderItemDto)
+  items?: OrderItemDto[];
+
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => OrderDiscountDto)
+  discounts?: OrderDiscountDto[];
+
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => OrderItemTaxDto)
+  taxes?: OrderItemTaxDto[];
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => OrderDeliveryDto)
+  delivery?: OrderDeliveryDto;
+}
+
