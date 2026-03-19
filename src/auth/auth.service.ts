@@ -280,12 +280,19 @@ export class AuthService {
     const { password, ...employeeInfo } = authenticatedEmployee;
 
     // Log employee login
-    this.log(dbName, authenticatedEmployee.id, 'Employee PIN login successful', S_Logs_Type.AUTH, `Workplace: ${workplace.name}`);
+    this.log(
+      dbName,
+      authenticatedEmployee.id,
+      'Employee PIN login successful',
+      S_Logs_Type.AUTH,
+      `Workplace: ${workplace.name}`,
+    );
 
     return {
       message: 'Login successful',
       employee: employeeInfo,
       workplaceId: workplace.id,
+      automated_point_id: workplace.automated_point_id,
       dbName: dbName,
       pos_access_token: this.jwtService.sign({
         sub: authenticatedEmployee.id,
@@ -294,6 +301,7 @@ export class AuthService {
         dbName: dbName,
         role: 'EMPLOYEE',
         workplaceId: workplace.id,
+        automated_point_id: workplace.automated_point_id,
       }),
     };
   }

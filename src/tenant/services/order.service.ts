@@ -9,12 +9,12 @@ export class OrderService {
   constructor(
     private tenantService: TenantService,
     private logService: LogService,
-  ) { }
+  ) {}
 
   async create(dbName: string, dto: CreateOrderDto, employeeId: string) {
     const client = await this.tenantService.getClient(dbName);
     const { items, discounts, taxes, delivery, ...orderData } = dto;
-    
+
     // Use the authenticated employee's ID
     orderData.employee_id = employeeId;
 
@@ -67,24 +67,35 @@ export class OrderService {
           },
         });
       }
-      
+
       // Log order creation
-      this.logService.create(dbName, {
-        user_id: order.employee_id,
-        type: S_Logs_Type.ORDER,
-        action: 'Order created',
-        details: `Order ID: ${order.id}, Amount: ${order.total_sum}`
-      }).catch(err => console.error(`Failed to log order creation in ${dbName}: ${err.message}`));
+      this.logService
+        .create(dbName, {
+          user_id: order.employee_id,
+          type: S_Logs_Type.ORDER,
+          action: 'Order created',
+          details: `Order ID: ${order.id}, Amount: ${order.total_sum}`,
+        })
+        .catch((err) =>
+          console.error(
+            `Failed to log order creation in ${dbName}: ${err.message}`,
+          ),
+        );
 
       return order;
     });
   }
 
-  async update(dbName: string, id: string, dto: UpdateOrderDto, employeeId: string) {
+  async update(
+    dbName: string,
+    id: string,
+    dto: UpdateOrderDto,
+    employeeId: string,
+  ) {
     const client = await this.tenantService.getClient(dbName);
     const { items, discounts, taxes, delivery, ...orderData } = dto;
 
-    // Use the authenticated employee's ID for audit trail if needed, 
+    // Use the authenticated employee's ID for audit trail if needed,
     // though the order record probably stores only the initial employee_id.
     // If the requirement is to TRACK who updated it, we might need a separate field.
     // However, the user said "you provide employee id inside the server", so I'll follow that.
@@ -142,38 +153,46 @@ export class OrderService {
         if (delivery === null) {
           await tx.t_Order_Delivery.deleteMany({ where: { order_id: id } });
         } else {
-          const existingDelivery = await tx.t_Order_Delivery.findUnique({ where: { order_id: id } });
+          const existingDelivery = await tx.t_Order_Delivery.findUnique({
+            where: { order_id: id },
+          });
           if (existingDelivery) {
-              await tx.t_Order_Delivery.update({
-                  where: { order_id: id },
-                  data: {
-                      ...delivery,
-                      estimated_arrival: delivery.estimated_arrival
-                          ? new Date(delivery.estimated_arrival)
-                          : undefined,
-                  },
-              });
+            await tx.t_Order_Delivery.update({
+              where: { order_id: id },
+              data: {
+                ...delivery,
+                estimated_arrival: delivery.estimated_arrival
+                  ? new Date(delivery.estimated_arrival)
+                  : undefined,
+              },
+            });
           } else {
-              await tx.t_Order_Delivery.create({
-                  data: {
-                      ...delivery,
-                      order_id: id,
-                      estimated_arrival: delivery.estimated_arrival
-                          ? new Date(delivery.estimated_arrival)
-                          : undefined,
-                  },
-              });
+            await tx.t_Order_Delivery.create({
+              data: {
+                ...delivery,
+                order_id: id,
+                estimated_arrival: delivery.estimated_arrival
+                  ? new Date(delivery.estimated_arrival)
+                  : undefined,
+              },
+            });
           }
         }
       }
 
       // Log order update
-      this.logService.create(dbName, {
-        user_id: order.employee_id,
-        type: S_Logs_Type.ORDER,
-        action: 'Order updated',
-        details: `Order ID: ${order.id}, Amount: ${order.total_sum}`
-      }).catch(err => console.error(`Failed to log order update in ${dbName}: ${err.message}`));
+      this.logService
+        .create(dbName, {
+          user_id: order.employee_id,
+          type: S_Logs_Type.ORDER,
+          action: 'Order updated',
+          details: `Order ID: ${order.id}, Amount: ${order.total_sum}`,
+        })
+        .catch((err) =>
+          console.error(
+            `Failed to log order update in ${dbName}: ${err.message}`,
+          ),
+        );
 
       return order;
     });
