@@ -22,12 +22,12 @@ export class OrderController {
 
   @Post('create')
   create(@Request() req, @Body() dto: CreateOrderDto) {
-    return this.orderService.create(req.user.dbName, dto);
+    return this.orderService.create(req.user.dbName, dto, req.user.id);
   }
 
   @Post('update/:id')
   update(@Request() req, @Param('id') id: string, @Body() dto: UpdateOrderDto) {
-    return this.orderService.update(req.user.dbName, id, dto);
+    return this.orderService.update(req.user.dbName, id, dto, req.user.id);
   }
 
   @Get('all')

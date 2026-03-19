@@ -155,8 +155,8 @@ export class CreateOrderDto {
   discount_sum?: string;
 
   @IsString()
-  @IsNotEmpty()
-  employee_id: string;
+  @IsOptional()
+  employee_id?: string;
 
   @IsString()
   @IsOptional()

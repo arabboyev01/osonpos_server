@@ -11,9 +11,12 @@ export class OrderService {
     private logService: LogService,
   ) { }
 
-  async create(dbName: string, dto: CreateOrderDto) {
+  async create(dbName: string, dto: CreateOrderDto, employeeId: string) {
     const client = await this.tenantService.getClient(dbName);
     const { items, discounts, taxes, delivery, ...orderData } = dto;
+    
+    // Use the authenticated employee's ID
+    orderData.employee_id = employeeId;
 
     return client.$transaction(async (tx) => {
       // 1. Create Order
@@ -77,9 +80,15 @@ export class OrderService {
     });
   }
 
-  async update(dbName: string, id: string, dto: UpdateOrderDto) {
+  async update(dbName: string, id: string, dto: UpdateOrderDto, employeeId: string) {
     const client = await this.tenantService.getClient(dbName);
     const { items, discounts, taxes, delivery, ...orderData } = dto;
+
+    // Use the authenticated employee's ID for audit trail if needed, 
+    // though the order record probably stores only the initial employee_id.
+    // If the requirement is to TRACK who updated it, we might need a separate field.
+    // However, the user said "you provide employee id inside the server", so I'll follow that.
+    (orderData as any).employee_id = employeeId;
 
     return client.$transaction(async (tx) => {
       // 1. Update Order
@@ -96,7 +105,7 @@ export class OrderService {
             data: items.map((item) => ({
               ...item,
               order_id: id,
-              employee_id: order.employee_id,
+              employee_id: employeeId, // Use the one who UPDATED it for the items as well
             })),
           });
         }
