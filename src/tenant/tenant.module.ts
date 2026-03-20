@@ -16,8 +16,10 @@ import { EmployeeRoleService } from './services/employee-role.service';
 import { EmployeeRoleController } from './controllers/employee-role.controller';
 import { QueryService } from './services/query.service';
 import { QueryController } from './controllers/query.controller';
-import { MeasurementController } from './controllers/measurement.controller';
 import { MeasurementService } from './services/measurement.service';
+import { MeasurementController } from './controllers/measurement.controller';
+import { PaymentMethodService } from './services/payment-method.service';
+import { PaymentMethodController } from './controllers/payment-method.controller';
 
 @Module({
   providers: [
@@ -31,6 +33,7 @@ import { MeasurementService } from './services/measurement.service';
     EmployeeRoleService,
     QueryService,
     MeasurementService,
+    PaymentMethodService,
   ],
   controllers: [
     EmployeeController,
@@ -42,7 +45,8 @@ import { MeasurementService } from './services/measurement.service';
     EmployeeRoleController,
     QueryController,
     MeasurementController,
+    PaymentMethodController,
   ],
-  exports: [TenantService, LogService],
+  exports: [TenantService, LogService, PaymentMethodService],
 })
 export class TenantModule {}

@@ -331,6 +331,15 @@ model S_Payment_Devices {
   dt_updated  DateTime @updatedAt
 }
 
+model S_Payment_Method {
+  id          String   @id @default(uuid())
+  name        String
+  guid        String?
+  is_deleted  Boolean  @default(false)
+  dt_created  DateTime @default(now())
+  dt_updated  DateTime @updatedAt
+}
+
 // Order create 
 
 model D_Order {

@@ -26,6 +26,7 @@ import { TenantService } from '../tenant/tenant.service';
 import { PosLoginDto } from './dto/pos-auth.dto';
 import { LogService } from '../tenant/services/log.service';
 import { S_Logs_Type } from '@prisma/client';
+import { PaymentMethodService } from '../tenant/services/payment-method.service';
 
 @Injectable()
 export class AuthService {
@@ -35,6 +36,7 @@ export class AuthService {
     private configService: ConfigService,
     private tenantService: TenantService,
     private logService: LogService,
+    private paymentMethodService: PaymentMethodService,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -91,6 +93,9 @@ export class AuthService {
 
       const command = `DATABASE_URL="${url.toString()}" npx prisma db push`;
       await execPromise(command);
+
+      // Seed default data for new tenant
+      await this.paymentMethodService.seedDefaults(dbName);
 
       return {
         message: 'Registration successful',
