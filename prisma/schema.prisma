@@ -332,12 +332,12 @@ model S_Payment_Devices {
 }
 
 model S_Payment_Method {
-  id          String   @id @default(uuid())
-  name        String
-  guid        String?
-  is_deleted  Boolean  @default(false)
-  dt_created  DateTime @default(now())
-  dt_updated  DateTime @updatedAt
+  id         String   @id @default(uuid())
+  name       String
+  guid       String?
+  is_deleted Boolean  @default(false)
+  dt_created DateTime @default(now())
+  dt_updated DateTime @updatedAt
 }
 
 // Order create 
@@ -436,3 +436,169 @@ model T_Order_Delivery {
 }
 
 // PosterPOS - 29$
+
+// Inventorization
+model D_Inventory {
+  id             String   @id @default(uuid())
+  guid           String?
+  name           String
+  description    String?
+  warehouseId    String[]
+  organizationId String
+  total          String
+  totalPlanned   String
+  totalDiff      String
+  employeeId     String
+  clientId       String
+  note           String?
+  conducted      Boolean  @default(false)
+  is_deleted     Boolean  @default(false)
+  dt_created     DateTime @default(now())
+  dt_updated     DateTime @updatedAt
+}
+
+model T_Inventory {
+  id              String   @id @default(uuid())
+  inventoryId     String
+  itemId          String
+  quantity        String
+  price           String
+  plannedQuantity String
+  measureId       String
+  is_deleted      Boolean  @default(false)
+  dt_created      DateTime @default(now())
+  dt_updated      DateTime @updatedAt
+}
+
+model S_Warehouse {
+  id         String   @id @default(uuid())
+  name       String
+  location   String?
+  is_deleted Boolean  @default(false)
+  dt_created DateTime @default(now())
+  dt_updated DateTime @updatedAt
+}
+
+model D_Receipt {
+  id             String   @id @default(uuid())
+  guid           String?
+  name           String
+  description    String?
+  warehouseId    String[]
+  organizationId String
+  total          String
+  totalPlanned   String
+  totalDiff      String
+  employeeId     String
+  clientId       String
+  note           String?
+  conducted      Boolean  @default(false)
+  is_deleted     Boolean  @default(false)
+  dt_created     DateTime @default(now())
+  dt_updated     DateTime @updatedAt
+}
+
+model T_Receipt {
+  id              String   @id @default(uuid())
+  receiptId       String
+  itemId          String
+  quantity        String
+  price           String
+  plannedQuantity String
+  measureId       String
+  rounding        String?
+  newPrice        String?
+  is_deleted      Boolean  @default(false)
+  dt_created      DateTime @default(now())
+  dt_updated      DateTime @updatedAt
+}
+
+model D_Cancellation {
+  id             String   @id @default(uuid())
+  guid           String?
+  name           String
+  description    String?
+  warehouseId    String[]
+  organizationId String
+  employeeId     String
+  note           String?
+  conducted      Boolean  @default(false)
+  is_deleted     Boolean  @default(false)
+  dt_created     DateTime @default(now())
+  dt_updated     DateTime @updatedAt
+}
+
+model T_Cancellation {
+  id             String   @id @default(uuid())
+  cancellationId String
+  itemId         String
+  quantity       String
+  price          String
+  measureId      String
+  multiple       String?
+  is_deleted     Boolean  @default(false)
+  dt_created     DateTime @default(now())
+  dt_updated     DateTime @updatedAt
+}
+
+model D_Movement {
+  id             String   @id @default(uuid())
+  guid           String?
+  name           String
+  description    String?
+  warehouseId    String
+  toWarehouseId  String
+  organizationId String
+  employeeId     String
+  note           String?
+  is_deleted     Boolean  @default(false)
+  dt_created     DateTime @default(now())
+  dt_updated     DateTime @updatedAt
+}
+
+model T_Movement {
+  id         String   @id @default(uuid())
+  movementId String
+  itemId     String
+  quantity   String
+  price      String
+  measureId  String
+  multiple   String?
+  is_deleted Boolean  @default(false)
+  dt_created DateTime @default(now())
+  dt_updated DateTime @updatedAt
+}
+
+model S_Stock_List {
+  id             String   @id @default(uuid())
+  itemId         String
+  stock_quantity String
+  price          String
+  measureId      String
+  dateFrom       DateTime
+  warehouseId    String
+  mon            String
+  tue            String
+  wed            String
+  thu            String
+  fri            String
+  sat            String
+  sun            String
+  is_deleted     Boolean  @default(false)
+  dt_created     DateTime @default(now())
+  dt_updated     DateTime @updatedAt
+}
+
+model S_Supplier {
+  id             String   @id @default(uuid())
+  name           String
+  description    String?
+  contact_person String?
+  phone_number   String?
+  email          String?
+  address        String?
+  is_deleted     Boolean  @default(false)
+  dt_created     DateTime @default(now())
+  dt_updated     DateTime @updatedAt
+}
+

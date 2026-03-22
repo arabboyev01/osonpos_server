@@ -20,6 +20,14 @@ import { MeasurementService } from './services/measurement.service';
 import { MeasurementController } from './controllers/measurement.controller';
 import { PaymentMethodService } from './services/payment-method.service';
 import { PaymentMethodController } from './controllers/payment-method.controller';
+import { InventarizationService } from './services/inventarization.service';
+import { InventoryController } from './controllers/inventory.controller';
+import { ReceiptController } from './controllers/receipt.controller';
+import { WriteOffController } from './controllers/write-off.controller';
+import { WarehouseController } from './controllers/warehouse.controller';
+import { SupplierController } from './controllers/supplier.controller';
+import { MovementController } from './controllers/movement.controller';
+import { StockQuantityController } from './controllers/stock-quantity.controller';
 
 @Module({
   providers: [
@@ -34,6 +42,7 @@ import { PaymentMethodController } from './controllers/payment-method.controller
     QueryService,
     MeasurementService,
     PaymentMethodService,
+    InventarizationService,
   ],
   controllers: [
     EmployeeController,
@@ -46,7 +55,20 @@ import { PaymentMethodController } from './controllers/payment-method.controller
     QueryController,
     MeasurementController,
     PaymentMethodController,
+    InventoryController,
+    ReceiptController,
+    WriteOffController,
+    WarehouseController,
+    SupplierController,
+    MovementController,
+    StockQuantityController,
   ],
-  exports: [TenantService, LogService, PaymentMethodService],
+  exports: [
+    TenantService,
+    LogService,
+    PaymentMethodService,
+    InventarizationService,
+  ],
 })
 export class TenantModule {}
+
