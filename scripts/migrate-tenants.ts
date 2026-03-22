@@ -18,7 +18,7 @@ async function migrateAllTenants() {
 
   console.log('--- Migrating Main (Admin) Database ---');
   try {
-    execSync(`node --max-old-space-size=256 ./node_modules/.bin/prisma db push --accept-data-loss`, {
+    execSync(`node --max-old-space-size=1024 ./node_modules/.bin/prisma db push --accept-data-loss`, {
       env: {
         ...process.env,
         DATABASE_URL: baseUrl,
@@ -41,12 +41,13 @@ async function migrateAllTenants() {
         is_deleted: false,
       },
       select: {
+        id: true,
         name: true,
         db_name: true,
       },
     });
 
-    console.log(`Found ${businesses.length} tenants.`);
+    console.log(`Found ${businesses.length} active tenants.`);
 
     for (const business of businesses) {
       const dbName = business.db_name;
@@ -55,22 +56,29 @@ async function migrateAllTenants() {
       console.log(`\n--- Migrating tenant: ${business.name} (DB: ${dbName}) ---`);
       
       const url = new URL(baseUrl);
-      // Keep the search params (like ?schema=public) but change the pathname (DB name)
+      // Keep search params but change database name
       url.pathname = `/${dbName}`;
+      
+      console.log(`Constructed URL for ${dbName}: ${url.protocol}//${url.host}${url.pathname}`);
       
       try {
         console.log(`Starting migration for ${dbName}...`);
-        execSync(`node --max-old-space-size=256 ./node_modules/.bin/prisma db push --accept-data-loss`, {
+        execSync(`node --max-old-space-size=1024 ./node_modules/.bin/prisma db push --accept-data-loss`, {
           env: {
             ...process.env,
             DATABASE_URL: url.toString(),
             PRISMA_SKIP_POSTINSTALL_GENERATE: 'true',
+            PRISMA_ENGINE_TYPE: 'binary', // Force binary for stability on some Linux systems
           },
+          timeout: 60000, // 60 second timeout per tenant
           stdio: 'inherit',
         });
         console.log(`Successfully migrated ${business.name}`);
       } catch (error) {
-        console.error(`Failed to migrate ${business.name}:`, error.message);
+        console.error(`Failed to migrate ${business.name}: ${error.message}`);
+        if (error.code === 'ETIMEDOUT') {
+          console.error('Migration timed out. The server might be struggling with resources.');
+        }
       }
     }
   } catch (error) {
@@ -82,3 +90,4 @@ async function migrateAllTenants() {
 }
 
 migrateAllTenants();
+
