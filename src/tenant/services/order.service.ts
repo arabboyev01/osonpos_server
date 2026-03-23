@@ -3,12 +3,14 @@ import { TenantService } from '../tenant.service';
 import { CreateOrderDto, UpdateOrderDto } from '../dto/order.dto';
 import { LogService } from './log.service';
 import { S_Logs_Type } from '@prisma/client';
+import { InventarizationService } from './inventarization.service';
 
 @Injectable()
 export class OrderService {
   constructor(
     private tenantService: TenantService,
     private logService: LogService,
+    private inventarizationService: InventarizationService,
   ) {}
 
   async create(dbName: string, dto: CreateOrderDto, employeeId: string) {
@@ -68,7 +70,7 @@ export class OrderService {
         });
       }
 
-      // Log order creation
+      // Log order creation omitted for brevity in diff...
       this.logService
         .create(dbName, {
           user_id: order.employee_id,
@@ -81,6 +83,38 @@ export class OrderService {
             `Failed to log order creation in ${dbName}: ${err.message}`,
           ),
         );
+
+      // Update Stock (outside transaction for now given existing updateStockQuantity implementation)
+      // We look up the items to get their measurement units
+      const itemIds = items.map((i) => i.item_id);
+      const sItems = await tx.s_Item.findMany({
+        where: { id: { in: itemIds } },
+      });
+      const itemMap = new Map(sItems.map((i) => [i.id, i]));
+
+      const warehouses = await tx.s_Warehouse.findMany({
+        where: { is_deleted: false },
+        take: 1,
+      });
+
+      if (warehouses.length > 0) {
+        const warehouseId = warehouses[0].id;
+        for (const item of items) {
+          const sItem = itemMap.get(item.item_id);
+          if (sItem) {
+            await this.inventarizationService.updateStockQuantity(
+              dbName,
+              item.item_id,
+              warehouseId,
+              item.quantity,
+              'SUBTRACT',
+              item.price,
+              sItem.measurement,
+              tx,
+            );
+          }
+        }
+      }
 
       return order;
     });

@@ -18,22 +18,61 @@ export class ItemModifierService {
   // Items
   async createItem(dbName: string, dto: CreateItemDto) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Item.create({ data: dto });
+    const item = await client.s_Item.create({ data: dto });
+    return { ...item, stock_quantity: '0' };
   }
 
   async findAllItems(dbName: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Item.findMany({ where: { is_deleted: false } });
+    const [items, stocks] = await Promise.all([
+      client.s_Item.findMany({ where: { is_deleted: false } }),
+      client.s_Stock_List.findMany({ where: { is_deleted: false } }),
+    ]);
+
+    const stockMap = stocks.reduce((acc, s) => {
+      acc[s.itemId] = (acc[s.itemId] || 0) + parseFloat(s.stock_quantity);
+      return acc;
+    }, {} as Record<string, number>);
+
+    return items.map((item) => ({
+      ...item,
+      stock_quantity: (stockMap[item.id] || 0).toString(),
+    }));
   }
 
   async findOneItem(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Item.findFirst({ where: { id, is_deleted: false } });
+    const [item, stocks] = await Promise.all([
+      client.s_Item.findFirst({ where: { id, is_deleted: false } }),
+      client.s_Stock_List.findMany({ where: { itemId: id, is_deleted: false } }),
+    ]);
+
+    if (!item) return null;
+
+    const totalStock = stocks.reduce((sum, s) => sum + parseFloat(s.stock_quantity), 0);
+
+    return {
+      ...item,
+      stock_quantity: totalStock.toString(),
+    };
   }
 
   async updateItem(dbName: string, id: string, dto: UpdateItemDto) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Item.update({ where: { id }, data: dto });
+    const [item, stocks] = await Promise.all([
+      client.s_Item.update({ where: { id }, data: dto }),
+      client.s_Stock_List.findMany({ where: { itemId: id, is_deleted: false } }),
+    ]);
+
+    const totalStock = stocks.reduce(
+      (sum, s) => sum + parseFloat(s.stock_quantity),
+      0,
+    );
+
+    return {
+      ...item,
+      stock_quantity: totalStock.toString(),
+    };
   }
 
   async removeItem(dbName: string, id: string) {

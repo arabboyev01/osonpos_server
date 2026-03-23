@@ -160,6 +160,7 @@ export class InventarizationService {
             'REPLACE',
             item.price,
             item.measureId,
+            client,
           );
         }
       }
@@ -221,7 +222,7 @@ export class InventarizationService {
       const itemsToUse = items || (await client.t_Inventory.findMany({ where: { inventoryId: id, is_deleted: false } }));
       for (const item of itemsToUse) {
         for (const wId of updated.warehouseId) {
-          await this.updateStockQuantity(dbName, item.itemId, wId, item.quantity, 'REPLACE', item.price, item.measureId);
+          await this.updateStockQuantity(dbName, item.itemId, wId, item.quantity, 'REPLACE', item.price, item.measureId, client);
         }
       }
     }
@@ -257,6 +258,7 @@ export class InventarizationService {
             'ADD',
             item.price,
             item.measureId,
+            client,
           );
         }
       }
@@ -318,7 +320,7 @@ export class InventarizationService {
       const itemsToUse = items || (await client.t_Receipt.findMany({ where: { receiptId: id, is_deleted: false } }));
       for (const item of itemsToUse) {
         for (const wId of updated.warehouseId) {
-          await this.updateStockQuantity(dbName, item.itemId, wId, item.quantity, 'ADD', item.price, item.measureId);
+          await this.updateStockQuantity(dbName, item.itemId, wId, item.quantity, 'ADD', item.price, item.measureId, client);
         }
       }
     }
@@ -354,6 +356,7 @@ export class InventarizationService {
             'SUBTRACT',
             item.price,
             item.measureId,
+            client,
           );
         }
       }
@@ -415,7 +418,7 @@ export class InventarizationService {
       const itemsToUse = items || (await client.t_Cancellation.findMany({ where: { cancellationId: id, is_deleted: false } }));
       for (const item of itemsToUse) {
         for (const wId of updated.warehouseId) {
-          await this.updateStockQuantity(dbName, item.itemId, wId, item.quantity, 'SUBTRACT', item.price, item.measureId);
+          await this.updateStockQuantity(dbName, item.itemId, wId, item.quantity, 'SUBTRACT', item.price, item.measureId, client);
         }
       }
     }
@@ -451,6 +454,7 @@ export class InventarizationService {
         'SUBTRACT',
         item.price,
         item.measureId,
+        client,
       );
       // Add to destination
       await this.updateStockQuantity(
@@ -461,6 +465,7 @@ export class InventarizationService {
         'ADD',
         item.price,
         item.measureId,
+        client,
       );
     }
 
@@ -516,7 +521,7 @@ export class InventarizationService {
 
 
   // --- Private Helper ---
-  private async updateStockQuantity(
+  async updateStockQuantity(
     dbName: string,
     itemId: string,
     warehouseId: string,
@@ -524,8 +529,9 @@ export class InventarizationService {
     mode: 'ADD' | 'SUBTRACT' | 'REPLACE',
     price: string,
     measureId: string,
+    tx?: any,
   ) {
-    const client = await this.tenantService.getClient(dbName);
+    const client = tx || (await this.tenantService.getClient(dbName));
     const quantity = parseFloat(quantityStr);
 
     const stock = await client.s_Stock_List.findFirst({
