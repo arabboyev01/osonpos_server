@@ -28,6 +28,8 @@ import { WarehouseController } from './controllers/warehouse.controller';
 import { SupplierController } from './controllers/supplier.controller';
 import { MovementController } from './controllers/movement.controller';
 import { StockQuantityController } from './controllers/stock-quantity.controller';
+import { BaseConfigService } from './services/base-config.service';
+import { BaseConfigController } from './controllers/base-config.controller';
 
 @Module({
   providers: [
@@ -43,6 +45,7 @@ import { StockQuantityController } from './controllers/stock-quantity.controller
     MeasurementService,
     PaymentMethodService,
     InventarizationService,
+    BaseConfigService,
   ],
   controllers: [
     EmployeeController,
@@ -62,6 +65,7 @@ import { StockQuantityController } from './controllers/stock-quantity.controller
     SupplierController,
     MovementController,
     StockQuantityController,
+    BaseConfigController,
   ],
   exports: [
     TenantService,
