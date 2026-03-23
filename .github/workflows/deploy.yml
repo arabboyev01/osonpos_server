@@ -35,9 +35,14 @@ jobs:
           script: |
             cd /var/www/osonpos_server/
             git pull origin main
-            npm install --omit=dev
-            # We need prisma to generate types on the server even in prod
+            
+            # Install all dependencies (including devDeps like ts-node)
+            npm install
+            
+            # Generate Prisma Client
             npx prisma generate
+            
+            # Build the application
             npm run build
             
             # Apply migrations to Admin DB
@@ -45,7 +50,11 @@ jobs:
             npx prisma db push --accept-data-loss
             
             # Migrate all tenants
-            npm run migrate:tenants
+            # Using npx ensures ts-node is found in local node_modules
+            npx ts-node scripts/migrate-tenants.ts
             
             # Restart Application
-            pm2 reload ecosystem.config.js --env production
+            # If pm2 is global, we try to find it via common paths; 
+            # otherwise npx pm2 works if pm2 is in package.json
+            export PATH=$PATH:~/.nvm/versions/node/$(node -v)/bin:/usr/local/bin
+            pm2 reload ecosystem.config.js --env production || npx pm2 reload ecosystem.config.js --env production
