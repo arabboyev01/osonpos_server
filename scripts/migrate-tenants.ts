@@ -18,12 +18,13 @@ async function migrateAllTenants() {
 
   console.log('--- Migrating Main (Admin) Database ---');
   try {
-    execSync(`node --max-old-space-size=1024 ./node_modules/.bin/prisma db push --accept-data-loss`, {
+    execSync(`node --max-old-space-size=1024 ./node_modules/.bin/prisma db push --accept-data-loss --skip-generate`, {
       env: {
         ...process.env,
         DATABASE_URL: baseUrl,
         PRISMA_SKIP_POSTINSTALL_GENERATE: 'true',
       },
+      timeout: 300000,
       stdio: 'inherit',
     });
     console.log('Main database migrated successfully.');
@@ -65,14 +66,14 @@ async function migrateAllTenants() {
       
       try {
         console.log(`Starting migration for ${dbName}...`);
-        execSync(`node --max-old-space-size=1024 ./node_modules/.bin/prisma db push --accept-data-loss`, {
+        execSync(`node --max-old-space-size=1024 ./node_modules/.bin/prisma db push --accept-data-loss --skip-generate`, {
           env: {
             ...process.env,
             DATABASE_URL: url.toString(),
             PRISMA_SKIP_POSTINSTALL_GENERATE: 'true',
             PRISMA_ENGINE_TYPE: 'binary', // Force binary for stability on some Linux systems
           },
-          timeout: 60000, // 60 second timeout per tenant
+          timeout: 300000, // 300 second timeout per tenant
           stdio: 'inherit',
         });
         console.log(`Successfully migrated ${business.name}`);
