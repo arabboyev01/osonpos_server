@@ -44,6 +44,12 @@ jobs:
             
             # Build the application
             npm run build
+
+            # Update server
+            pm2 restart 3 
+
+            # Save server
+            pm2 save
             
             # Apply migrations to Admin DB
             export DATABASE_URL=${{ secrets.DATABASE_URL }}

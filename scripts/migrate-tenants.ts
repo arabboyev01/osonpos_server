@@ -56,10 +56,12 @@ async function migrateAllTenants() {
       console.log(`\n--- Migrating tenant: ${business.name} (DB: ${dbName}) ---`);
       
       const url = new URL(baseUrl);
-      // Keep search params but change database name
+      // Keep search params and credentials but change database name
       url.pathname = `/${dbName}`;
       
-      console.log(`Constructed URL for ${dbName}: ${url.protocol}//${url.host}${url.pathname}`);
+      // Mask password for safe logging
+      const maskedUrl = url.toString().replace(/:([^:@]+)@/, ':***@');
+      console.log(`Constructed URL for ${dbName}: ${maskedUrl}`);
       
       try {
         console.log(`Starting migration for ${dbName}...`);
