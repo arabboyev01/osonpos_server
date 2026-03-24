@@ -18,7 +18,7 @@ async function migrateAllTenants() {
 
   console.log('--- Migrating Main (Admin) Database ---');
   try {
-    execSync(`node --max-old-space-size=1024 ./node_modules/.bin/prisma db push --accept-data-loss --skip-generate`, {
+    execSync(`node --max-old-space-size=1024 ./node_modules/.bin/prisma db push --accept-data-loss`, {
       env: {
         ...process.env,
         DATABASE_URL: baseUrl,
@@ -66,7 +66,7 @@ async function migrateAllTenants() {
       
       try {
         console.log(`Starting migration for ${dbName}...`);
-        execSync(`node --max-old-space-size=1024 ./node_modules/.bin/prisma db push --accept-data-loss --skip-generate`, {
+        execSync(`node --max-old-space-size=1024 ./node_modules/.bin/prisma db push --accept-data-loss`, {
           env: {
             ...process.env,
             DATABASE_URL: url.toString(),
