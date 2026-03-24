@@ -109,6 +109,60 @@ export class OrderDeliveryDto {
   estimated_arrival?: string;
 }
 
+export class OrderPaymentDto {
+  @IsString()
+  @IsNotEmpty()
+  payment_type_id: string;
+
+  @IsString()
+  @IsNotEmpty()
+  paid_sum: string;
+
+  @IsString()
+  @IsOptional()
+  tip_amount?: string;
+
+  @IsString()
+  @IsOptional()
+  discount_id?: string;
+
+  @IsString()
+  @IsOptional()
+  payment_data?: string;
+
+  @IsString()
+  @IsOptional()
+  payment_device_id?: string;
+
+  @IsString()
+  @IsOptional()
+  payment_batch_id?: string;
+
+  @IsString()
+  @IsOptional()
+  card_number?: string;
+
+  @IsString()
+  @IsOptional()
+  card_expire_date?: string;
+
+  @IsString()
+  @IsOptional()
+  card_type?: string;
+
+  @IsString()
+  @IsOptional()
+  note?: string;
+
+  @IsString()
+  @IsOptional()
+  label?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  is_refunded?: boolean;
+}
+
 export class CreateOrderDto {
   @IsString()
   @IsOptional()
@@ -182,10 +236,6 @@ export class CreateOrderDto {
   @IsOptional()
   delivery_fee?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  payment_type_id: string;
-
   @IsBoolean()
   @IsOptional()
   is_closed?: boolean;
@@ -211,6 +261,12 @@ export class CreateOrderDto {
   @ValidateNested()
   @Type(() => OrderDeliveryDto)
   delivery?: OrderDeliveryDto;
+
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => OrderPaymentDto)
+  payments?: OrderPaymentDto[];
 }
 
 export class UpdateOrderDto {
@@ -300,4 +356,10 @@ export class UpdateOrderDto {
   @ValidateNested()
   @Type(() => OrderDeliveryDto)
   delivery?: OrderDeliveryDto;
+
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => OrderPaymentDto)
+  payments?: OrderPaymentDto[];
 }

@@ -362,7 +362,6 @@ model D_Order {
   workplace_id       String
   barcode            String?
   delivery_fee       String?
-  payment_type_id    String
   dt_closed          DateTime?
   is_voided          Boolean   @default(false)
   is_refunded        Boolean   @default(false)
@@ -433,6 +432,29 @@ model T_Order_Delivery {
   is_deleted        Boolean           @default(false)
   dt_created        DateTime          @default(now())
   dt_updated        DateTime          @updatedAt
+}
+
+model T_Order_Payment {
+  id                String   @id @default(uuid())
+  employee_id       String
+  order_id          String
+  workplace_id      String
+  payment_type_id   String
+  paid_sum          String
+  tip_amount        String?
+  discount_id       String?
+  payment_data      String?
+  payment_device_id String?
+  payment_batch_id  String?
+  card_number       String?
+  card_expire_date  String?
+  card_type         String?
+  note              String?
+  label             String?
+  is_refunded       Boolean  @default(false)
+  is_deleted        Boolean  @default(false)
+  dt_created        DateTime @default(now())
+  dt_updated        DateTime @updatedAt
 }
 
 // PosterPOS - 29$
@@ -601,4 +623,3 @@ model S_Supplier {
   dt_created     DateTime @default(now())
   dt_updated     DateTime @updatedAt
 }
-

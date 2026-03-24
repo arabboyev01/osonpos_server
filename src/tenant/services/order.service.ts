@@ -15,7 +15,7 @@ export class OrderService {
 
   async create(dbName: string, dto: CreateOrderDto, employeeId: string) {
     const client = await this.tenantService.getClient(dbName);
-    const { items, discounts, taxes, delivery, ...orderData } = dto;
+    const { items, discounts, taxes, delivery, payments, ...orderData } = dto;
 
     // Use the authenticated employee's ID
     orderData.employee_id = employeeId;
@@ -57,7 +57,6 @@ export class OrderService {
         });
       }
 
-      // 4. Create Delivery
       if (delivery) {
         await tx.t_Order_Delivery.create({
           data: {
@@ -67,6 +66,18 @@ export class OrderService {
               ? new Date(delivery.estimated_arrival)
               : undefined,
           },
+        });
+      }
+
+      // 5. Create Payments
+      if (payments && payments.length > 0) {
+        await tx.t_Order_Payment.createMany({
+          data: payments.map((p) => ({
+            ...p,
+            order_id: order.id,
+            employee_id: employeeId,
+            workplace_id: order.workplace_id,
+          })),
         });
       }
 
@@ -127,7 +138,7 @@ export class OrderService {
     employeeId: string,
   ) {
     const client = await this.tenantService.getClient(dbName);
-    const { items, discounts, taxes, delivery, ...orderData } = dto;
+    const { items, discounts, taxes, delivery, payments, ...orderData } = dto;
 
     // Use the authenticated employee's ID for audit trail if needed,
     // though the order record probably stores only the initial employee_id.
@@ -136,6 +147,11 @@ export class OrderService {
     (orderData as any).employee_id = employeeId;
 
     return client.$transaction(async (tx) => {
+      // If order is being closed, set dt_closed
+      if (dto.is_closed === true) {
+        (orderData as any).dt_closed = new Date();
+      }
+
       // 1. Update Order
       const order = await tx.d_Order.update({
         where: { id },
@@ -214,6 +230,21 @@ export class OrderService {
         }
       }
 
+      // 6. Update Payments
+      if (payments !== undefined) {
+        await tx.t_Order_Payment.deleteMany({ where: { order_id: id } });
+        if (payments.length > 0) {
+          await tx.t_Order_Payment.createMany({
+            data: payments.map((p) => ({
+              ...p,
+              order_id: id,
+              employee_id: employeeId,
+              workplace_id: order.workplace_id,
+            })),
+          });
+        }
+      }
+
       // Log order update
       this.logService
         .create(dbName, {
@@ -242,12 +273,41 @@ export class OrderService {
 
   async findOne(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.d_Order.findFirst({
+    const order = await client.d_Order.findFirst({
       where: {
         id,
         is_deleted: false,
       },
     });
+
+    if (!order) return null;
+
+    const [items, discounts, taxes, delivery, payments] = await Promise.all([
+      client.t_Order_Item.findMany({
+        where: { order_id: id, is_deleted: false },
+      }),
+      client.t_Order_Discount.findMany({
+        where: { order_id: id, is_deleted: false },
+      }),
+      client.t_Order_Item_Tax.findMany({
+        where: { order_id: id, is_deleted: false },
+      }),
+      client.t_Order_Delivery.findFirst({
+        where: { order_id: id, is_deleted: false },
+      }),
+      client.t_Order_Payment.findMany({
+        where: { order_id: id, is_deleted: false },
+      }),
+    ]);
+
+    return {
+      ...order,
+      items,
+      discounts,
+      taxes,
+      delivery,
+      payments,
+    };
   }
 
   async remove(dbName: string, id: string) {
