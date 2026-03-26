@@ -30,6 +30,8 @@ import { MovementController } from './controllers/movement.controller';
 import { StockQuantityController } from './controllers/stock-quantity.controller';
 import { BaseConfigService } from './services/base-config.service';
 import { BaseConfigController } from './controllers/base-config.controller';
+import { ClientService } from './services/client.service';
+import { ClientController } from './controllers/client.controller';
 
 @Module({
   providers: [
@@ -46,6 +48,7 @@ import { BaseConfigController } from './controllers/base-config.controller';
     PaymentMethodService,
     InventarizationService,
     BaseConfigService,
+    ClientService,
   ],
   controllers: [
     EmployeeController,
@@ -66,6 +69,7 @@ import { BaseConfigController } from './controllers/base-config.controller';
     MovementController,
     StockQuantityController,
     BaseConfigController,
+    ClientController,
   ],
   exports: [
     TenantService,
