@@ -5,7 +5,6 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { TenantModule } from './tenant/tenant.module';
-import { QzModule } from './qz/qz.module';
 
 @Module({
   imports: [
@@ -15,9 +14,8 @@ import { QzModule } from './qz/qz.module';
     PrismaModule,
     AuthModule,
     TenantModule,
-    QzModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
