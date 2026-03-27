@@ -310,6 +310,23 @@ export class OrderService {
     };
   }
 
+  async findLastOpen(dbName: string) {
+    const client = await this.tenantService.getClient(dbName);
+    const order = await client.d_Order.findFirst({
+      where: {
+        is_closed: false,
+        is_deleted: false,
+      },
+      orderBy: {
+        dt_created: 'desc',
+      },
+    });
+
+    if (!order) return null;
+
+    return this.findOne(dbName, order.id);
+  }
+
   async remove(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
     return client.d_Order.update({

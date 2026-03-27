@@ -35,6 +35,11 @@ export class OrderController {
     return this.orderService.findAll(req.user.dbName);
   }
 
+  @Get('last-open')
+  findLastOpen(@Request() req) {
+    return this.orderService.findLastOpen(req.user.dbName);
+  }
+
   @Get(':id')
   findOne(@Request() req, @Param('id') id: string) {
     return this.orderService.findOne(req.user.dbName, id);

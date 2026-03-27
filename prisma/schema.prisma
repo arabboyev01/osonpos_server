@@ -353,6 +353,7 @@ model D_Order {
   total_change       String?
   subtotal           String
   total_sum          String
+  settlement_id      String?
   discount_percent   String?
   discount_sum       String?
   employee_id        String
@@ -441,6 +442,7 @@ model T_Order_Payment {
   workplace_id      String
   payment_type_id   String
   paid_sum          String
+  settlement_id     String?
   tip_amount        String?
   discount_id       String?
   payment_data      String?
@@ -634,4 +636,14 @@ model S_Clients {
   is_deleted   Boolean   @default(false)
   dt_created   DateTime  @default(now())
   dt_updated   DateTime  @updatedAt
+}
+
+model S_Settlments {
+  id         String    @id @default(uuid())
+  name       String
+  is_deleted Boolean   @default(false)
+  dt_closed  DateTime?
+  is_closed  Boolean   @default(false)
+  dt_created DateTime  @default(now())
+  dt_updated DateTime  @updatedAt
 }

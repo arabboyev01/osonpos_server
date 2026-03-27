@@ -161,6 +161,10 @@ export class OrderPaymentDto {
   @IsBoolean()
   @IsOptional()
   is_refunded?: boolean;
+
+  @IsString()
+  @IsOptional()
+  settlement_id?: string;
 }
 
 export class CreateOrderDto {
@@ -235,6 +239,10 @@ export class CreateOrderDto {
   @IsString()
   @IsOptional()
   delivery_fee?: string;
+
+  @IsString()
+  @IsOptional()
+  settlement_id?: string;
 
   @IsBoolean()
   @IsOptional()
@@ -321,6 +329,10 @@ export class UpdateOrderDto {
   @IsString()
   @IsOptional()
   payment_type_id?: string;
+
+  @IsString()
+  @IsOptional()
+  settlement_id?: string;
 
   @IsBoolean()
   @IsOptional()
