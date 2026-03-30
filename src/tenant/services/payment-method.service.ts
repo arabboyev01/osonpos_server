@@ -34,7 +34,9 @@ export class PaymentMethodService {
 
   async findOne(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Payment_Method.findFirst({ where: { id, is_deleted: false } });
+    return client.s_Payment_Method.findFirst({
+      where: { id, is_deleted: false },
+    });
   }
 
   async update(dbName: string, id: string, dto: UpdatePaymentMethodDto) {

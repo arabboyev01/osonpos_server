@@ -4,7 +4,7 @@ import { CreateSettlmentDto, UpdateSettlmentDto } from '../dto/settlment.dto';
 
 @Injectable()
 export class SettlmentService {
-  constructor(private tenantService: TenantService) { }
+  constructor(private tenantService: TenantService) {}
 
   async create(dbName: string, dto: CreateSettlmentDto) {
     const db = await this.tenantService.getClient(dbName);
@@ -39,7 +39,7 @@ export class SettlmentService {
     const db = await this.tenantService.getClient(dbName);
     const result = await db.s_Settlments.findFirst({
       where: {
-        is_deleted: false
+        is_deleted: false,
       },
       orderBy: {
         dt_created: 'desc',

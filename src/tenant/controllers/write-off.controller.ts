@@ -10,7 +10,10 @@ import {
   Request,
 } from '@nestjs/common';
 import { InventarizationService } from '../services/inventarization.service';
-import { CreateCancellationDto, UpdateCancellationDto } from '../dto/inventarization.dto';
+import {
+  CreateCancellationDto,
+  UpdateCancellationDto,
+} from '../dto/inventarization.dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
@@ -37,12 +40,15 @@ export class WriteOffController {
   }
 
   @Patch('update/:id')
-  update(@Request() req, @Param('id') id: string, @Body() dto: UpdateCancellationDto) {
+  update(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdateCancellationDto,
+  ) {
     return this.service.updateCancellation(req.user.dbName, id, dto);
   }
 
   @Delete('delete/:id')
-
   remove(@Request() req, @Param('id') id: string) {
     return this.service.removeCancellation(req.user.dbName, id);
   }

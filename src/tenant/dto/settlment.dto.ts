@@ -1,4 +1,10 @@
-import { IsString, IsOptional, IsBoolean, IsNotEmpty, IsDateString } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsBoolean,
+  IsNotEmpty,
+  IsDateString,
+} from 'class-validator';
 
 export class CreateSettlmentDto {
   @IsString()

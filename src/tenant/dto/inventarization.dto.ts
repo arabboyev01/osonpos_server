@@ -284,7 +284,6 @@ export class UpdateInventoryDto {
   @IsOptional()
   employeeId?: string;
 
-
   @IsString()
   @IsOptional()
   total?: string;
@@ -424,7 +423,6 @@ export class UpdateReceiptDto {
   @IsOptional()
   employeeId?: string;
 
-
   @IsString()
   @IsOptional()
   total?: string;
@@ -540,7 +538,6 @@ export class UpdateCancellationDto {
   @IsOptional()
   employeeId?: string;
 
-
   @IsString()
   @IsOptional()
   note?: string;
@@ -634,7 +631,6 @@ export class UpdateMovementDto {
   @IsString()
   @IsOptional()
   employeeId?: string;
-
 
   @IsString()
   @IsOptional()

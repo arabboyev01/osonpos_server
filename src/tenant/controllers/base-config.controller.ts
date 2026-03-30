@@ -10,7 +10,10 @@ import {
   Request,
 } from '@nestjs/common';
 import { BaseConfigService } from '../services/base-config.service';
-import { CreateBaseConfigDto, UpdateBaseConfigDto } from '../dto/base-config.dto';
+import {
+  CreateBaseConfigDto,
+  UpdateBaseConfigDto,
+} from '../dto/base-config.dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';

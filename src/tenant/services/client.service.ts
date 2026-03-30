@@ -45,7 +45,7 @@ export class ClientService {
       ...dto,
       birthday: this.transformDate(dto.birthday),
     };
-    
+
     return client.s_Clients.update({
       where: { id },
       data,

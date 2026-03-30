@@ -29,10 +29,13 @@ export class ItemModifierService {
       client.s_Stock_List.findMany({ where: { is_deleted: false } }),
     ]);
 
-    const stockMap = stocks.reduce((acc, s) => {
-      acc[s.itemId] = (acc[s.itemId] || 0) + parseFloat(s.stock_quantity);
-      return acc;
-    }, {} as Record<string, number>);
+    const stockMap = stocks.reduce(
+      (acc, s) => {
+        acc[s.itemId] = (acc[s.itemId] || 0) + parseFloat(s.stock_quantity);
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
     return items.map((item) => ({
       ...item,
@@ -44,12 +47,17 @@ export class ItemModifierService {
     const client = await this.tenantService.getClient(dbName);
     const [item, stocks] = await Promise.all([
       client.s_Item.findFirst({ where: { id, is_deleted: false } }),
-      client.s_Stock_List.findMany({ where: { itemId: id, is_deleted: false } }),
+      client.s_Stock_List.findMany({
+        where: { itemId: id, is_deleted: false },
+      }),
     ]);
 
     if (!item) return null;
 
-    const totalStock = stocks.reduce((sum, s) => sum + parseFloat(s.stock_quantity), 0);
+    const totalStock = stocks.reduce(
+      (sum, s) => sum + parseFloat(s.stock_quantity),
+      0,
+    );
 
     return {
       ...item,
@@ -61,7 +69,9 @@ export class ItemModifierService {
     const client = await this.tenantService.getClient(dbName);
     const [item, stocks] = await Promise.all([
       client.s_Item.update({ where: { id }, data: dto }),
-      client.s_Stock_List.findMany({ where: { itemId: id, is_deleted: false } }),
+      client.s_Stock_List.findMany({
+        where: { itemId: id, is_deleted: false },
+      }),
     ]);
 
     const totalStock = stocks.reduce(

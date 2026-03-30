@@ -83,4 +83,3 @@ import { SettlmentController } from './controllers/settlment.controller';
   ],
 })
 export class TenantModule {}
-

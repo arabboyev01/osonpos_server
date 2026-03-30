@@ -19,7 +19,7 @@ import { Roles } from '../../auth/roles.decorator';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('OWNER', 'ADMIN')
 export class SettlmentController {
-  constructor(private readonly service: SettlmentService) { }
+  constructor(private readonly service: SettlmentService) {}
 
   @Post('create')
   create(@Request() req, @Body() dto: CreateSettlmentDto) {
@@ -42,7 +42,11 @@ export class SettlmentController {
   }
 
   @Patch('update/:id')
-  update(@Request() req, @Param('id') id: string, @Body() dto: UpdateSettlmentDto) {
+  update(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdateSettlmentDto,
+  ) {
     return this.service.update(req.user.dbName, id, dto);
   }
 

@@ -37,12 +37,15 @@ export class ReceiptController {
   }
 
   @Patch('update/:id')
-  update(@Request() req, @Param('id') id: string, @Body() dto: UpdateReceiptDto) {
+  update(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdateReceiptDto,
+  ) {
     return this.service.updateReceipt(req.user.dbName, id, dto);
   }
 
   @Delete('delete/:id')
-
   remove(@Request() req, @Param('id') id: string) {
     return this.service.removeReceipt(req.user.dbName, id);
   }

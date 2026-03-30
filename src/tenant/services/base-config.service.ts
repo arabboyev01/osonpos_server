@@ -1,6 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { TenantService } from '../tenant.service';
-import { CreateBaseConfigDto, UpdateBaseConfigDto } from '../dto/base-config.dto';
+import {
+  CreateBaseConfigDto,
+  UpdateBaseConfigDto,
+} from '../dto/base-config.dto';
 
 @Injectable()
 export class BaseConfigService {
@@ -30,7 +33,8 @@ export class BaseConfigService {
     const config = await client.s_Base_Config.findFirst({
       where: { key_name: key, is_deleted: false },
     });
-    if (!config) throw new NotFoundException(`Configuration with key "${key}" not found`);
+    if (!config)
+      throw new NotFoundException(`Configuration with key "${key}" not found`);
     return config;
   }
 

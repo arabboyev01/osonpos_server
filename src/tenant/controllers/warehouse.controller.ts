@@ -10,7 +10,10 @@ import {
   Request,
 } from '@nestjs/common';
 import { InventarizationService } from '../services/inventarization.service';
-import { CreateWarehouseDto, UpdateWarehouseDto } from '../dto/inventarization.dto';
+import {
+  CreateWarehouseDto,
+  UpdateWarehouseDto,
+} from '../dto/inventarization.dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
@@ -37,7 +40,11 @@ export class WarehouseController {
   }
 
   @Patch('update/:id')
-  update(@Request() req, @Param('id') id: string, @Body() dto: UpdateWarehouseDto) {
+  update(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdateWarehouseDto,
+  ) {
     return this.service.updateWarehouse(req.user.dbName, id, dto);
   }
 

@@ -37,7 +37,11 @@ export class ClientController {
   }
 
   @Patch('update/:id')
-  update(@Request() req, @Param('id') id: string, @Body() dto: UpdateClientDto) {
+  update(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdateClientDto,
+  ) {
     return this.service.update(req.user.dbName, id, dto);
   }
 

@@ -17,10 +17,9 @@ import {
   UpdateMovementDto,
 } from '../dto/inventarization.dto';
 
-
 @Injectable()
 export class InventarizationService {
-  constructor(private tenantService: TenantService) { }
+  constructor(private tenantService: TenantService) {}
 
   // --- Warehouse ---
   async createWarehouse(dbName: string, dto: CreateWarehouseDto) {
@@ -105,7 +104,6 @@ export class InventarizationService {
     });
   }
 
-
   async findAllStockLists(dbName: string) {
     const client = await this.tenantService.getClient(dbName);
     return client.s_Stock_List.findMany({ where: { is_deleted: false } });
@@ -178,7 +176,9 @@ export class InventarizationService {
     const client = await this.tenantService.getClient(dbName);
     const [header, items] = await Promise.all([
       client.d_Inventory.findFirst({ where: { id, is_deleted: false } }),
-      client.t_Inventory.findMany({ where: { inventoryId: id, is_deleted: false } }),
+      client.t_Inventory.findMany({
+        where: { inventoryId: id, is_deleted: false },
+      }),
     ]);
     if (!header) throw new NotFoundException('Inventory not found');
     return { ...header, items };
@@ -202,14 +202,14 @@ export class InventarizationService {
     if (!current) throw new NotFoundException('Inventory not found');
 
     const { items, ...data } = dto;
-    
+
     if (items) {
       await client.t_Inventory.updateMany({
         where: { inventoryId: id },
         data: { is_deleted: true },
       });
       await client.t_Inventory.createMany({
-        data: items.map(item => ({ ...item, inventoryId: id })),
+        data: items.map((item) => ({ ...item, inventoryId: id })),
       });
     }
 
@@ -219,18 +219,29 @@ export class InventarizationService {
     });
 
     if (!current.conducted && updated.conducted) {
-      const itemsToUse = items || (await client.t_Inventory.findMany({ where: { inventoryId: id, is_deleted: false } }));
+      const itemsToUse =
+        items ||
+        (await client.t_Inventory.findMany({
+          where: { inventoryId: id, is_deleted: false },
+        }));
       for (const item of itemsToUse) {
         for (const wId of updated.warehouseId) {
-          await this.updateStockQuantity(dbName, item.itemId, wId, item.quantity, 'REPLACE', item.price, item.measureId, client);
+          await this.updateStockQuantity(
+            dbName,
+            item.itemId,
+            wId,
+            item.quantity,
+            'REPLACE',
+            item.price,
+            item.measureId,
+            client,
+          );
         }
       }
     }
 
     return updated;
   }
-
-
 
   // --- Receipt ---
   async createReceipt(dbName: string, dto: CreateReceiptDto) {
@@ -276,7 +287,9 @@ export class InventarizationService {
     const client = await this.tenantService.getClient(dbName);
     const [header, items] = await Promise.all([
       client.d_Receipt.findFirst({ where: { id, is_deleted: false } }),
-      client.t_Receipt.findMany({ where: { receiptId: id, is_deleted: false } }),
+      client.t_Receipt.findMany({
+        where: { receiptId: id, is_deleted: false },
+      }),
     ]);
     if (!header) throw new NotFoundException('Receipt not found');
     return { ...header, items };
@@ -307,7 +320,7 @@ export class InventarizationService {
         data: { is_deleted: true },
       });
       await client.t_Receipt.createMany({
-        data: items.map(item => ({ ...item, receiptId: id })),
+        data: items.map((item) => ({ ...item, receiptId: id })),
       });
     }
 
@@ -317,18 +330,29 @@ export class InventarizationService {
     });
 
     if (!current.conducted && updated.conducted) {
-      const itemsToUse = items || (await client.t_Receipt.findMany({ where: { receiptId: id, is_deleted: false } }));
+      const itemsToUse =
+        items ||
+        (await client.t_Receipt.findMany({
+          where: { receiptId: id, is_deleted: false },
+        }));
       for (const item of itemsToUse) {
         for (const wId of updated.warehouseId) {
-          await this.updateStockQuantity(dbName, item.itemId, wId, item.quantity, 'ADD', item.price, item.measureId, client);
+          await this.updateStockQuantity(
+            dbName,
+            item.itemId,
+            wId,
+            item.quantity,
+            'ADD',
+            item.price,
+            item.measureId,
+            client,
+          );
         }
       }
     }
 
     return updated;
   }
-
-
 
   // --- Cancellation (Write-off) ---
   async createCancellation(dbName: string, dto: CreateCancellationDto) {
@@ -374,7 +398,9 @@ export class InventarizationService {
     const client = await this.tenantService.getClient(dbName);
     const [header, items] = await Promise.all([
       client.d_Cancellation.findFirst({ where: { id, is_deleted: false } }),
-      client.t_Cancellation.findMany({ where: { cancellationId: id, is_deleted: false } }),
+      client.t_Cancellation.findMany({
+        where: { cancellationId: id, is_deleted: false },
+      }),
     ]);
     if (!header) throw new NotFoundException('Cancellation not found');
     return { ...header, items };
@@ -392,7 +418,11 @@ export class InventarizationService {
     });
   }
 
-  async updateCancellation(dbName: string, id: string, dto: UpdateCancellationDto) {
+  async updateCancellation(
+    dbName: string,
+    id: string,
+    dto: UpdateCancellationDto,
+  ) {
     const client = await this.tenantService.getClient(dbName);
     const current = await client.d_Cancellation.findFirst({ where: { id } });
     if (!current) throw new NotFoundException('Cancellation not found');
@@ -405,7 +435,7 @@ export class InventarizationService {
         data: { is_deleted: true },
       });
       await client.t_Cancellation.createMany({
-        data: items.map(item => ({ ...item, cancellationId: id })),
+        data: items.map((item) => ({ ...item, cancellationId: id })),
       });
     }
 
@@ -415,18 +445,29 @@ export class InventarizationService {
     });
 
     if (!current.conducted && updated.conducted) {
-      const itemsToUse = items || (await client.t_Cancellation.findMany({ where: { cancellationId: id, is_deleted: false } }));
+      const itemsToUse =
+        items ||
+        (await client.t_Cancellation.findMany({
+          where: { cancellationId: id, is_deleted: false },
+        }));
       for (const item of itemsToUse) {
         for (const wId of updated.warehouseId) {
-          await this.updateStockQuantity(dbName, item.itemId, wId, item.quantity, 'SUBTRACT', item.price, item.measureId, client);
+          await this.updateStockQuantity(
+            dbName,
+            item.itemId,
+            wId,
+            item.quantity,
+            'SUBTRACT',
+            item.price,
+            item.measureId,
+            client,
+          );
         }
       }
     }
 
     return updated;
   }
-
-
 
   // --- Movement ---
   async createMovement(dbName: string, dto: CreateMovementDto) {
@@ -481,7 +522,9 @@ export class InventarizationService {
     const client = await this.tenantService.getClient(dbName);
     const [header, items] = await Promise.all([
       client.d_Movement.findFirst({ where: { id, is_deleted: false } }),
-      client.t_Movement.findMany({ where: { movementId: id, is_deleted: false } }),
+      client.t_Movement.findMany({
+        where: { movementId: id, is_deleted: false },
+      }),
     ]);
     if (!header) throw new NotFoundException('Movement not found');
     return { ...header, items };
@@ -509,7 +552,7 @@ export class InventarizationService {
         data: { is_deleted: true },
       });
       await client.t_Movement.createMany({
-        data: items.map(item => ({ ...item, movementId: id })),
+        data: items.map((item) => ({ ...item, movementId: id })),
       });
     }
 
@@ -518,7 +561,6 @@ export class InventarizationService {
       data,
     });
   }
-
 
   // --- Private Helper ---
   async updateStockQuantity(
