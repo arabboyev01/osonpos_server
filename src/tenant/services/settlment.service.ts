@@ -2,18 +2,33 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { TenantService } from '../tenant.service';
 import { CreateSettlmentDto, UpdateSettlmentDto } from '../dto/settlment.dto';
 
+import { LogService } from './log.service';
+
 @Injectable()
 export class SettlmentService {
-  constructor(private tenantService: TenantService) {}
+  constructor(
+    private tenantService: TenantService,
+    private logService: LogService,
+  ) {}
 
-  async create(dbName: string, dto: CreateSettlmentDto) {
+  async create(dbName: string, userId: string, dto: CreateSettlmentDto) {
     const db = await this.tenantService.getClient(dbName);
-    return db.s_Settlments.create({
+    const settlement = await db.s_Settlments.create({
       data: {
         ...dto,
         dt_closed: dto.dt_closed ? new Date(dto.dt_closed) : null,
       },
     });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'CREATE_SETTLEMENT',
+      settlement,
+    );
+
+    return settlement;
   }
 
   async findAll(dbName: string) {
@@ -48,17 +63,32 @@ export class SettlmentService {
     return result;
   }
 
-  async update(dbName: string, id: string, dto: UpdateSettlmentDto) {
+  async update(
+    dbName: string,
+    userId: string,
+    id: string,
+    dto: UpdateSettlmentDto,
+  ) {
     const db = await this.tenantService.getClient(dbName);
     await this.findOne(dbName, id);
 
-    return db.s_Settlments.update({
+    const updatedSettlement = await db.s_Settlments.update({
       where: { id },
       data: {
         ...dto,
         dt_closed: dto.dt_closed ? new Date(dto.dt_closed) : undefined,
       },
     });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'UPDATE_SETTLEMENT',
+      updatedSettlement,
+    );
+
+    return updatedSettlement;
   }
 
   async remove(dbName: string, id: string) {

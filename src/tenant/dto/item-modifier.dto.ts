@@ -68,6 +68,26 @@ export class CreateItemDto {
   @IsBoolean()
   @IsOptional()
   allow_delivery?: boolean;
+
+  @IsString()
+  @IsOptional()
+  id_automated_point?: string;
+
+  @IsString()
+  @IsOptional()
+  tax_id?: string;
+
+  @IsString()
+  @IsOptional()
+  discount_id?: string;
+
+  @IsString()
+  @IsOptional()
+  stock_quantity?: string;
+
+  @IsString()
+  @IsOptional()
+  warehouseId?: string;
 }
 
 export class UpdateItemDto {
@@ -130,6 +150,26 @@ export class UpdateItemDto {
   @IsBoolean()
   @IsOptional()
   allow_delivery?: boolean;
+
+  @IsString()
+  @IsOptional()
+  id_automated_point?: string;
+
+  @IsString()
+  @IsOptional()
+  tax_id?: string;
+
+  @IsString()
+  @IsOptional()
+  discount_id?: string;
+
+  @IsString()
+  @IsOptional()
+  stock_quantity?: string;
+
+  @IsString()
+  @IsOptional()
+  warehouseId?: string;
 }
 
 // Item Group
@@ -189,6 +229,14 @@ export class CreateItemGroupDto {
   @IsString()
   @IsOptional()
   id_automated_point?: string;
+
+  @IsString()
+  @IsOptional()
+  tax_id?: string;
+
+  @IsString()
+  @IsOptional()
+  discount_id?: string;
 
   @IsEnum(S_Item_Type)
   type: S_Item_Type;
@@ -250,6 +298,14 @@ export class UpdateItemGroupDto {
   @IsString()
   @IsOptional()
   id_automated_point?: string;
+
+  @IsString()
+  @IsOptional()
+  tax_id?: string;
+
+  @IsString()
+  @IsOptional()
+  discount_id?: string;
 
   @IsEnum(S_Item_Type)
   @IsOptional()
@@ -320,6 +376,26 @@ export class CreateModifierDto {
   @IsBoolean()
   @IsOptional()
   allow_delivery?: boolean;
+
+  @IsString()
+  @IsOptional()
+  id_automated_point?: string;
+
+  @IsString()
+  @IsOptional()
+  tax_id?: string;
+
+  @IsString()
+  @IsOptional()
+  discount_id?: string;
+
+  @IsString()
+  @IsOptional()
+  stock_quantity?: string;
+
+  @IsString()
+  @IsOptional()
+  warehouseId?: string;
 }
 
 export class UpdateModifierDto {
@@ -386,6 +462,26 @@ export class UpdateModifierDto {
   @IsBoolean()
   @IsOptional()
   allow_delivery?: boolean;
+
+  @IsString()
+  @IsOptional()
+  id_automated_point?: string;
+
+  @IsString()
+  @IsOptional()
+  tax_id?: string;
+
+  @IsString()
+  @IsOptional()
+  discount_id?: string;
+
+  @IsString()
+  @IsOptional()
+  stock_quantity?: string;
+
+  @IsString()
+  @IsOptional()
+  warehouseId?: string;
 }
 
 // Modifier Group
@@ -448,6 +544,14 @@ export class CreateModifierGroupDto {
   @IsString()
   @IsOptional()
   id_automated_point?: string;
+
+  @IsString()
+  @IsOptional()
+  tax_id?: string;
+
+  @IsString()
+  @IsOptional()
+  discount_id?: string;
 }
 
 export class UpdateModifierGroupDto {
@@ -510,4 +614,12 @@ export class UpdateModifierGroupDto {
   @IsString()
   @IsOptional()
   id_automated_point?: string;
+
+  @IsString()
+  @IsOptional()
+  tax_id?: string;
+
+  @IsString()
+  @IsOptional()
+  discount_id?: string;
 }

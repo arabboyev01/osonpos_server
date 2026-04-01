@@ -26,7 +26,7 @@ export class InventoryController {
 
   @Post('create')
   create(@Request() req, @Body() dto: CreateInventoryDto) {
-    return this.service.createInventory(req.user.dbName, dto);
+    return this.service.createInventory(req.user.dbName, req.user.id, dto);
   }
 
   @Get('all')
@@ -45,7 +45,7 @@ export class InventoryController {
     @Param('id') id: string,
     @Body() dto: UpdateInventoryDto,
   ) {
-    return this.service.updateInventory(req.user.dbName, id, dto);
+    return this.service.updateInventory(req.user.dbName, req.user.id, id, dto);
   }
 
   @Delete('delete/:id')

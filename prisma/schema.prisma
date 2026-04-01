@@ -125,25 +125,28 @@ model S_Employee_Role {
 // Items & Menu & Categories
 
 model S_Item {
-  id             String      @id @default(uuid())
-  group_id       String?
-  name           String
-  description    String?
-  search_name    String?
-  measurement    String
-  price          String
-  cost           String?
-  shtrix         String?
-  color          String?
-  type           S_Item_Type
-  pictures       String[]    @default([])
-  is_menu        Boolean     @default(false)
-  is_service     Boolean     @default(false)
-  allow_pickup   Boolean     @default(false)
-  allow_delivery Boolean     @default(false)
-  is_deleted     Boolean     @default(false)
-  dt_created     DateTime    @default(now())
-  dt_updated     DateTime    @updatedAt
+  id                 String      @id @default(uuid())
+  group_id           String?
+  name               String
+  description        String?
+  search_name        String?
+  measurement        String
+  price              String
+  cost               String?
+  shtrix             String?
+  color              String?
+  type               S_Item_Type
+  id_automated_point String      @default("0")
+  tax_id             String?
+  discount_id        String?
+  pictures           String[]    @default([])
+  is_menu            Boolean     @default(false)
+  is_service         Boolean     @default(false)
+  allow_pickup       Boolean     @default(false)
+  allow_delivery     Boolean     @default(false)
+  is_deleted         Boolean     @default(false)
+  dt_created         DateTime    @default(now())
+  dt_updated         DateTime    @updatedAt
 }
 
 model S_Item_Group {
@@ -156,12 +159,14 @@ model S_Item_Group {
   cost               String?
   shtrix             String?
   color              String?
+  id_automated_point String?      @default("0")
+  tax_id             String?
+  discount_id        String?
   pictures           String[]    @default([])
   is_menu            Boolean     @default(false)
   is_service         Boolean     @default(false)
   allow_pickup       Boolean     @default(false)
   allow_delivery     Boolean     @default(false)
-  id_automated_point String?
   type               S_Item_Type
   is_deleted         Boolean     @default(false)
   dt_created         DateTime    @default(now())
@@ -169,48 +174,54 @@ model S_Item_Group {
 }
 
 model S_Subcategory {
-  id             String      @id @default(uuid())
-  group_id       String?
-  name           String
-  description    String?
-  search_name    String?
-  measurement    String
-  price          String
-  cost           String?
-  shtrix         String?
-  color          String?
-  pictures       String[]    @default([])
-  type           S_Item_Type
-  is_menu        Boolean     @default(false)
-  is_service     Boolean     @default(false)
-  allow_pickup   Boolean     @default(false)
-  allow_delivery Boolean     @default(false)
-  is_deleted     Boolean     @default(false)
-  dt_created     DateTime    @default(now())
-  dt_updated     DateTime    @updatedAt
+  id                 String      @id @default(uuid())
+  group_id           String?
+  name               String
+  description        String?
+  search_name        String?
+  measurement        String
+  price              String
+  cost               String?
+  shtrix             String?
+  color              String?
+  id_automated_point String      @default("0")
+  tax_id             String?
+  discount_id        String?
+  pictures           String[]    @default([])
+  type               S_Item_Type
+  is_menu            Boolean     @default(false)
+  is_service         Boolean     @default(false)
+  allow_pickup       Boolean     @default(false)
+  allow_delivery     Boolean     @default(false)
+  is_deleted         Boolean     @default(false)
+  dt_created         DateTime    @default(now())
+  dt_updated         DateTime    @updatedAt
 }
 
 model S_Modifier {
-  id             String      @id @default(uuid())
-  item_id        String?
-  group_id       String?
-  name           String
-  description    String?
-  search_name    String?
-  measurement    String
-  price          String
-  cost           String?
-  shtrix         String?
-  color          String?
-  type           S_Item_Type
-  pictures       String[]    @default([])
-  is_menu        Boolean     @default(false)
-  is_service     Boolean     @default(false)
-  allow_pickup   Boolean     @default(false)
-  allow_delivery Boolean     @default(false)
-  is_deleted     Boolean     @default(false)
-  dt_created     DateTime    @default(now())
-  dt_updated     DateTime    @updatedAt
+  id                 String      @id @default(uuid())
+  item_id            String?
+  group_id           String?
+  name               String
+  description        String?
+  search_name        String?
+  measurement        String
+  price              String
+  cost               String?
+  shtrix             String?
+  color              String?
+  id_automated_point String      @default("0")
+  tax_id             String?
+  discount_id        String?
+  type               S_Item_Type
+  pictures           String[]    @default([])
+  is_menu            Boolean     @default(false)
+  is_service         Boolean     @default(false)
+  allow_pickup       Boolean     @default(false)
+  allow_delivery     Boolean     @default(false)
+  is_deleted         Boolean     @default(false)
+  dt_created         DateTime    @default(now())
+  dt_updated         DateTime    @updatedAt
 }
 
 model S_ModifierGroup {
@@ -223,13 +234,15 @@ model S_ModifierGroup {
   cost               String?
   shtrix             String?
   color              String?
+  id_automated_point String?      @default("0")
+  tax_id             String?
+  discount_id        String?
   pictures           String[]    @default([])
   type               S_Item_Type
   is_menu            Boolean     @default(false)
   is_service         Boolean     @default(false)
   allow_pickup       Boolean     @default(false)
   allow_delivery     Boolean     @default(false)
-  id_automated_point String?
   is_deleted         Boolean     @default(false)
   dt_created         DateTime    @default(now())
   dt_updated         DateTime    @updatedAt

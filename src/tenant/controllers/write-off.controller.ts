@@ -26,7 +26,7 @@ export class WriteOffController {
 
   @Post('create')
   create(@Request() req, @Body() dto: CreateCancellationDto) {
-    return this.service.createCancellation(req.user.dbName, dto);
+    return this.service.createCancellation(req.user.dbName, req.user.id, dto);
   }
 
   @Get('all')
@@ -45,7 +45,12 @@ export class WriteOffController {
     @Param('id') id: string,
     @Body() dto: UpdateCancellationDto,
   ) {
-    return this.service.updateCancellation(req.user.dbName, id, dto);
+    return this.service.updateCancellation(
+      req.user.dbName,
+      req.user.id,
+      id,
+      dto,
+    );
   }
 
   @Delete('delete/:id')

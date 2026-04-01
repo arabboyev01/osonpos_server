@@ -13,12 +13,12 @@ export class OrderService {
     private inventarizationService: InventarizationService,
   ) {}
 
-  async create(dbName: string, dto: CreateOrderDto, employeeId: string) {
+  async create(dbName: string, dto: CreateOrderDto, userId: string) {
     const client = await this.tenantService.getClient(dbName);
     const { items, discounts, taxes, delivery, payments, ...orderData } = dto;
 
     // Use the authenticated employee's ID
-    orderData.employee_id = employeeId;
+    orderData.employee_id = userId;
 
     return client.$transaction(async (tx) => {
       // 1. Create Order
@@ -75,25 +75,20 @@ export class OrderService {
           data: payments.map((p) => ({
             ...p,
             order_id: order.id,
-            employee_id: employeeId,
+            employee_id: userId,
             workplace_id: order.workplace_id,
           })),
         });
       }
 
-      // Log order creation omitted for brevity in diff...
-      this.logService
-        .create(dbName, {
-          user_id: order.employee_id,
-          type: S_Logs_Type.ORDER,
-          action: 'Order created',
-          details: `Order ID: ${order.id}, Amount: ${order.total_sum}`,
-        })
-        .catch((err) =>
-          console.error(
-            `Failed to log order creation in ${dbName}: ${err.message}`,
-          ),
-        );
+      // Log order creation
+      await this.logService.recordLog(
+        dbName,
+        userId,
+        'ORDER',
+        'CREATE_ORDER',
+        order,
+      );
 
       // Update Stock (outside transaction for now given existing updateStockQuantity implementation)
       // We look up the items to get their measurement units
@@ -135,7 +130,7 @@ export class OrderService {
     dbName: string,
     id: string,
     dto: UpdateOrderDto,
-    employeeId: string,
+    userId: string,
   ) {
     const client = await this.tenantService.getClient(dbName);
     const { items, discounts, taxes, delivery, payments, ...orderData } = dto;
@@ -144,7 +139,7 @@ export class OrderService {
     // though the order record probably stores only the initial employee_id.
     // If the requirement is to TRACK who updated it, we might need a separate field.
     // However, the user said "you provide employee id inside the server", so I'll follow that.
-    (orderData as any).employee_id = employeeId;
+    (orderData as any).employee_id = userId;
 
     return client.$transaction(async (tx) => {
       // If order is being closed, set dt_closed
@@ -166,7 +161,7 @@ export class OrderService {
             data: items.map((item) => ({
               ...item,
               order_id: id,
-              employee_id: employeeId, // Use the one who UPDATED it for the items as well
+              employee_id: userId, // Use the one who UPDATED it for the items as well
             })),
           });
         }
@@ -238,7 +233,7 @@ export class OrderService {
             data: payments.map((p) => ({
               ...p,
               order_id: id,
-              employee_id: employeeId,
+              employee_id: userId,
               workplace_id: order.workplace_id,
             })),
           });
@@ -246,18 +241,13 @@ export class OrderService {
       }
 
       // Log order update
-      this.logService
-        .create(dbName, {
-          user_id: order.employee_id,
-          type: S_Logs_Type.ORDER,
-          action: 'Order updated',
-          details: `Order ID: ${order.id}, Amount: ${order.total_sum}`,
-        })
-        .catch((err) =>
-          console.error(
-            `Failed to log order update in ${dbName}: ${err.message}`,
-          ),
-        );
+      await this.logService.recordLog(
+        dbName,
+        userId,
+        'ORDER',
+        'UPDATE_ORDER',
+        order,
+      );
 
       return order;
     });

@@ -26,7 +26,7 @@ export class WarehouseController {
 
   @Post('create')
   create(@Request() req, @Body() dto: CreateWarehouseDto) {
-    return this.service.createWarehouse(req.user.dbName, dto);
+    return this.service.createWarehouse(req.user.dbName, req.user.id, dto);
   }
 
   @Get('all')
@@ -45,7 +45,7 @@ export class WarehouseController {
     @Param('id') id: string,
     @Body() dto: UpdateWarehouseDto,
   ) {
-    return this.service.updateWarehouse(req.user.dbName, id, dto);
+    return this.service.updateWarehouse(req.user.dbName, req.user.id, id, dto);
   }
 
   @Delete('delete/:id')

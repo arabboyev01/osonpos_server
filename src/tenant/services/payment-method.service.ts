@@ -5,13 +5,28 @@ import {
   UpdatePaymentMethodDto,
 } from '../dto/payment-method.dto';
 
+import { LogService } from './log.service';
+
 @Injectable()
 export class PaymentMethodService {
-  constructor(private tenantService: TenantService) {}
+  constructor(
+    private tenantService: TenantService,
+    private logService: LogService,
+  ) {}
 
-  async create(dbName: string, dto: CreatePaymentMethodDto) {
+  async create(dbName: string, userId: string, dto: CreatePaymentMethodDto) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Payment_Method.create({ data: dto });
+    const paymentMethod = await client.s_Payment_Method.create({ data: dto });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'CREATE_PAYMENT_METHOD',
+      paymentMethod,
+    );
+
+    return paymentMethod;
   }
 
   async seedDefaults(dbName: string) {
@@ -39,9 +54,27 @@ export class PaymentMethodService {
     });
   }
 
-  async update(dbName: string, id: string, dto: UpdatePaymentMethodDto) {
+  async update(
+    dbName: string,
+    userId: string,
+    id: string,
+    dto: UpdatePaymentMethodDto,
+  ) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Payment_Method.update({ where: { id }, data: dto });
+    const paymentMethod = await client.s_Payment_Method.update({
+      where: { id },
+      data: dto,
+    });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'UPDATE_PAYMENT_METHOD',
+      paymentMethod,
+    );
+
+    return paymentMethod;
   }
 
   async remove(dbName: string, id: string) {

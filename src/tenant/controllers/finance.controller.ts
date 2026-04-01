@@ -29,7 +29,7 @@ export class FinanceController {
   // Tax & Fees
   @Post('taxes/create')
   createTaxFee(@Request() req, @Body() dto: CreateTaxFeeDto) {
-    return this.financeService.createTaxFee(req.user.dbName, dto);
+    return this.financeService.createTaxFee(req.user.dbName, req.user.id, dto);
   }
 
   @Get('taxes/all')
@@ -43,7 +43,12 @@ export class FinanceController {
     @Param('id') id: string,
     @Body() dto: UpdateTaxFeeDto,
   ) {
-    return this.financeService.updateTaxFee(req.user.dbName, id, dto);
+    return this.financeService.updateTaxFee(
+      req.user.dbName,
+      req.user.id,
+      id,
+      dto,
+    );
   }
 
   @Delete('taxes/delete/:id')
@@ -54,7 +59,11 @@ export class FinanceController {
   // Discounts
   @Post('discounts/create')
   createDiscount(@Request() req, @Body() dto: CreateDiscountDto) {
-    return this.financeService.createDiscount(req.user.dbName, dto);
+    return this.financeService.createDiscount(
+      req.user.dbName,
+      req.user.id,
+      dto,
+    );
   }
 
   @Get('discounts/all')
@@ -68,7 +77,12 @@ export class FinanceController {
     @Param('id') id: string,
     @Body() dto: UpdateDiscountDto,
   ) {
-    return this.financeService.updateDiscount(req.user.dbName, id, dto);
+    return this.financeService.updateDiscount(
+      req.user.dbName,
+      req.user.id,
+      id,
+      dto,
+    );
   }
 
   @Delete('discounts/delete/:id')

@@ -33,7 +33,11 @@ export class ItemModifierController {
   // Items
   @Post('items/create')
   createItem(@Request() req, @Body() dto: CreateItemDto) {
-    return this.itemModifierService.createItem(req.user.dbName, dto);
+    return this.itemModifierService.createItem(
+      req.user.dbName,
+      req.user.id,
+      dto,
+    );
   }
 
   @Get('items/all')
@@ -47,7 +51,12 @@ export class ItemModifierController {
     @Param('id') id: string,
     @Body() dto: UpdateItemDto,
   ) {
-    return this.itemModifierService.updateItem(req.user.dbName, id, dto);
+    return this.itemModifierService.updateItem(
+      req.user.dbName,
+      req.user.id,
+      id,
+      dto,
+    );
   }
 
   @Delete('items/delete/:id')
@@ -58,7 +67,11 @@ export class ItemModifierController {
   // Item Groups
   @Post('item-groups/create')
   createItemGroup(@Request() req, @Body() dto: CreateItemGroupDto) {
-    return this.itemModifierService.createItemGroup(req.user.dbName, dto);
+    return this.itemModifierService.createItemGroup(
+      req.user.dbName,
+      req.user.id,
+      dto,
+    );
   }
 
   @Get('item-groups/all')
@@ -72,7 +85,12 @@ export class ItemModifierController {
     @Param('id') id: string,
     @Body() dto: UpdateItemGroupDto,
   ) {
-    return this.itemModifierService.updateItemGroup(req.user.dbName, id, dto);
+    return this.itemModifierService.updateItemGroup(
+      req.user.dbName,
+      req.user.id,
+      id,
+      dto,
+    );
   }
 
   @Delete('item-groups/delete/:id')
@@ -83,7 +101,11 @@ export class ItemModifierController {
   // Modifiers
   @Post('modifiers/create')
   createModifier(@Request() req, @Body() dto: CreateModifierDto) {
-    return this.itemModifierService.createModifier(req.user.dbName, dto);
+    return this.itemModifierService.createModifier(
+      req.user.dbName,
+      req.user.id,
+      dto,
+    );
   }
 
   @Get('modifiers/all')
@@ -97,7 +119,12 @@ export class ItemModifierController {
     @Param('id') id: string,
     @Body() dto: UpdateModifierDto,
   ) {
-    return this.itemModifierService.updateModifier(req.user.dbName, id, dto);
+    return this.itemModifierService.updateModifier(
+      req.user.dbName,
+      req.user.id,
+      id,
+      dto,
+    );
   }
 
   @Delete('modifiers/delete/:id')
@@ -108,7 +135,11 @@ export class ItemModifierController {
   // Modifier Groups
   @Post('modifier-groups/create')
   createModifierGroup(@Request() req, @Body() dto: CreateModifierGroupDto) {
-    return this.itemModifierService.createModifierGroup(req.user.dbName, dto);
+    return this.itemModifierService.createModifierGroup(
+      req.user.dbName,
+      req.user.id,
+      dto,
+    );
   }
 
   @Get('modifier-groups/all')
@@ -124,6 +155,7 @@ export class ItemModifierController {
   ) {
     return this.itemModifierService.updateModifierGroup(
       req.user.dbName,
+      req.user.id,
       id,
       dto,
     );

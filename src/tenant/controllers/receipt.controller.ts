@@ -23,7 +23,7 @@ export class ReceiptController {
 
   @Post('create')
   create(@Request() req, @Body() dto: CreateReceiptDto) {
-    return this.service.createReceipt(req.user.dbName, dto);
+    return this.service.createReceipt(req.user.dbName, req.user.id, dto);
   }
 
   @Get('all')
@@ -42,7 +42,7 @@ export class ReceiptController {
     @Param('id') id: string,
     @Body() dto: UpdateReceiptDto,
   ) {
-    return this.service.updateReceipt(req.user.dbName, id, dto);
+    return this.service.updateReceipt(req.user.dbName, req.user.id, id, dto);
   }
 
   @Delete('delete/:id')

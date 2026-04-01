@@ -26,7 +26,7 @@ export class StockQuantityController {
 
   @Post('create')
   create(@Request() req, @Body() dto: CreateStockListDto) {
-    return this.service.createStockList(req.user.dbName, dto);
+    return this.service.createStockList(req.user.dbName, req.user.id, dto);
   }
 
   @Get('all')
@@ -45,7 +45,7 @@ export class StockQuantityController {
     @Param('id') id: string,
     @Body() dto: UpdateStockListDto,
   ) {
-    return this.service.updateStockList(req.user.dbName, id, dto);
+    return this.service.updateStockList(req.user.dbName, req.user.id, id, dto);
   }
 
   @Delete('delete/:id')

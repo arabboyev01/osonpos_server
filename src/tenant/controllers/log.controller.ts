@@ -5,9 +5,10 @@ import {
   Body,
   UseGuards,
   Request,
+  Query,
 } from '@nestjs/common';
 import { LogService } from '../services/log.service';
-import { CreateLogDto } from '../dto/log.dto';
+import { CreateLogDto, QueryLogDto } from '../dto/log.dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
@@ -24,7 +25,7 @@ export class LogController {
   }
 
   @Get('all')
-  findAll(@Request() req) {
-    return this.logService.findAll(req.user.dbName);
+  findAll(@Request() req, @Query() query: QueryLogDto) {
+    return this.logService.findAll(req.user.dbName, query);
   }
 }

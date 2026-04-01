@@ -26,7 +26,7 @@ export class SupplierController {
 
   @Post('create')
   create(@Request() req, @Body() dto: CreateSupplierDto) {
-    return this.service.createSupplier(req.user.dbName, dto);
+    return this.service.createSupplier(req.user.dbName, req.user.id, dto);
   }
 
   @Get('all')
@@ -45,7 +45,7 @@ export class SupplierController {
     @Param('id') id: string,
     @Body() dto: UpdateSupplierDto,
   ) {
-    return this.service.updateSupplier(req.user.dbName, id, dto);
+    return this.service.updateSupplier(req.user.dbName, req.user.id, id, dto);
   }
 
   @Delete('delete/:id')

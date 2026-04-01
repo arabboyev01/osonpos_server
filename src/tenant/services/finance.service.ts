@@ -7,14 +7,29 @@ import {
   UpdateDiscountDto,
 } from '../dto/finance.dto';
 
+import { LogService } from './log.service';
+
 @Injectable()
 export class FinanceService {
-  constructor(private tenantService: TenantService) {}
+  constructor(
+    private tenantService: TenantService,
+    private logService: LogService,
+  ) {}
 
   // Tax & Fee
-  async createTaxFee(dbName: string, dto: CreateTaxFeeDto) {
+  async createTaxFee(dbName: string, userId: string, dto: CreateTaxFeeDto) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Tax_Fee.create({ data: dto });
+    const taxFee = await client.s_Tax_Fee.create({ data: dto });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'CREATE_TAX_FEE',
+      taxFee,
+    );
+
+    return taxFee;
   }
 
   async findAllTaxFees(dbName: string) {
@@ -27,9 +42,24 @@ export class FinanceService {
     return client.s_Tax_Fee.findFirst({ where: { id, is_deleted: false } });
   }
 
-  async updateTaxFee(dbName: string, id: string, dto: UpdateTaxFeeDto) {
+  async updateTaxFee(
+    dbName: string,
+    userId: string,
+    id: string,
+    dto: UpdateTaxFeeDto,
+  ) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Tax_Fee.update({ where: { id }, data: dto });
+    const taxFee = await client.s_Tax_Fee.update({ where: { id }, data: dto });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'UPDATE_TAX_FEE',
+      taxFee,
+    );
+
+    return taxFee;
   }
 
   async removeTaxFee(dbName: string, id: string) {
@@ -41,9 +71,19 @@ export class FinanceService {
   }
 
   // Discount
-  async createDiscount(dbName: string, dto: CreateDiscountDto) {
+  async createDiscount(dbName: string, userId: string, dto: CreateDiscountDto) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Discount.create({ data: dto });
+    const discount = await client.s_Discount.create({ data: dto });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'CREATE_DISCOUNT',
+      discount,
+    );
+
+    return discount;
   }
 
   async findAllDiscounts(dbName: string) {
@@ -56,9 +96,27 @@ export class FinanceService {
     return client.s_Discount.findFirst({ where: { id, is_deleted: false } });
   }
 
-  async updateDiscount(dbName: string, id: string, dto: UpdateDiscountDto) {
+  async updateDiscount(
+    dbName: string,
+    userId: string,
+    id: string,
+    dto: UpdateDiscountDto,
+  ) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Discount.update({ where: { id }, data: dto });
+    const discount = await client.s_Discount.update({
+      where: { id },
+      data: dto,
+    });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'UPDATE_DISCOUNT',
+      discount,
+    );
+
+    return discount;
   }
 
   async removeDiscount(dbName: string, id: string) {

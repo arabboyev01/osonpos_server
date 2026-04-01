@@ -26,7 +26,7 @@ export class PaymentMethodController {
 
   @Post('create')
   create(@Request() req, @Body() dto: CreatePaymentMethodDto) {
-    return this.paymentMethodService.create(req.user.dbName, dto);
+    return this.paymentMethodService.create(req.user.dbName, req.user.id, dto);
   }
 
   @Get('all')
@@ -45,7 +45,12 @@ export class PaymentMethodController {
     @Param('id') id: string,
     @Body() dto: UpdatePaymentMethodDto,
   ) {
-    return this.paymentMethodService.update(req.user.dbName, id, dto);
+    return this.paymentMethodService.update(
+      req.user.dbName,
+      req.user.id,
+      id,
+      dto,
+    );
   }
 
   @Delete('delete/:id')

@@ -23,7 +23,7 @@ export class ClientController {
 
   @Post('create')
   create(@Request() req, @Body() dto: CreateClientDto) {
-    return this.service.create(req.user.dbName, dto);
+    return this.service.create(req.user.dbName, req.user.id, dto);
   }
 
   @Get('all')
@@ -42,7 +42,7 @@ export class ClientController {
     @Param('id') id: string,
     @Body() dto: UpdateClientDto,
   ) {
-    return this.service.update(req.user.dbName, id, dto);
+    return this.service.update(req.user.dbName, req.user.id, id, dto);
   }
 
   @Delete('delete/:id')

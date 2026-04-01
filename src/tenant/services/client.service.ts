@@ -1,20 +1,34 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { TenantService } from '../tenant.service';
 import { CreateClientDto, UpdateClientDto } from '../dto/client.dto';
+import { LogService } from './log.service';
 
 @Injectable()
 export class ClientService {
-  constructor(private tenantService: TenantService) {}
+  constructor(
+    private tenantService: TenantService,
+    private logService: LogService,
+  ) {}
 
-  async create(dbName: string, dto: CreateClientDto) {
+  async create(dbName: string, userId: string, dto: CreateClientDto) {
     const client = await this.tenantService.getClient(dbName);
     const data = {
       ...dto,
       birthday: this.transformDate(dto.birthday),
     };
-    return client.s_Clients.create({
+    const newClient = await client.s_Clients.create({
       data,
     });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'CREATE_CLIENT',
+      newClient,
+    );
+
+    return newClient;
   }
 
   async findAll(dbName: string) {
@@ -36,7 +50,12 @@ export class ClientService {
     return result;
   }
 
-  async update(dbName: string, id: string, dto: UpdateClientDto) {
+  async update(
+    dbName: string,
+    userId: string,
+    id: string,
+    dto: UpdateClientDto,
+  ) {
     const client = await this.tenantService.getClient(dbName);
     // Check if exists
     await this.findOne(dbName, id);
@@ -46,10 +65,20 @@ export class ClientService {
       birthday: this.transformDate(dto.birthday),
     };
 
-    return client.s_Clients.update({
+    const updatedClient = await client.s_Clients.update({
       where: { id },
       data,
     });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'UPDATE_CLIENT',
+      updatedClient,
+    );
+
+    return updatedClient;
   }
 
   private transformDate(dateStr?: string): Date | undefined {

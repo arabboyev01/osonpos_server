@@ -18,3 +18,30 @@ export class CreateLogDto {
   @IsOptional()
   details?: string;
 }
+export class QueryLogDto {
+  @IsOptional()
+  @IsString()
+  user_id?: string;
+
+  @IsOptional()
+  @IsEnum(S_Logs_Type)
+  type?: S_Logs_Type;
+
+  @IsOptional()
+  @IsString()
+  action?: string;
+
+  @IsOptional()
+  @IsString()
+  from_date?: string;
+
+  @IsOptional()
+  @IsString()
+  to_date?: string;
+
+  @IsOptional()
+  limit?: string;
+
+  @IsOptional()
+  offset?: string;
+}

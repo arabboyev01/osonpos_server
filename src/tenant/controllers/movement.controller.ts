@@ -26,7 +26,7 @@ export class MovementController {
 
   @Post('create')
   create(@Request() req, @Body() dto: CreateMovementDto) {
-    return this.service.createMovement(req.user.dbName, dto);
+    return this.service.createMovement(req.user.dbName, req.user.id, dto);
   }
 
   @Get('all')
@@ -45,7 +45,7 @@ export class MovementController {
     @Param('id') id: string,
     @Body() dto: UpdateMovementDto,
   ) {
-    return this.service.updateMovement(req.user.dbName, id, dto);
+    return this.service.updateMovement(req.user.dbName, req.user.id, id, dto);
   }
 
   @Delete('delete/:id')

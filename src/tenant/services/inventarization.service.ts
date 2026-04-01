@@ -17,14 +17,33 @@ import {
   UpdateMovementDto,
 } from '../dto/inventarization.dto';
 
+import { LogService } from './log.service';
+
 @Injectable()
 export class InventarizationService {
-  constructor(private tenantService: TenantService) {}
+  constructor(
+    private tenantService: TenantService,
+    private logService: LogService,
+  ) {}
 
   // --- Warehouse ---
-  async createWarehouse(dbName: string, dto: CreateWarehouseDto) {
+  async createWarehouse(
+    dbName: string,
+    userId: string,
+    dto: CreateWarehouseDto,
+  ) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Warehouse.create({ data: dto });
+    const warehouse = await client.s_Warehouse.create({ data: dto });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'CREATE_WAREHOUSE',
+      warehouse,
+    );
+
+    return warehouse;
   }
 
   async findAllWarehouses(dbName: string) {
@@ -41,9 +60,27 @@ export class InventarizationService {
     return warehouse;
   }
 
-  async updateWarehouse(dbName: string, id: string, dto: UpdateWarehouseDto) {
+  async updateWarehouse(
+    dbName: string,
+    userId: string,
+    id: string,
+    dto: UpdateWarehouseDto,
+  ) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Warehouse.update({ where: { id }, data: dto });
+    const warehouse = await client.s_Warehouse.update({
+      where: { id },
+      data: dto,
+    });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'UPDATE_WAREHOUSE',
+      warehouse,
+    );
+
+    return warehouse;
   }
 
   async removeWarehouse(dbName: string, id: string) {
@@ -55,9 +92,19 @@ export class InventarizationService {
   }
 
   // --- Supplier ---
-  async createSupplier(dbName: string, dto: CreateSupplierDto) {
+  async createSupplier(dbName: string, userId: string, dto: CreateSupplierDto) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Supplier.create({ data: dto });
+    const supplier = await client.s_Supplier.create({ data: dto });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'CREATE_SUPPLIER',
+      supplier,
+    );
+
+    return supplier;
   }
 
   async findAllSuppliers(dbName: string) {
@@ -74,9 +121,27 @@ export class InventarizationService {
     return supplier;
   }
 
-  async updateSupplier(dbName: string, id: string, dto: UpdateSupplierDto) {
+  async updateSupplier(
+    dbName: string,
+    userId: string,
+    id: string,
+    dto: UpdateSupplierDto,
+  ) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Supplier.update({ where: { id }, data: dto });
+    const supplier = await client.s_Supplier.update({
+      where: { id },
+      data: dto,
+    });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'UPDATE_SUPPLIER',
+      supplier,
+    );
+
+    return supplier;
   }
 
   async removeSupplier(dbName: string, id: string) {
@@ -88,9 +153,13 @@ export class InventarizationService {
   }
 
   // --- Stock List ---
-  async createStockList(dbName: string, dto: CreateStockListDto) {
+  async createStockList(
+    dbName: string,
+    userId: string,
+    dto: CreateStockListDto,
+  ) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Stock_List.create({
+    const stock = await client.s_Stock_List.create({
       data: {
         ...dto,
         mon: dto.mon ?? '0',
@@ -102,6 +171,16 @@ export class InventarizationService {
         sun: dto.sun ?? '0',
       },
     });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'CREATE_STOCK_LIST',
+      stock,
+    );
+
+    return stock;
   }
 
   async findAllStockLists(dbName: string) {
@@ -118,9 +197,27 @@ export class InventarizationService {
     return stock;
   }
 
-  async updateStockList(dbName: string, id: string, dto: UpdateStockListDto) {
+  async updateStockList(
+    dbName: string,
+    userId: string,
+    id: string,
+    dto: UpdateStockListDto,
+  ) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Stock_List.update({ where: { id }, data: dto });
+    const stock = await client.s_Stock_List.update({
+      where: { id },
+      data: dto,
+    });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'UPDATE_STOCK_LIST',
+      stock,
+    );
+
+    return stock;
   }
 
   async removeStockList(dbName: string, id: string) {
@@ -132,10 +229,22 @@ export class InventarizationService {
   }
 
   // --- Inventory ---
-  async createInventory(dbName: string, dto: CreateInventoryDto) {
+  async createInventory(
+    dbName: string,
+    userId: string,
+    dto: CreateInventoryDto,
+  ) {
     const client = await this.tenantService.getClient(dbName);
     const { items, ...data } = dto;
     const inventory = await client.d_Inventory.create({ data });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'CREATE_INVENTORY',
+      inventory,
+    );
 
     if (items && items.length > 0) {
       await client.t_Inventory.createMany({
@@ -196,7 +305,12 @@ export class InventarizationService {
     });
   }
 
-  async updateInventory(dbName: string, id: string, dto: UpdateInventoryDto) {
+  async updateInventory(
+    dbName: string,
+    userId: string,
+    id: string,
+    dto: UpdateInventoryDto,
+  ) {
     const client = await this.tenantService.getClient(dbName);
     const current = await client.d_Inventory.findFirst({ where: { id } });
     if (!current) throw new NotFoundException('Inventory not found');
@@ -217,6 +331,14 @@ export class InventarizationService {
       where: { id },
       data,
     });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'UPDATE_INVENTORY',
+      updated,
+    );
 
     if (!current.conducted && updated.conducted) {
       const itemsToUse =
@@ -244,10 +366,18 @@ export class InventarizationService {
   }
 
   // --- Receipt ---
-  async createReceipt(dbName: string, dto: CreateReceiptDto) {
+  async createReceipt(dbName: string, userId: string, dto: CreateReceiptDto) {
     const client = await this.tenantService.getClient(dbName);
     const { items, ...data } = dto;
     const receipt = await client.d_Receipt.create({ data });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'CREATE_RECEIPT',
+      receipt,
+    );
 
     if (items && items.length > 0) {
       await client.t_Receipt.createMany({
@@ -307,7 +437,12 @@ export class InventarizationService {
     });
   }
 
-  async updateReceipt(dbName: string, id: string, dto: UpdateReceiptDto) {
+  async updateReceipt(
+    dbName: string,
+    userId: string,
+    id: string,
+    dto: UpdateReceiptDto,
+  ) {
     const client = await this.tenantService.getClient(dbName);
     const current = await client.d_Receipt.findFirst({ where: { id } });
     if (!current) throw new NotFoundException('Receipt not found');
@@ -328,6 +463,14 @@ export class InventarizationService {
       where: { id },
       data,
     });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'UPDATE_RECEIPT',
+      updated,
+    );
 
     if (!current.conducted && updated.conducted) {
       const itemsToUse =
@@ -355,10 +498,22 @@ export class InventarizationService {
   }
 
   // --- Cancellation (Write-off) ---
-  async createCancellation(dbName: string, dto: CreateCancellationDto) {
+  async createCancellation(
+    dbName: string,
+    userId: string,
+    dto: CreateCancellationDto,
+  ) {
     const client = await this.tenantService.getClient(dbName);
     const { items, ...data } = dto;
     const cancellation = await client.d_Cancellation.create({ data });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'CREATE_CANCELLATION',
+      cancellation,
+    );
 
     if (items && items.length > 0) {
       await client.t_Cancellation.createMany({
@@ -420,6 +575,7 @@ export class InventarizationService {
 
   async updateCancellation(
     dbName: string,
+    userId: string,
     id: string,
     dto: UpdateCancellationDto,
   ) {
@@ -443,6 +599,14 @@ export class InventarizationService {
       where: { id },
       data,
     });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'UPDATE_CANCELLATION',
+      updated,
+    );
 
     if (!current.conducted && updated.conducted) {
       const itemsToUse =
@@ -470,10 +634,18 @@ export class InventarizationService {
   }
 
   // --- Movement ---
-  async createMovement(dbName: string, dto: CreateMovementDto) {
+  async createMovement(dbName: string, userId: string, dto: CreateMovementDto) {
     const client = await this.tenantService.getClient(dbName);
     const { items, ...data } = dto;
     const movement = await client.d_Movement.create({ data });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'CREATE_MOVEMENT',
+      movement,
+    );
 
     if (items && items.length > 0) {
       await client.t_Movement.createMany({
@@ -542,7 +714,12 @@ export class InventarizationService {
     });
   }
 
-  async updateMovement(dbName: string, id: string, dto: UpdateMovementDto) {
+  async updateMovement(
+    dbName: string,
+    userId: string,
+    id: string,
+    dto: UpdateMovementDto,
+  ) {
     const client = await this.tenantService.getClient(dbName);
     const { items, ...data } = dto;
 
@@ -556,10 +733,20 @@ export class InventarizationService {
       });
     }
 
-    return client.d_Movement.update({
+    const updated = await client.d_Movement.update({
       where: { id },
       data,
     });
+
+    await this.logService.recordLog(
+      dbName,
+      userId,
+      'SYSTEM',
+      'UPDATE_MOVEMENT',
+      updated,
+    );
+
+    return updated;
   }
 
   // --- Private Helper ---

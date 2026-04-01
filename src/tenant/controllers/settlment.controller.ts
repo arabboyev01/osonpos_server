@@ -23,7 +23,7 @@ export class SettlmentController {
 
   @Post('create')
   create(@Request() req, @Body() dto: CreateSettlmentDto) {
-    return this.service.create(req.user.dbName, dto);
+    return this.service.create(req.user.dbName, req.user.id, dto);
   }
 
   @Get('all')
@@ -47,7 +47,7 @@ export class SettlmentController {
     @Param('id') id: string,
     @Body() dto: UpdateSettlmentDto,
   ) {
-    return this.service.update(req.user.dbName, id, dto);
+    return this.service.update(req.user.dbName, req.user.id, id, dto);
   }
 
   @Delete('delete/:id')
