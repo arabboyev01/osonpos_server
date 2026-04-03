@@ -42,7 +42,10 @@ export class ItemModifierController {
 
   @Get('items/all')
   findAllItems(@Request() req) {
-    return this.itemModifierService.findAllItems(req.user.dbName);
+    return this.itemModifierService.findAllItems(
+      req.user.dbName,
+      req.user.workplaceId,
+    );
   }
 
   @Patch('items/update/:id')
@@ -76,7 +79,10 @@ export class ItemModifierController {
 
   @Get('item-groups/all')
   findAllItemGroups(@Request() req) {
-    return this.itemModifierService.findAllItemGroups(req.user.dbName);
+    return this.itemModifierService.findAllItemGroups(
+      req.user.dbName,
+      req.user.workplaceId,
+    );
   }
 
   @Patch('item-groups/update/:id')
@@ -110,7 +116,10 @@ export class ItemModifierController {
 
   @Get('modifiers/all')
   findAllModifiers(@Request() req) {
-    return this.itemModifierService.findAllModifiers(req.user.dbName);
+    return this.itemModifierService.findAllModifiers(
+      req.user.dbName,
+      req.user.workplaceId,
+    );
   }
 
   @Patch('modifiers/update/:id')
@@ -144,7 +153,10 @@ export class ItemModifierController {
 
   @Get('modifier-groups/all')
   findAllModifierGroups(@Request() req) {
-    return this.itemModifierService.findAllModifierGroups(req.user.dbName);
+    return this.itemModifierService.findAllModifierGroups(
+      req.user.dbName,
+      req.user.workplaceId,
+    );
   }
 
   @Patch('modifier-groups/update/:id')

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TenantService } from '../tenant.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import {
   CreateItemDto,
   UpdateItemDto,
@@ -18,6 +19,7 @@ export class ItemModifierService {
   constructor(
     private tenantService: TenantService,
     private logService: LogService,
+    private prisma: PrismaService,
   ) {}
 
   // Items
@@ -74,10 +76,29 @@ export class ItemModifierService {
     return { ...item, stock_quantity: stock_quantity || '0' };
   }
 
-  async findAllItems(dbName: string) {
+  async findAllItems(dbName: string, workplaceId?: string) {
     const client = await this.tenantService.getClient(dbName);
+
+    let idAutomatedPoint: string | null = null;
+    if (workplaceId) {
+      const workplace = await this.prisma.a_Workplace.findFirst({
+        where: { id: workplaceId, is_deleted: false },
+      });
+      if (workplace) {
+        idAutomatedPoint = workplace.automated_point_id;
+      }
+    }
+
+    const where: any = { is_deleted: false };
+    if (idAutomatedPoint) {
+      where.OR = [
+        { id_automated_point: idAutomatedPoint },
+        { id_automated_point: '0' },
+      ];
+    }
+
     const [items, stocks] = await Promise.all([
-      client.s_Item.findMany({ where: { is_deleted: false } }),
+      client.s_Item.findMany({ where }),
       client.s_Stock_List.findMany({ where: { is_deleted: false } }),
     ]);
 
@@ -233,9 +254,29 @@ export class ItemModifierService {
     return itemGroup;
   }
 
-  async findAllItemGroups(dbName: string) {
+  async findAllItemGroups(dbName: string, workplaceId?: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Item_Group.findMany({ where: { is_deleted: false } });
+
+    let idAutomatedPoint: string | null = null;
+    if (workplaceId) {
+      const workplace = await this.prisma.a_Workplace.findFirst({
+        where: { id: workplaceId, is_deleted: false },
+      });
+      if (workplace) {
+        idAutomatedPoint = workplace.automated_point_id;
+      }
+    }
+
+    const where: any = { is_deleted: false };
+    if (idAutomatedPoint) {
+      where.OR = [
+        { id_automated_point: idAutomatedPoint },
+        { id_automated_point: '0' },
+        { id_automated_point: null },
+      ];
+    }
+
+    return client.s_Item_Group.findMany({ where });
   }
 
   async findOneItemGroup(dbName: string, id: string) {
@@ -328,9 +369,28 @@ export class ItemModifierService {
     return modifier;
   }
 
-  async findAllModifiers(dbName: string) {
+  async findAllModifiers(dbName: string, workplaceId?: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Modifier.findMany({ where: { is_deleted: false } });
+
+    let idAutomatedPoint: string | null = null;
+    if (workplaceId) {
+      const workplace = await this.prisma.a_Workplace.findFirst({
+        where: { id: workplaceId, is_deleted: false },
+      });
+      if (workplace) {
+        idAutomatedPoint = workplace.automated_point_id;
+      }
+    }
+
+    const where: any = { is_deleted: false };
+    if (idAutomatedPoint) {
+      where.OR = [
+        { id_automated_point: idAutomatedPoint },
+        { id_automated_point: '0' },
+      ];
+    }
+
+    return client.s_Modifier.findMany({ where });
   }
 
   async findOneModifier(dbName: string, id: string) {
@@ -437,9 +497,29 @@ export class ItemModifierService {
     return modifierGroup;
   }
 
-  async findAllModifierGroups(dbName: string) {
+  async findAllModifierGroups(dbName: string, workplaceId?: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_ModifierGroup.findMany({ where: { is_deleted: false } });
+
+    let idAutomatedPoint: string | null = null;
+    if (workplaceId) {
+      const workplace = await this.prisma.a_Workplace.findFirst({
+        where: { id: workplaceId, is_deleted: false },
+      });
+      if (workplace) {
+        idAutomatedPoint = workplace.automated_point_id;
+      }
+    }
+
+    const where: any = { is_deleted: false };
+    if (idAutomatedPoint) {
+      where.OR = [
+        { id_automated_point: idAutomatedPoint },
+        { id_automated_point: '0' },
+        { id_automated_point: null },
+      ];
+    }
+
+    return client.s_ModifierGroup.findMany({ where });
   }
 
   async findOneModifierGroup(dbName: string, id: string) {

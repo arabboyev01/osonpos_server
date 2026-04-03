@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 // Global fix: PostgreSQL raw queries return BigInt for aggregate functions.
 // Patch BigInt.prototype.toJSON so JSON.stringify handles them automatically.
@@ -23,6 +24,16 @@ async function bootstrap() {
     credentials: true,
   });
   app.setGlobalPrefix('api/v1');
+
+  const config = new DocumentBuilder()
+    .setTitle('OsonPOS API')
+    .setDescription('The OsonPOS API documentation')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
