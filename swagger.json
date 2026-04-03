@@ -7,7 +7,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -69,7 +76,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1413,7 +1427,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1436,7 +1457,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1494,7 +1522,64 @@
     "/logs/all": {
       "get": {
         "operationId": "LogController_findAll",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "user_id",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Object"
+            }
+          },
+          {
+            "name": "action",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from_date",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to_date",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": ""
@@ -1638,7 +1723,14 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1793,7 +1885,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -2977,7 +3076,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -3084,243 +3190,2232 @@
     "schemas": {
       "RegisterDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6
+          },
+          "businessName": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "login",
+          "password",
+          "businessName",
+          "name"
+        ]
       },
       "LoginDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "login",
+          "password"
+        ]
       },
       "CreateUserDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6
+          },
+          "full_name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "business_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "login",
+          "password"
+        ]
       },
       "UpdateUserDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6
+          },
+          "full_name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "time_zone": {
+            "type": "string"
+          }
+        }
       },
       "PosLoginDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "workplaceId": {
+            "type": "string"
+          },
+          "pincode": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "workplaceId",
+          "pincode"
+        ]
       },
       "EnableSecondVerificationDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "password": {
+            "type": "string",
+            "minLength": 4
+          }
+        },
+        "required": [
+          "password"
+        ]
       },
       "UpdateSecondVerificationPasswordDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "password": {
+            "type": "string",
+            "minLength": 4
+          }
+        },
+        "required": [
+          "password"
+        ]
       },
       "VerifySecondVerificationDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "login",
+          "password"
+        ]
       },
       "CreateEmployeeDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "full_name": {
+            "type": "string"
+          },
+          "guid": {
+            "type": "string"
+          },
+          "role_id": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 4
+          },
+          "employee_address": {
+            "type": "string"
+          },
+          "workplace_id": {
+            "type": "string"
+          },
+          "telegram_id": {
+            "type": "string"
+          },
+          "phone_number": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        },
+        "required": [
+          "full_name",
+          "role_id",
+          "password"
+        ]
       },
       "UpdateEmployeeDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "full_name": {
+            "type": "string"
+          },
+          "role_id": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 4
+          },
+          "employee_address": {
+            "type": "string"
+          },
+          "workplace_id": {
+            "type": "string"
+          },
+          "telegram_id": {
+            "type": "string"
+          },
+          "phone_number": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
       },
       "CreateAutomatedPointDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "guid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
       },
       "UpdateAutomatedPointDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "guid": {
+            "type": "string"
+          }
+        }
       },
       "CreateWorkplaceDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "guid": {
+            "type": "string"
+          },
+          "automated_point_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "automated_point_id"
+        ]
       },
       "UpdateWorkplaceDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "guid": {
+            "type": "string"
+          },
+          "automated_point_id": {
+            "type": "string"
+          }
+        }
       },
       "CreatePrinterDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "guid": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string"
+          },
+          "port": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "mac_address": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
       },
       "UpdatePrinterDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "guid": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string"
+          },
+          "port": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "mac_address": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
       },
       "CreatePaymentDeviceDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "guid": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string"
+          },
+          "port": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "mac_address": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
       },
       "UpdatePaymentDeviceDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "guid": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string"
+          },
+          "port": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "mac_address": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
       },
       "CreateItemDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "group_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "search_name": {
+            "type": "string"
+          },
+          "measurement": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "string"
+          },
+          "shtrix": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "type": {
+            "type": "object"
+          },
+          "pictures": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "is_menu": {
+            "type": "boolean"
+          },
+          "is_service": {
+            "type": "boolean"
+          },
+          "allow_pickup": {
+            "type": "boolean"
+          },
+          "allow_delivery": {
+            "type": "boolean"
+          },
+          "id_automated_point": {
+            "type": "string"
+          },
+          "tax_id": {
+            "type": "string"
+          },
+          "discount_id": {
+            "type": "string"
+          },
+          "stock_quantity": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "measurement",
+          "price",
+          "type"
+        ]
       },
       "UpdateItemDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "group_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "search_name": {
+            "type": "string"
+          },
+          "measurement": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "string"
+          },
+          "shtrix": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "type": {
+            "type": "object"
+          },
+          "pictures": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "is_menu": {
+            "type": "boolean"
+          },
+          "is_service": {
+            "type": "boolean"
+          },
+          "allow_pickup": {
+            "type": "boolean"
+          },
+          "allow_delivery": {
+            "type": "boolean"
+          },
+          "id_automated_point": {
+            "type": "string"
+          },
+          "tax_id": {
+            "type": "string"
+          },
+          "discount_id": {
+            "type": "string"
+          },
+          "stock_quantity": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "string"
+          }
+        }
       },
       "CreateItemGroupDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "search_name": {
+            "type": "string"
+          },
+          "measurement": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "string"
+          },
+          "shtrix": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "pictures": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "is_menu": {
+            "type": "boolean"
+          },
+          "is_service": {
+            "type": "boolean"
+          },
+          "allow_pickup": {
+            "type": "boolean"
+          },
+          "allow_delivery": {
+            "type": "boolean"
+          },
+          "id_automated_point": {
+            "type": "string"
+          },
+          "tax_id": {
+            "type": "string"
+          },
+          "discount_id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "name",
+          "measurement",
+          "price",
+          "type"
+        ]
       },
       "UpdateItemGroupDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "search_name": {
+            "type": "string"
+          },
+          "measurement": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "string"
+          },
+          "shtrix": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "pictures": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "is_menu": {
+            "type": "boolean"
+          },
+          "is_service": {
+            "type": "boolean"
+          },
+          "allow_pickup": {
+            "type": "boolean"
+          },
+          "allow_delivery": {
+            "type": "boolean"
+          },
+          "id_automated_point": {
+            "type": "string"
+          },
+          "tax_id": {
+            "type": "string"
+          },
+          "discount_id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "object"
+          }
+        }
       },
       "CreateModifierDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "group_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "item_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "search_name": {
+            "type": "string"
+          },
+          "measurement": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "string"
+          },
+          "shtrix": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "type": {
+            "type": "object"
+          },
+          "pictures": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "is_menu": {
+            "type": "boolean"
+          },
+          "is_service": {
+            "type": "boolean"
+          },
+          "allow_pickup": {
+            "type": "boolean"
+          },
+          "allow_delivery": {
+            "type": "boolean"
+          },
+          "id_automated_point": {
+            "type": "string"
+          },
+          "tax_id": {
+            "type": "string"
+          },
+          "discount_id": {
+            "type": "string"
+          },
+          "stock_quantity": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "measurement",
+          "price",
+          "type"
+        ]
       },
       "UpdateModifierDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "group_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "item_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "search_name": {
+            "type": "string"
+          },
+          "measurement": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "string"
+          },
+          "shtrix": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "type": {
+            "type": "object"
+          },
+          "pictures": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "is_menu": {
+            "type": "boolean"
+          },
+          "is_service": {
+            "type": "boolean"
+          },
+          "allow_pickup": {
+            "type": "boolean"
+          },
+          "allow_delivery": {
+            "type": "boolean"
+          },
+          "id_automated_point": {
+            "type": "string"
+          },
+          "tax_id": {
+            "type": "string"
+          },
+          "discount_id": {
+            "type": "string"
+          },
+          "stock_quantity": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "string"
+          }
+        }
       },
       "CreateModifierGroupDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "search_name": {
+            "type": "string"
+          },
+          "measurement": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "string"
+          },
+          "shtrix": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "pictures": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "type": {
+            "type": "object"
+          },
+          "is_menu": {
+            "type": "boolean"
+          },
+          "is_service": {
+            "type": "boolean"
+          },
+          "allow_pickup": {
+            "type": "boolean"
+          },
+          "allow_delivery": {
+            "type": "boolean"
+          },
+          "id_automated_point": {
+            "type": "string"
+          },
+          "tax_id": {
+            "type": "string"
+          },
+          "discount_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "measurement",
+          "price",
+          "type"
+        ]
       },
       "UpdateModifierGroupDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "search_name": {
+            "type": "string"
+          },
+          "measurement": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "string"
+          },
+          "shtrix": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "pictures": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "type": {
+            "type": "object"
+          },
+          "is_menu": {
+            "type": "boolean"
+          },
+          "is_service": {
+            "type": "boolean"
+          },
+          "allow_pickup": {
+            "type": "boolean"
+          },
+          "allow_delivery": {
+            "type": "boolean"
+          },
+          "id_automated_point": {
+            "type": "string"
+          },
+          "tax_id": {
+            "type": "string"
+          },
+          "discount_id": {
+            "type": "string"
+          }
+        }
       },
       "CreateTaxFeeDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "guid": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tax_percent": {
+            "type": "string"
+          },
+          "tax_value": {
+            "type": "string"
+          },
+          "fee_percent": {
+            "type": "string"
+          },
+          "fee_value": {
+            "type": "string"
+          },
+          "id_automated_point": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
       },
       "UpdateTaxFeeDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "guid": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tax_percent": {
+            "type": "string"
+          },
+          "tax_value": {
+            "type": "string"
+          },
+          "fee_percent": {
+            "type": "string"
+          },
+          "fee_value": {
+            "type": "string"
+          },
+          "id_automated_point": {
+            "type": "string"
+          }
+        }
       },
       "CreateDiscountDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "guid": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "discount_percent": {
+            "type": "string"
+          },
+          "discount_value": {
+            "type": "string"
+          },
+          "id_automated_point": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
       },
       "UpdateDiscountDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "guid": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "discount_percent": {
+            "type": "string"
+          },
+          "discount_value": {
+            "type": "string"
+          },
+          "id_automated_point": {
+            "type": "string"
+          }
+        }
+      },
+      "OrderItemDto": {
+        "type": "object",
+        "properties": {
+          "item_id": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "subtotal": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "discount_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_id",
+          "quantity",
+          "price",
+          "subtotal"
+        ]
+      },
+      "OrderDiscountDto": {
+        "type": "object",
+        "properties": {
+          "item_id": {
+            "type": "string"
+          },
+          "discount_value": {
+            "type": "string"
+          },
+          "discount_percent": {
+            "type": "string"
+          },
+          "discount_id": {
+            "type": "string"
+          }
+        }
+      },
+      "OrderItemTaxDto": {
+        "type": "object",
+        "properties": {
+          "item_id": {
+            "type": "string"
+          },
+          "tax_id": {
+            "type": "string"
+          },
+          "tax_percent": {
+            "type": "string"
+          },
+          "tax_value": {
+            "type": "string"
+          },
+          "fee_percent": {
+            "type": "string"
+          },
+          "fee_value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "tax_id"
+        ]
+      },
+      "OrderDeliveryDto": {
+        "type": "object",
+        "properties": {
+          "customer_name": {
+            "type": "string"
+          },
+          "contact_phone": {
+            "type": "string"
+          },
+          "shipping_address": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "postal_code": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "estimated_arrival": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "customer_name",
+          "contact_phone",
+          "shipping_address",
+          "city",
+          "postal_code"
+        ]
+      },
+      "OrderPaymentDto": {
+        "type": "object",
+        "properties": {
+          "payment_type_id": {
+            "type": "string"
+          },
+          "paid_sum": {
+            "type": "string"
+          },
+          "tip_amount": {
+            "type": "string"
+          },
+          "discount_id": {
+            "type": "string"
+          },
+          "payment_data": {
+            "type": "string"
+          },
+          "payment_device_id": {
+            "type": "string"
+          },
+          "payment_batch_id": {
+            "type": "string"
+          },
+          "card_number": {
+            "type": "string"
+          },
+          "card_expire_date": {
+            "type": "string"
+          },
+          "card_type": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "is_refunded": {
+            "type": "boolean"
+          },
+          "settlement_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "payment_type_id",
+          "paid_sum"
+        ]
       },
       "CreateOrderDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "guid": {
+            "type": "string"
+          },
+          "order_id": {
+            "type": "string"
+          },
+          "order_name": {
+            "type": "string"
+          },
+          "total_discount": {
+            "type": "string"
+          },
+          "total_tax": {
+            "type": "string"
+          },
+          "total_paid": {
+            "type": "string"
+          },
+          "total_change": {
+            "type": "string"
+          },
+          "subtotal": {
+            "type": "string"
+          },
+          "total_sum": {
+            "type": "string"
+          },
+          "discount_percent": {
+            "type": "string"
+          },
+          "discount_sum": {
+            "type": "string"
+          },
+          "employee_id": {
+            "type": "string"
+          },
+          "client_id": {
+            "type": "string"
+          },
+          "payment_id": {
+            "type": "string"
+          },
+          "automated_point_id": {
+            "type": "string"
+          },
+          "workplace_id": {
+            "type": "string"
+          },
+          "barcode": {
+            "type": "string"
+          },
+          "delivery_fee": {
+            "type": "string"
+          },
+          "settlement_id": {
+            "type": "string"
+          },
+          "is_closed": {
+            "type": "boolean"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemDto"
+            }
+          },
+          "discounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderDiscountDto"
+            }
+          },
+          "taxes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemTaxDto"
+            }
+          },
+          "delivery": {
+            "$ref": "#/components/schemas/OrderDeliveryDto"
+          },
+          "payments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderPaymentDto"
+            }
+          }
+        },
+        "required": [
+          "order_id",
+          "subtotal",
+          "total_sum",
+          "automated_point_id",
+          "workplace_id",
+          "items"
+        ]
       },
       "UpdateOrderDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "order_name": {
+            "type": "string"
+          },
+          "total_discount": {
+            "type": "string"
+          },
+          "total_tax": {
+            "type": "string"
+          },
+          "total_paid": {
+            "type": "string"
+          },
+          "total_change": {
+            "type": "string"
+          },
+          "subtotal": {
+            "type": "string"
+          },
+          "total_sum": {
+            "type": "string"
+          },
+          "discount_percent": {
+            "type": "string"
+          },
+          "discount_sum": {
+            "type": "string"
+          },
+          "client_id": {
+            "type": "string"
+          },
+          "payment_id": {
+            "type": "string"
+          },
+          "delivery_fee": {
+            "type": "string"
+          },
+          "payment_type_id": {
+            "type": "string"
+          },
+          "settlement_id": {
+            "type": "string"
+          },
+          "is_closed": {
+            "type": "boolean"
+          },
+          "is_voided": {
+            "type": "boolean"
+          },
+          "is_refunded": {
+            "type": "boolean"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemDto"
+            }
+          },
+          "discounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderDiscountDto"
+            }
+          },
+          "taxes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemTaxDto"
+            }
+          },
+          "delivery": {
+            "$ref": "#/components/schemas/OrderDeliveryDto"
+          },
+          "payments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderPaymentDto"
+            }
+          }
+        }
       },
       "CreateLogDto": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "object"
+          },
+          "action": {
+            "type": "string"
+          },
+          "details": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "action"
+        ]
+      },
+      "Object": {
         "type": "object",
         "properties": {}
       },
       "CreateEmployeeRoleDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "access_resources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "access_resources"
+        ]
       },
       "UpdateEmployeeRoleDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "access_resources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       },
       "RawQueryDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "query": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ]
       },
       "CreateMeasurementDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
       },
       "UpdateMeasurementDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
       },
       "CreatePaymentMethodDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "guid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
       },
       "UpdatePaymentMethodDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "guid": {
+            "type": "string"
+          }
+        }
+      },
+      "InventoryItemDto": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "plannedQuantity": {
+            "type": "string"
+          },
+          "measureId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId",
+          "quantity",
+          "price",
+          "plannedQuantity",
+          "measureId"
+        ]
       },
       "CreateInventoryDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "guid": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "total": {
+            "type": "string"
+          },
+          "totalPlanned": {
+            "type": "string"
+          },
+          "totalDiff": {
+            "type": "string"
+          },
+          "employeeId": {
+            "type": "string"
+          },
+          "clientId": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "conducted": {
+            "type": "boolean"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InventoryItemDto"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "warehouseId",
+          "organizationId",
+          "total",
+          "totalPlanned",
+          "totalDiff",
+          "employeeId",
+          "clientId",
+          "items"
+        ]
       },
       "UpdateInventoryDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "employeeId": {
+            "type": "string"
+          },
+          "total": {
+            "type": "string"
+          },
+          "totalPlanned": {
+            "type": "string"
+          },
+          "totalDiff": {
+            "type": "string"
+          },
+          "clientId": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "conducted": {
+            "type": "boolean"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InventoryItemDto"
+            }
+          }
+        }
+      },
+      "ReceiptItemDto": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "plannedQuantity": {
+            "type": "string"
+          },
+          "measureId": {
+            "type": "string"
+          },
+          "rounding": {
+            "type": "string"
+          },
+          "newPrice": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId",
+          "quantity",
+          "price",
+          "plannedQuantity",
+          "measureId"
+        ]
       },
       "CreateReceiptDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "guid": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "total": {
+            "type": "string"
+          },
+          "totalPlanned": {
+            "type": "string"
+          },
+          "totalDiff": {
+            "type": "string"
+          },
+          "employeeId": {
+            "type": "string"
+          },
+          "clientId": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "conducted": {
+            "type": "boolean"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReceiptItemDto"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "warehouseId",
+          "organizationId",
+          "total",
+          "totalPlanned",
+          "totalDiff",
+          "employeeId",
+          "clientId",
+          "items"
+        ]
       },
       "UpdateReceiptDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "employeeId": {
+            "type": "string"
+          },
+          "total": {
+            "type": "string"
+          },
+          "totalPlanned": {
+            "type": "string"
+          },
+          "totalDiff": {
+            "type": "string"
+          },
+          "clientId": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "conducted": {
+            "type": "boolean"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReceiptItemDto"
+            }
+          }
+        }
+      },
+      "CancellationItemDto": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "measureId": {
+            "type": "string"
+          },
+          "multiple": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId",
+          "quantity",
+          "price",
+          "measureId"
+        ]
       },
       "CreateCancellationDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "guid": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "employeeId": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "conducted": {
+            "type": "boolean"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CancellationItemDto"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "warehouseId",
+          "organizationId",
+          "employeeId",
+          "items"
+        ]
       },
       "UpdateCancellationDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "employeeId": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "conducted": {
+            "type": "boolean"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CancellationItemDto"
+            }
+          }
+        }
       },
       "CreateWarehouseDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
       },
       "UpdateWarehouseDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          }
+        }
       },
       "CreateSupplierDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "contact_person": {
+            "type": "string"
+          },
+          "phone_number": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
       },
       "UpdateSupplierDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "contact_person": {
+            "type": "string"
+          },
+          "phone_number": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          }
+        }
+      },
+      "MovementItemDto": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "measureId": {
+            "type": "string"
+          },
+          "multiple": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId",
+          "quantity",
+          "price",
+          "measureId"
+        ]
       },
       "CreateMovementDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "guid": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "string"
+          },
+          "toWarehouseId": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "employeeId": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MovementItemDto"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "warehouseId",
+          "toWarehouseId",
+          "organizationId",
+          "employeeId",
+          "items"
+        ]
       },
       "UpdateMovementDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "employeeId": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "string"
+          },
+          "toWarehouseId": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MovementItemDto"
+            }
+          }
+        }
       },
       "CreateStockListDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "stock_quantity": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "measureId": {
+            "type": "string"
+          },
+          "dateFrom": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "string"
+          },
+          "mon": {
+            "type": "string"
+          },
+          "tue": {
+            "type": "string"
+          },
+          "wed": {
+            "type": "string"
+          },
+          "thu": {
+            "type": "string"
+          },
+          "fri": {
+            "type": "string"
+          },
+          "sat": {
+            "type": "string"
+          },
+          "sun": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId",
+          "stock_quantity",
+          "price",
+          "measureId",
+          "dateFrom",
+          "warehouseId"
+        ]
       },
       "UpdateStockListDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "stock_quantity": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string"
+          },
+          "measureId": {
+            "type": "string"
+          },
+          "dateFrom": {
+            "type": "string"
+          },
+          "mon": {
+            "type": "string"
+          },
+          "tue": {
+            "type": "string"
+          },
+          "wed": {
+            "type": "string"
+          },
+          "thu": {
+            "type": "string"
+          },
+          "fri": {
+            "type": "string"
+          },
+          "sat": {
+            "type": "string"
+          },
+          "sun": {
+            "type": "string"
+          }
+        }
       },
       "CreateBaseConfigDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "key_name": {
+            "type": "string"
+          },
+          "key_value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key_name",
+          "key_value"
+        ]
       },
       "UpdateBaseConfigDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "key_name": {
+            "type": "string"
+          },
+          "key_value": {
+            "type": "string"
+          }
+        }
       },
       "CreateClientDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "full_name": {
+            "type": "string"
+          },
+          "phone_number": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "address": {
+            "type": "string"
+          },
+          "birthday": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "full_name"
+        ]
       },
       "UpdateClientDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "full_name": {
+            "type": "string"
+          },
+          "phone_number": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "address": {
+            "type": "string"
+          },
+          "birthday": {
+            "type": "string"
+          }
+        }
       },
       "CreateSettlmentDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "is_closed": {
+            "type": "boolean"
+          },
+          "dt_closed": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
       },
       "UpdateSettlmentDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "is_closed": {
+            "type": "boolean"
+          },
+          "dt_closed": {
+            "type": "string"
+          }
+        }
       }
     }
   }
