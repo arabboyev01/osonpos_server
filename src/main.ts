@@ -18,7 +18,9 @@ async function bootstrap() {
       'capacitor://localhost',
       'http://192.168.1.6',
       'https://app.osonpos.com',
-      'https://dashboard.osonpos.com',
+      'https://dashboard.osonpos.com', 'file://',
+      'app://.',
+      /^vscode-webview:\/\//
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
