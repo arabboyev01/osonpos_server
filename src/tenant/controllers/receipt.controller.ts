@@ -17,7 +17,7 @@ import { Roles } from '../../auth/roles.decorator';
 
 @Controller('receipt')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('OWNER', 'ADMIN')
+@Roles('OWNER', 'ADMIN', 'EMPLOYEE')
 export class ReceiptController {
   constructor(private readonly service: InventarizationService) {}
 

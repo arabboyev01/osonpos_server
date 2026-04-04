@@ -26,7 +26,7 @@ import { Roles } from '../../auth/roles.decorator';
 
 @Controller('item-modifier')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('OWNER', 'ADMIN')
+@Roles('OWNER', 'ADMIN', 'EMPLOYEE')
 export class ItemModifierController {
   constructor(private readonly itemModifierService: ItemModifierService) {}
 

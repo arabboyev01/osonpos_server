@@ -20,7 +20,7 @@ import { Roles } from '../../auth/roles.decorator';
 
 @Controller('base-config')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('OWNER', 'ADMIN')
+@Roles('OWNER', 'ADMIN', 'EMPLOYEE')
 export class BaseConfigController {
   constructor(private readonly baseConfigService: BaseConfigService) {}
 

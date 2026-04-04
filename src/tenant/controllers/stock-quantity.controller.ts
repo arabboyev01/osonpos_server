@@ -20,7 +20,7 @@ import { Roles } from '../../auth/roles.decorator';
 
 @Controller('stock-quantity')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('OWNER', 'ADMIN')
+@Roles('OWNER', 'ADMIN', 'EMPLOYEE')
 export class StockQuantityController {
   constructor(private readonly service: InventarizationService) {}
 

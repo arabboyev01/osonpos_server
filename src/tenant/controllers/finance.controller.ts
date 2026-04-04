@@ -22,7 +22,7 @@ import { Roles } from '../../auth/roles.decorator';
 
 @Controller('finance')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('OWNER', 'ADMIN')
+@Roles('OWNER', 'ADMIN', 'EMPLOYEE')
 export class FinanceController {
   constructor(private readonly financeService: FinanceService) {}
 

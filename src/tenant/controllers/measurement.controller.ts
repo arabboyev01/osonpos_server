@@ -20,7 +20,7 @@ import { Roles } from '../../auth/roles.decorator';
 
 @Controller('measurements')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('OWNER', 'ADMIN')
+@Roles('OWNER', 'ADMIN', 'EMPLOYEE')
 export class MeasurementController {
   constructor(private readonly measurementService: MeasurementService) {}
 
