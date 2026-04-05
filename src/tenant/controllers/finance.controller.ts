@@ -34,7 +34,7 @@ export class FinanceController {
 
   @Get('taxes/all')
   findAllTaxFees(@Request() req) {
-    return this.financeService.findAllTaxFees(req.user.dbName);
+    return this.financeService.findAllTaxFees(req.user.dbName, req.user.workplaceId);
   }
 
   @Patch('taxes/update/:id')
@@ -68,7 +68,10 @@ export class FinanceController {
 
   @Get('discounts/all')
   findAllDiscounts(@Request() req) {
-    return this.financeService.findAllDiscounts(req.user.dbName);
+    return this.financeService.findAllDiscounts(
+      req.user.dbName,
+      req.user.workplaceId,
+    );
   }
 
   @Patch('discounts/update/:id')

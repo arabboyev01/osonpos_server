@@ -32,9 +32,29 @@ export class FinanceService {
     return taxFee;
   }
 
-  async findAllTaxFees(dbName: string) {
+  async findAllTaxFees(dbName: string, workplaceId?: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Tax_Fee.findMany({ where: { is_deleted: false } });
+
+    let idAutomatedPoint: string | null = null;
+    if (workplaceId) {
+      const workplace = await client.a_Workplace.findFirst({
+        where: { id: workplaceId, is_deleted: false },
+      });
+      if (workplace) {
+        idAutomatedPoint = workplace.automated_point_id;
+      }
+    }
+
+    const where: any = { is_deleted: false };
+    if (idAutomatedPoint) {
+      where.OR = [
+        { id_automated_point: idAutomatedPoint },
+        { id_automated_point: '0' },
+        { id_automated_point: null },
+      ];
+    }
+
+    return client.s_Tax_Fee.findMany({ where });
   }
 
   async findOneTaxFee(dbName: string, id: string) {
@@ -86,9 +106,29 @@ export class FinanceService {
     return discount;
   }
 
-  async findAllDiscounts(dbName: string) {
+  async findAllDiscounts(dbName: string, workplaceId?: string) {
     const client = await this.tenantService.getClient(dbName);
-    return client.s_Discount.findMany({ where: { is_deleted: false } });
+
+    let idAutomatedPoint: string | null = null;
+    if (workplaceId) {
+      const workplace = await client.a_Workplace.findFirst({
+        where: { id: workplaceId, is_deleted: false },
+      });
+      if (workplace) {
+        idAutomatedPoint = workplace.automated_point_id;
+      }
+    }
+
+    const where: any = { is_deleted: false };
+    if (idAutomatedPoint) {
+      where.OR = [
+        { id_automated_point: idAutomatedPoint },
+        { id_automated_point: '0' },
+        { id_automated_point: null },
+      ];
+    }
+
+    return client.s_Discount.findMany({ where });
   }
 
   async findOneDiscount(dbName: string, id: string) {

@@ -81,7 +81,7 @@ export class ItemModifierService {
 
     let idAutomatedPoint: string | null = null;
     if (workplaceId) {
-      const workplace = await this.prisma.a_Workplace.findFirst({
+      const workplace = await client.a_Workplace.findFirst({
         where: { id: workplaceId, is_deleted: false },
       });
       if (workplace) {
@@ -91,10 +91,7 @@ export class ItemModifierService {
 
     const where: any = { is_deleted: false };
     if (idAutomatedPoint) {
-      where.OR = [
-        { id_automated_point: idAutomatedPoint },
-        { id_automated_point: '0' },
-      ];
+      where.OR = [{ id_automated_point: idAutomatedPoint }];
     }
 
     const [items, stocks] = await Promise.all([
@@ -259,7 +256,7 @@ export class ItemModifierService {
 
     let idAutomatedPoint: string | null = null;
     if (workplaceId) {
-      const workplace = await this.prisma.a_Workplace.findFirst({
+      const workplace = await client.a_Workplace.findFirst({
         where: { id: workplaceId, is_deleted: false },
       });
       if (workplace) {
@@ -374,7 +371,7 @@ export class ItemModifierService {
 
     let idAutomatedPoint: string | null = null;
     if (workplaceId) {
-      const workplace = await this.prisma.a_Workplace.findFirst({
+      const workplace = await client.a_Workplace.findFirst({
         where: { id: workplaceId, is_deleted: false },
       });
       if (workplace) {
@@ -502,7 +499,7 @@ export class ItemModifierService {
 
     let idAutomatedPoint: string | null = null;
     if (workplaceId) {
-      const workplace = await this.prisma.a_Workplace.findFirst({
+      const workplace = await client.a_Workplace.findFirst({
         where: { id: workplaceId, is_deleted: false },
       });
       if (workplace) {
