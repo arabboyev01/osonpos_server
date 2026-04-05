@@ -46,9 +46,6 @@ export class ItemModifierService {
       }
 
       if (wId) {
-        console.log(
-          `[Item] Creating stock list for item ${item.id} in warehouse ${wId} with qty ${stock_quantity}`,
-        );
         await client.s_Stock_List.create({
           data: {
             itemId: item.id,
@@ -147,9 +144,6 @@ export class ItemModifierService {
       }
 
       if (wId) {
-        console.log(
-          `[Item Update] Updating stock for item ${id} in warehouse ${wId} to ${stock_quantity}`,
-        );
         const stock = await client.s_Stock_List.findFirst({
           where: { itemId: id, warehouseId: wId, is_deleted: false },
         });
@@ -308,9 +302,6 @@ export class ItemModifierService {
       }
 
       if (wId) {
-        console.log(
-          `[Modifier] Creating stock list for modifier ${modifier.id} in warehouse ${wId} with qty ${stock_quantity}`,
-        );
         await client.s_Stock_List.create({
           data: {
             itemId: modifier.id,
@@ -353,8 +344,6 @@ export class ItemModifierService {
         { id_automated_point: '0' },
       ];
     }
-    console.log(`[findAllModifiers] Filter:`, JSON.stringify(where));
-
     return client.s_Modifier.findMany({ where });
   }
 
@@ -393,9 +382,6 @@ export class ItemModifierService {
       }
 
       if (wId) {
-        console.log(
-          `[Modifier Update] Updating stock for modifier ${id} in warehouse ${wId} to ${stock_quantity}`,
-        );
         const stock = await client.s_Stock_List.findFirst({
           where: { itemId: id, warehouseId: wId, is_deleted: false },
         });
@@ -478,8 +464,6 @@ export class ItemModifierService {
         { id_automated_point: null },
       ];
     }
-    console.log(`[findAllModifierGroups] Filter:`, JSON.stringify(where));
-
     return client.s_ModifierGroup.findMany({ where });
   }
 

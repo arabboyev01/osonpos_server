@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 
 // Global fix: PostgreSQL raw queries return BigInt for aggregate functions.
 // Patch BigInt.prototype.toJSON so JSON.stringify handles them automatically.
@@ -19,7 +20,8 @@ async function bootstrap() {
       'capacitor://localhost',
       'http://192.168.1.6',
       'https://app.osonpos.com',
-      'https://dashboard.osonpos.com', 'file://',
+      'https://dashboard.osonpos.com',
+      'file://',
       'app://.',
       /^vscode-webview:\/\//
     ],
@@ -44,6 +46,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.useGlobalFilters(new GlobalExceptionFilter());
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
