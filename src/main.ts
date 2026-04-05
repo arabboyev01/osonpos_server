@@ -15,6 +15,7 @@ async function bootstrap() {
     origin: [
       /^http:\/\/localhost(:\d+)?$/,
       'https://osonpos.com',
+      "https://admin.osonpos.com",
       'capacitor://localhost',
       'http://192.168.1.6',
       'https://app.osonpos.com',
