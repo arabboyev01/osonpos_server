@@ -20,7 +20,7 @@ export class ItemModifierService {
     private tenantService: TenantService,
     private logService: LogService,
     private prisma: PrismaService,
-  ) {}
+  ) { }
 
   // Items
   async createItem(dbName: string, userId: string, dto: CreateItemDto) {
@@ -79,60 +79,45 @@ export class ItemModifierService {
   async findAllItems(dbName: string, workplaceId?: string) {
     const client = await this.tenantService.getClient(dbName);
 
-    let idAutomatedPoint: string | null = null;
-    if (workplaceId) {
-      const workplace = await client.a_Workplace.findFirst({
-        where: { id: workplaceId, is_deleted: false },
-      });
-      if (workplace) {
-        idAutomatedPoint = workplace.automated_point_id;
-      }
-    }
-
-    const where: any = { is_deleted: false };
-    if (idAutomatedPoint) {
-      where.OR = [{ id_automated_point: idAutomatedPoint }];
-    }
-
-    const [items, stocks] = await Promise.all([
-      client.s_Item.findMany({ where }),
-      client.s_Stock_List.findMany({ where: { is_deleted: false } }),
-    ]);
-
-    const stockMap = stocks.reduce(
-      (acc, s) => {
-        acc[s.itemId] = (acc[s.itemId] || 0) + parseFloat(s.stock_quantity);
-        return acc;
-      },
-      {} as Record<string, number>,
+    const idAutomatedPoint = await this.tenantService.getAutomatedPointId(
+      client,
+      workplaceId,
     );
+    let sql = `
+      SELECT 
+        i.*, 
+        COALESCE(SUM(CAST(NULLIF(s.stock_quantity, '') AS NUMERIC)), 0)::TEXT as stock_quantity
+      FROM "S_Item" i
+      LEFT JOIN "S_Stock_List" s ON i.id = s."itemId" AND s.is_deleted = false
+      WHERE i.is_deleted = false
+    `;
 
-    return items.map((item) => ({
-      ...item,
-      stock_quantity: (stockMap[item.id] || 0).toString(),
-    }));
+    const queryArgs: any[] = [];
+    if (idAutomatedPoint) {
+      sql += ` AND i.id_automated_point = $1`;
+      queryArgs.push(idAutomatedPoint);
+    }
+    sql += ` GROUP BY i.id`;
+
+    const items: any[] = await client.$queryRawUnsafe(sql, ...queryArgs);
+
+    return items;
   }
 
   async findOneItem(dbName: string, id: string) {
     const client = await this.tenantService.getClient(dbName);
-    const [item, stocks] = await Promise.all([
-      client.s_Item.findFirst({ where: { id, is_deleted: false } }),
-      client.s_Stock_List.findMany({
-        where: { itemId: id, is_deleted: false },
-      }),
-    ]);
+    const sql = `
+      SELECT 
+        i.*, 
+        COALESCE(SUM(CAST(NULLIF(s.stock_quantity, '') AS NUMERIC)), 0)::TEXT as stock_quantity
+      FROM "S_Item" i
+      LEFT JOIN "S_Stock_List" s ON i.id = s."itemId" AND s.is_deleted = false
+      WHERE i.id = $1 AND i.is_deleted = false
+      GROUP BY i.id
+    `;
 
-    if (!item) return null;
-
-    const totalStock = stocks.reduce(
-      (sum, s) => sum + parseFloat(s.stock_quantity),
-      0,
-    );
-
-    return {
-      ...item,
-      stock_quantity: totalStock.toString(),
-    };
+    const result: any[] = await client.$queryRawUnsafe(sql, id);
+    return result.length > 0 ? result[0] : null;
   }
 
   async updateItem(
@@ -143,24 +128,17 @@ export class ItemModifierService {
   ) {
     const client = await this.tenantService.getClient(dbName);
     const { stock_quantity, warehouseId, ...itemData } = dto;
-    const [item, stocks] = await Promise.all([
-      client.s_Item.update({ where: { id }, data: itemData }),
-      client.s_Stock_List.findMany({
-        where: { itemId: id, is_deleted: false },
-      }),
-    ]);
+    const item = await client.s_Item.update({ where: { id }, data: itemData });
 
     if (stock_quantity) {
       let wId = warehouseId;
       if (!wId) {
-        // Try to find if this item already has stock in SOME warehouse
         const existingStock = await client.s_Stock_List.findFirst({
           where: { itemId: id, is_deleted: false },
         });
         if (existingStock) {
           wId = existingStock.warehouseId;
         } else {
-          // Fallback to first available warehouse
           const warehouse = await client.s_Warehouse.findFirst({
             where: { is_deleted: false },
           });
@@ -254,15 +232,10 @@ export class ItemModifierService {
   async findAllItemGroups(dbName: string, workplaceId?: string) {
     const client = await this.tenantService.getClient(dbName);
 
-    let idAutomatedPoint: string | null = null;
-    if (workplaceId) {
-      const workplace = await client.a_Workplace.findFirst({
-        where: { id: workplaceId, is_deleted: false },
-      });
-      if (workplace) {
-        idAutomatedPoint = workplace.automated_point_id;
-      }
-    }
+    const idAutomatedPoint = await this.tenantService.getAutomatedPointId(
+      client,
+      workplaceId,
+    );
 
     const where: any = { is_deleted: false };
     if (idAutomatedPoint) {
@@ -272,7 +245,6 @@ export class ItemModifierService {
         { id_automated_point: null },
       ];
     }
-
     return client.s_Item_Group.findMany({ where });
   }
 
@@ -369,15 +341,10 @@ export class ItemModifierService {
   async findAllModifiers(dbName: string, workplaceId?: string) {
     const client = await this.tenantService.getClient(dbName);
 
-    let idAutomatedPoint: string | null = null;
-    if (workplaceId) {
-      const workplace = await client.a_Workplace.findFirst({
-        where: { id: workplaceId, is_deleted: false },
-      });
-      if (workplace) {
-        idAutomatedPoint = workplace.automated_point_id;
-      }
-    }
+    const idAutomatedPoint = await this.tenantService.getAutomatedPointId(
+      client,
+      workplaceId,
+    );
 
     const where: any = { is_deleted: false };
     if (idAutomatedPoint) {
@@ -386,6 +353,7 @@ export class ItemModifierService {
         { id_automated_point: '0' },
       ];
     }
+    console.log(`[findAllModifiers] Filter:`, JSON.stringify(where));
 
     return client.s_Modifier.findMany({ where });
   }
@@ -497,15 +465,10 @@ export class ItemModifierService {
   async findAllModifierGroups(dbName: string, workplaceId?: string) {
     const client = await this.tenantService.getClient(dbName);
 
-    let idAutomatedPoint: string | null = null;
-    if (workplaceId) {
-      const workplace = await client.a_Workplace.findFirst({
-        where: { id: workplaceId, is_deleted: false },
-      });
-      if (workplace) {
-        idAutomatedPoint = workplace.automated_point_id;
-      }
-    }
+    const idAutomatedPoint = await this.tenantService.getAutomatedPointId(
+      client,
+      workplaceId,
+    );
 
     const where: any = { is_deleted: false };
     if (idAutomatedPoint) {
@@ -515,6 +478,7 @@ export class ItemModifierService {
         { id_automated_point: null },
       ];
     }
+    console.log(`[findAllModifierGroups] Filter:`, JSON.stringify(where));
 
     return client.s_ModifierGroup.findMany({ where });
   }

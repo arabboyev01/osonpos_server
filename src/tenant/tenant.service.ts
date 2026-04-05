@@ -45,4 +45,15 @@ export class TenantService implements OnModuleDestroy {
       await pool.end();
     }
   }
+
+  async getAutomatedPointId(
+    client: any,
+    workplaceId?: string,
+  ): Promise<string | null> {
+    if (!workplaceId) return null;
+    const workplace = await client.a_Workplace.findFirst({
+      where: { id: workplaceId, is_deleted: false },
+    });
+    return workplace ? workplace.automated_point_id : null;
+  }
 }

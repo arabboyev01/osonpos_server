@@ -12,7 +12,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private prisma: PrismaService,
   ) {
     const secret = process.env.JWT_SECRET || 'defaultSecret';
-    console.log('Validating with Secret:', secret);
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -21,7 +20,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    console.log('JWT Payload:', payload);
     if (payload.sub === 'static_admin_id') {
       return {
         id: payload.sub,
