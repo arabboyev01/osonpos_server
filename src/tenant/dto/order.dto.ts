@@ -42,6 +42,10 @@ export class OrderDiscountDto {
 
   @IsString()
   @IsOptional()
+  order_id?: string;
+
+  @IsString()
+  @IsOptional()
   discount_value?: string;
 
   @IsString()

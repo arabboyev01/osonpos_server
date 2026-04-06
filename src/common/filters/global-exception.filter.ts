@@ -38,7 +38,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       detail: process.env.NODE_ENV === 'production' ? null : (detail || null),
     };
 
-    // Also log the error to the console for the developer
     console.error(`[GlobalExceptionFilter] ${request.method} ${request.url}`, exception);
 
     response.status(status).json(responseBody);

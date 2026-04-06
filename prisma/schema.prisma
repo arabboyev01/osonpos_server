@@ -406,7 +406,7 @@ model T_Order_Discount {
   id               String   @id @default(uuid())
   order_id         String?
   item_id          String?
-  discount_amount  String?
+  discount_value   String?
   discount_percent String?
   discount_id      String?
   is_deleted       Boolean  @default(false)

@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
   Param,
@@ -18,7 +17,7 @@ import { Roles } from '../../auth/roles.decorator';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('OWNER', 'ADMIN', 'EMPLOYEE')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(private readonly orderService: OrderService) { }
 
   @Post('create')
   create(@Request() req, @Body() dto: CreateOrderDto) {
@@ -28,21 +27,6 @@ export class OrderController {
   @Post('update/:id')
   update(@Request() req, @Param('id') id: string, @Body() dto: UpdateOrderDto) {
     return this.orderService.update(req.user.dbName, id, dto, req.user.id);
-  }
-
-  @Get('all')
-  findAll(@Request() req) {
-    return this.orderService.findAll(req.user.dbName);
-  }
-
-  @Get('last-open')
-  findLastOpen(@Request() req) {
-    return this.orderService.findLastOpen(req.user.dbName);
-  }
-
-  @Get(':id')
-  findOne(@Request() req, @Param('id') id: string) {
-    return this.orderService.findOne(req.user.dbName, id);
   }
 
   @Delete('delete/:id')

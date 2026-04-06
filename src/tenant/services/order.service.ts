@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { TenantService } from '../tenant.service';
 import { CreateOrderDto, UpdateOrderDto } from '../dto/order.dto';
 import { LogService } from './log.service';
-import { S_Logs_Type } from '@prisma/client';
 import { InventarizationService } from './inventarization.service';
 
 @Injectable()
@@ -11,22 +10,19 @@ export class OrderService {
     private tenantService: TenantService,
     private logService: LogService,
     private inventarizationService: InventarizationService,
-  ) {}
+  ) { }
 
   async create(dbName: string, dto: CreateOrderDto, userId: string) {
     const client = await this.tenantService.getClient(dbName);
-    const { items, discounts, taxes, delivery, payments, ...orderData } = dto;
+    const { items, discounts, taxes, delivery, ...orderData } = dto;
 
-    // Use the authenticated employee's ID
     orderData.employee_id = userId;
 
     return client.$transaction(async (tx) => {
-      // 1. Create Order
       const order = await tx.d_Order.create({
         data: orderData as any,
       });
 
-      // 2. Create Items
       if (items && items.length > 0) {
         await tx.t_Order_Item.createMany({
           data: items.map((item) => ({
@@ -37,17 +33,16 @@ export class OrderService {
         });
       }
 
-      // 3. Create Discounts
       if (discounts && discounts.length > 0) {
         await tx.t_Order_Discount.createMany({
           data: discounts.map((d) => ({
             ...d,
             order_id: order.id,
+            item_id: d.item_id || null,
           })),
         });
       }
 
-      // 4. Create Taxes
       if (taxes && taxes.length > 0) {
         await tx.t_Order_Item_Tax.createMany({
           data: taxes.map((t) => ({
@@ -69,19 +64,6 @@ export class OrderService {
         });
       }
 
-      // 5. Create Payments
-      if (payments && payments.length > 0) {
-        await tx.t_Order_Payment.createMany({
-          data: payments.map((p) => ({
-            ...p,
-            order_id: order.id,
-            employee_id: userId,
-            workplace_id: order.workplace_id,
-          })),
-        });
-      }
-
-      // Log order creation
       await this.logService.recordLog(
         dbName,
         userId,
@@ -90,8 +72,6 @@ export class OrderService {
         order,
       );
 
-      // Update Stock (outside transaction for now given existing updateStockQuantity implementation)
-      // We look up the items to get their measurement units
       const itemIds = items.map((i) => i.item_id);
       const sItems = await tx.s_Item.findMany({
         where: { id: { in: itemIds } },
@@ -135,10 +115,6 @@ export class OrderService {
     const client = await this.tenantService.getClient(dbName);
     const { items, discounts, taxes, delivery, payments, ...orderData } = dto;
 
-    // Use the authenticated employee's ID for audit trail if needed,
-    // though the order record probably stores only the initial employee_id.
-    // If the requirement is to TRACK who updated it, we might need a separate field.
-    // However, the user said "you provide employee id inside the server", so I'll follow that.
     (orderData as any).employee_id = userId;
 
     return client.$transaction(async (tx) => {
@@ -161,26 +137,22 @@ export class OrderService {
             data: items.map((item) => ({
               ...item,
               order_id: id,
-              employee_id: userId, // Use the one who UPDATED it for the items as well
+              employee_id: userId,
             })),
           });
         }
       }
 
-      // 3. Update Discounts
-      if (discounts !== undefined) {
-        await tx.t_Order_Discount.deleteMany({ where: { order_id: id } });
-        if (discounts.length > 0) {
-          await tx.t_Order_Discount.createMany({
-            data: discounts.map((d) => ({
-              ...d,
-              order_id: id,
-            })),
-          });
-        }
+      if (discounts && discounts.length > 0) {
+        await tx.t_Order_Discount.createMany({
+          data: discounts.map((d) => ({
+            ...d,
+            order_id: order.id,
+            item_id: d.item_id || null,
+          })),
+        });
       }
 
-      // 4. Update Taxes
       if (taxes !== undefined) {
         await tx.t_Order_Item_Tax.deleteMany({ where: { order_id: id } });
         if (taxes.length > 0) {
@@ -193,7 +165,6 @@ export class OrderService {
         }
       }
 
-      // 5. Update Delivery
       if (delivery !== undefined) {
         if (delivery === null) {
           await tx.t_Order_Delivery.deleteMany({ where: { order_id: id } });
@@ -225,7 +196,6 @@ export class OrderService {
         }
       }
 
-      // 6. Update Payments
       if (payments !== undefined) {
         await tx.t_Order_Payment.deleteMany({ where: { order_id: id } });
         if (payments.length > 0) {
@@ -251,70 +221,6 @@ export class OrderService {
 
       return order;
     });
-  }
-
-  async findAll(dbName: string) {
-    const client = await this.tenantService.getClient(dbName);
-    return client.d_Order.findMany({
-      where: { is_deleted: false },
-      orderBy: { dt_created: 'desc' },
-    });
-  }
-
-  async findOne(dbName: string, id: string) {
-    const client = await this.tenantService.getClient(dbName);
-    const order = await client.d_Order.findFirst({
-      where: {
-        id,
-        is_deleted: false,
-      },
-    });
-
-    if (!order) return null;
-
-    const [items, discounts, taxes, delivery, payments] = await Promise.all([
-      client.t_Order_Item.findMany({
-        where: { order_id: id, is_deleted: false },
-      }),
-      client.t_Order_Discount.findMany({
-        where: { order_id: id, is_deleted: false },
-      }),
-      client.t_Order_Item_Tax.findMany({
-        where: { order_id: id, is_deleted: false },
-      }),
-      client.t_Order_Delivery.findFirst({
-        where: { order_id: id, is_deleted: false },
-      }),
-      client.t_Order_Payment.findMany({
-        where: { order_id: id, is_deleted: false },
-      }),
-    ]);
-
-    return {
-      ...order,
-      items,
-      discounts,
-      taxes,
-      delivery,
-      payments,
-    };
-  }
-
-  async findLastOpen(dbName: string) {
-    const client = await this.tenantService.getClient(dbName);
-    const order = await client.d_Order.findFirst({
-      where: {
-        is_closed: false,
-        is_deleted: false,
-      },
-      orderBy: {
-        dt_created: 'desc',
-      },
-    });
-
-    if (!order) return null;
-
-    return this.findOne(dbName, order.id);
   }
 
   async remove(dbName: string, id: string) {
