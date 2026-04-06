@@ -91,7 +91,7 @@ export class ItemModifierService {
 
     const queryArgs: any[] = [];
     if (idAutomatedPoint) {
-      sql += ` AND i.id_automated_point = $1`;
+      sql += ` AND i."id_automated_point" = $1`;
       queryArgs.push(idAutomatedPoint);
     }
     sql += ` GROUP BY i.id`;
