@@ -48,6 +48,7 @@ export class OrderService {
           data: taxes.map((t) => ({
             ...t,
             order_id: order.id,
+            item_id: t.item_id || null,
           })),
         });
       }
