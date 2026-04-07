@@ -1,0 +1,81 @@
+import { EmployeeService } from '../services/employee.service';
+import { CreateEmployeeDto, UpdateEmployeeDto } from '../dto/employee.dto';
+export declare class EmployeeController {
+    private readonly employeeService;
+    constructor(employeeService: EmployeeService);
+    create(req: any, dto: CreateEmployeeDto): Promise<{
+        full_name: string;
+        id: string;
+        is_deleted: boolean;
+        dt_created: Date;
+        dt_updated: Date;
+        guid: string | null;
+        email: string | null;
+        role_id: string;
+        employee_address: string | null;
+        workplace_id: string | null;
+        telegram_id: string | null;
+        phone_number: string | null;
+        notes: string | null;
+    }>;
+    findAll(req: any): Promise<{
+        full_name: string;
+        id: string;
+        is_deleted: boolean;
+        dt_created: Date;
+        dt_updated: Date;
+        guid: string | null;
+        email: string | null;
+        role_id: string;
+        employee_address: string | null;
+        workplace_id: string | null;
+        telegram_id: string | null;
+        phone_number: string | null;
+        notes: string | null;
+    }[]>;
+    findOne(req: any, id: string): Promise<{
+        full_name: string;
+        id: string;
+        is_deleted: boolean;
+        dt_created: Date;
+        dt_updated: Date;
+        guid: string | null;
+        email: string | null;
+        role_id: string;
+        employee_address: string | null;
+        workplace_id: string | null;
+        telegram_id: string | null;
+        phone_number: string | null;
+        notes: string | null;
+    }>;
+    update(req: any, id: string, dto: UpdateEmployeeDto): Promise<{
+        full_name: string;
+        id: string;
+        is_deleted: boolean;
+        dt_created: Date;
+        dt_updated: Date;
+        guid: string | null;
+        email: string | null;
+        role_id: string;
+        employee_address: string | null;
+        workplace_id: string | null;
+        telegram_id: string | null;
+        phone_number: string | null;
+        notes: string | null;
+    }>;
+    remove(req: any, id: string): Promise<{
+        full_name: string;
+        id: string;
+        is_deleted: boolean;
+        dt_created: Date;
+        dt_updated: Date;
+        guid: string | null;
+        email: string | null;
+        role_id: string;
+        employee_address: string | null;
+        workplace_id: string | null;
+        telegram_id: string | null;
+        phone_number: string | null;
+        notes: string | null;
+    }>;
+}
