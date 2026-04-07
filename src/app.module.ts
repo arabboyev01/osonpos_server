@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { TenantModule } from './tenant/tenant.module';
 import { AdminModule } from './admin/admin.module';
+import { AiChatModule } from './ai-chat/ai-chat.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AdminModule } from './admin/admin.module';
     AuthModule,
     TenantModule,
     AdminModule,
+    AiChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

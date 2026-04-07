@@ -159,7 +159,7 @@ model S_Item_Group {
   cost               String?
   shtrix             String?
   color              String?
-  id_automated_point String?      @default("0")
+  id_automated_point String?     @default("0")
   tax_id             String?
   discount_id        String?
   pictures           String[]    @default([])
@@ -234,7 +234,7 @@ model S_ModifierGroup {
   cost               String?
   shtrix             String?
   color              String?
-  id_automated_point String?      @default("0")
+  id_automated_point String?     @default("0")
   tax_id             String?
   discount_id        String?
   pictures           String[]    @default([])
@@ -659,4 +659,24 @@ model S_Settlments {
   is_closed  Boolean   @default(false)
   dt_created DateTime  @default(now())
   dt_updated DateTime  @updatedAt
+}
+
+// AI chat Models
+
+model Chat_Session {
+  id          String   @id @default(uuid())
+  name        String
+  is_deleted  Boolean  @default(false)
+  dt_created  DateTime @default(now())
+  dt_updated  DateTime @updatedAt
+}
+
+model Chat_History {
+  id         String   @id @default(uuid())
+  role       String
+  message    String
+  session_id String
+  is_deleted Boolean  @default(false)
+  dt_created DateTime @default(now())
+  dt_updated DateTime @updatedAt
 }
