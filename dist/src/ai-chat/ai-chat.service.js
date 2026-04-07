@@ -104,16 +104,22 @@ let AiChatService = AiChatService_1 = class AiChatService {
     getDatabaseSchemaInfo() {
         return `
       TABLES (Use double quotes for table names exactly as shown):
-      - "D_Order": order sales. Columns: id, order_id, subtotal, total_sum, total_discount, total_tax, employee_id, client_id, dt_created, is_closed, is_voided, is_refunded.
+      - "D_Order": order sales. Columns: id, order_id, subtotal, total_sum, total_discount, total_tax, employee_id, client_id, automated_point_id, workplace_id, dt_created, is_closed, is_voided, is_refunded.
       - "T_Order_Item": items within orders. Columns: id, order_id, item_id, quantity, price, subtotal, dt_created.
-      - "S_Item": menu/products info. Columns: id, name, measurement, price, cost, type, id_automated_point.
+      - "S_Item": menu/products info. Columns: id, group_id, name, measurement, price, cost, type, id_automated_point.
+      - "S_Item_Group": product categories/groups. Columns: id, name.
       - "S_Clients": customer database. Columns: id, full_name, phone_number, email.
-      - "S_Employee": staff members. Columns: id, full_name, role_id.
+      - "S_Employee": staff members. Columns: id, full_name, role_id, workplace_id.
+      - "S_Employee_Role": staff roles/permissions. Columns: id, name.
       - "S_Stock_List": inventory levels. Columns: itemId, stock_quantity, price, warehouseId.
       - "S_Warehouse": storage locations. Columns: id, name.
+      - "A_Automated_Point": sales points/outlets. Columns: id, name.
+      - "A_Workplace": specific registers/terminals. Columns: id, name, automated_point_id.
+      - "S_Payment_Type": available payment methods (Cash, Card, etc.). Columns: id, name.
+      - "T_Order_Payment": payments made for orders. Columns: id, order_id, payment_type_id, paid_sum, dt_created.
 
       CRITICAL RULES for SQL:
-      1. All numeric fields (total_sum, price, quantity, cost, etc.) are stored as String. You MUST use CAST(field AS DECIMAL) for math.
+      1. All numeric fields (total_sum, price, quantity, cost, paid_sum, etc.) are stored as String. You MUST use CAST(field AS DECIMAL) for math.
       2. Filter out deleted records using "is_deleted = false" where applicable.
       3. Use PostgreSQL syntax.
       4. Only use SELECT queries. NEVER perform INSERT, UPDATE, or DELETE.
@@ -121,6 +127,11 @@ let AiChatService = AiChatService_1 = class AiChatService {
       6. Table names MUST be double-quoted (e.g., SELECT * FROM "D_Order") because they are case-sensitive.
       7. Join "T_Order_Item" with "S_Item" on item_id = "S_Item".id.
       8. Join "T_Order_Item" with "D_Order" on "T_Order_Item".order_id = "D_Order".id.
+      9. Join "D_Order" with "A_Automated_Point" on automated_point_id = "A_Automated_Point".id.
+      10. Join "T_Order_Payment" with "S_Payment_Type" on payment_type_id = "S_Payment_Type".id.
+      11. Join "T_Order_Payment" with "D_Order" on "T_Order_Payment".order_id = "D_Order".id.
+      12. Join "S_Item" with "S_Item_Group" on group_id = "S_Item_Group".id.
+      13. Join "S_Employee" with "S_Employee_Role" on role_id = "S_Employee_Role".id.
     `;
     }
     async *generateStreamResponse(dbName, sessionId, message) {
