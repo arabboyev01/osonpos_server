@@ -1,0 +1,81 @@
+import { TenantService } from '../tenant.service';
+import { CreateEmployeeDto, UpdateEmployeeDto } from '../dto/employee.dto';
+export declare class EmployeeService {
+    private tenantService;
+    constructor(tenantService: TenantService);
+    create(dbName: string, dto: CreateEmployeeDto): Promise<{
+        full_name: string;
+        id: string;
+        is_deleted: boolean;
+        dt_created: Date;
+        dt_updated: Date;
+        guid: string | null;
+        email: string | null;
+        role_id: string;
+        employee_address: string | null;
+        workplace_id: string | null;
+        telegram_id: string | null;
+        phone_number: string | null;
+        notes: string | null;
+    }>;
+    findAll(dbName: string): Promise<{
+        full_name: string;
+        id: string;
+        is_deleted: boolean;
+        dt_created: Date;
+        dt_updated: Date;
+        guid: string | null;
+        email: string | null;
+        role_id: string;
+        employee_address: string | null;
+        workplace_id: string | null;
+        telegram_id: string | null;
+        phone_number: string | null;
+        notes: string | null;
+    }[]>;
+    findOne(dbName: string, id: string): Promise<{
+        full_name: string;
+        id: string;
+        is_deleted: boolean;
+        dt_created: Date;
+        dt_updated: Date;
+        guid: string | null;
+        email: string | null;
+        role_id: string;
+        employee_address: string | null;
+        workplace_id: string | null;
+        telegram_id: string | null;
+        phone_number: string | null;
+        notes: string | null;
+    }>;
+    update(dbName: string, id: string, dto: UpdateEmployeeDto): Promise<{
+        full_name: string;
+        id: string;
+        is_deleted: boolean;
+        dt_created: Date;
+        dt_updated: Date;
+        guid: string | null;
+        email: string | null;
+        role_id: string;
+        employee_address: string | null;
+        workplace_id: string | null;
+        telegram_id: string | null;
+        phone_number: string | null;
+        notes: string | null;
+    }>;
+    remove(dbName: string, id: string): Promise<{
+        full_name: string;
+        id: string;
+        is_deleted: boolean;
+        dt_created: Date;
+        dt_updated: Date;
+        guid: string | null;
+        email: string | null;
+        role_id: string;
+        employee_address: string | null;
+        workplace_id: string | null;
+        telegram_id: string | null;
+        phone_number: string | null;
+        notes: string | null;
+    }>;
+}
