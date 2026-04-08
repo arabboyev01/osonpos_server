@@ -284,6 +284,10 @@ export class AuthService {
 
     const { password, ...employeeInfo } = authenticatedEmployee;
 
+    const role = await client.s_Employee_Role.findFirst({
+      where: { id: authenticatedEmployee.role_id, is_deleted: false },
+    });
+
     // Log employee login
     this.log(
       dbName,
@@ -295,7 +299,10 @@ export class AuthService {
 
     return {
       message: 'Login successful',
-      employee: employeeInfo,
+      employee: {
+        ...employeeInfo,
+        role: role,
+      },
       workplaceId: workplace.id,
       automated_point_id: workplace.automated_point_id,
       dbName: dbName,
