@@ -15,10 +15,12 @@ async function generateSwagger() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  
+
   const outputPath = path.resolve(process.cwd(), 'swagger.json');
-  fs.writeFileSync(outputPath, JSON.stringify(document, null, 2), { encoding: 'utf8' });
-  
+  fs.writeFileSync(outputPath, JSON.stringify(document, null, 2), {
+    encoding: 'utf8',
+  });
+
   console.log(`Swagger JSON successfully generated at: ${outputPath}`);
   process.exit(0);
 }

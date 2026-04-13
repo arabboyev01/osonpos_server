@@ -17,7 +17,7 @@ import { Roles } from '../../auth/roles.decorator';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('OWNER', 'ADMIN', 'EMPLOYEE')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) { }
+  constructor(private readonly orderService: OrderService) {}
 
   @Post('create')
   create(@Request() req, @Body() dto: CreateOrderDto) {

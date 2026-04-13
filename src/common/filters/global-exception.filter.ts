@@ -35,10 +35,13 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
       message: message,
-      detail: process.env.NODE_ENV === 'production' ? null : (detail || null),
+      detail: process.env.NODE_ENV === 'production' ? null : detail || null,
     };
 
-    console.error(`[GlobalExceptionFilter] ${request.method} ${request.url}`, exception);
+    console.error(
+      `[GlobalExceptionFilter] ${request.method} ${request.url}`,
+      exception,
+    );
 
     response.status(status).json(responseBody);
   }
