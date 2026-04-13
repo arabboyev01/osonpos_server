@@ -8,7 +8,7 @@ import { AdminLoginDto } from './dto/admin-auth.dto';
 
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly adminService: AdminService) { }
+  constructor(private readonly adminService: AdminService) {}
 
   @Post('login')
   async login(@Body() dto: AdminLoginDto) {

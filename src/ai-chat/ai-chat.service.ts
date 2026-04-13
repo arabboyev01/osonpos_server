@@ -16,7 +16,7 @@ export class AiChatService {
     const apiKey = this.config.get<string>('GEMINI_API_KEY');
     if (apiKey) {
       this.genAI = new GoogleGenerativeAI(apiKey);
-      this.model = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     } else {
       this.logger.warn('GEMINI_API_KEY is not set in environment variables');
     }
@@ -133,7 +133,11 @@ export class AiChatService {
     `;
   }
 
-  async *generateStreamResponse(dbName: string, sessionId: string, message: string) {
+  async *generateStreamResponse(
+    dbName: string,
+    sessionId: string,
+    message: string,
+  ) {
     if (!this.model) {
       throw new Error('AI Service not initialized. Please set GEMINI_API_KEY.');
     }
@@ -168,7 +172,14 @@ export class AiChatService {
     const chat = this.model.startChat({
       history: [
         { role: 'user', parts: [{ text: systemPrompt }] },
-        { role: 'model', parts: [{ text: "Understood. I will help you with insights and SQL queries." }] },
+        {
+          role: 'model',
+          parts: [
+            {
+              text: 'Understood. I will help you with insights and SQL queries.',
+            },
+          ],
+        },
       ],
     });
 
@@ -180,11 +191,11 @@ export class AiChatService {
     if (sqlMatch) {
       const sql = sqlMatch[1].trim();
       this.logger.log(`Executing SQL: ${sql}`);
-      
+
       try {
         // Cast query results to JSON
         const data = await tenantPrisma.$queryRawUnsafe(sql);
-        
+
         // 4. Final analysis with data (Streaming)
         const analysisPrompt = `
           The user asked: ${message}
@@ -213,7 +224,8 @@ export class AiChatService {
         });
       } catch (err) {
         this.logger.error('SQL Execution failed', err);
-        const errorMsg = "I attempted to query the database but encountered an error. Please refine your question.";
+        const errorMsg =
+          'I attempted to query the database but encountered an error. Please refine your question.';
         yield errorMsg;
         await tenantPrisma.chat_History.create({
           data: { session_id: sessionId, role: 'model', message: errorMsg },

@@ -664,11 +664,11 @@ model S_Settlments {
 // AI chat Models
 
 model Chat_Session {
-  id          String   @id @default(uuid())
-  name        String
-  is_deleted  Boolean  @default(false)
-  dt_created  DateTime @default(now())
-  dt_updated  DateTime @updatedAt
+  id         String   @id @default(uuid())
+  name       String
+  is_deleted Boolean  @default(false)
+  dt_created DateTime @default(now())
+  dt_updated DateTime @updatedAt
 }
 
 model Chat_History {
@@ -679,4 +679,47 @@ model Chat_History {
   is_deleted Boolean  @default(false)
   dt_created DateTime @default(now())
   dt_updated DateTime @updatedAt
+}
+
+// Natural chat Models
+
+enum T_Chat_Type {
+  GROUP
+  CHAT
+}
+
+model Natural_Chat_Session {
+  id                       String                      @id @default(uuid())
+  chat_type                T_Chat_Type
+  name                     String?
+  is_deleted               Boolean                     @default(false)
+  dt_created               DateTime                    @default(now())
+  dt_updated               DateTime                    @updatedAt
+  naturalChatParticipiants Natural_Chat_Participiant[]
+  naturalChatHistories     Natural_Chat_History[]
+}
+
+model Natural_Chat_Participiant {
+  id          String               @id @default(uuid())
+  employee_id String
+  session_id  String
+  is_deleted  Boolean              @default(false)
+  dt_created  DateTime             @default(now())
+  dt_updated  DateTime             @updatedAt
+  session     Natural_Chat_Session @relation(fields: [session_id], references: [id])
+
+  @@unique([employee_id, session_id])
+}
+
+model Natural_Chat_History {
+  id          String               @id @default(uuid())
+  employee_id String
+  message     String
+  session_id  String
+  is_deleted  Boolean              @default(false)
+  dt_created  DateTime             @default(now())
+  dt_updated  DateTime             @updatedAt
+  session     Natural_Chat_Session @relation(fields: [session_id], references: [id])
+
+  @@index([session_id, dt_created])
 }

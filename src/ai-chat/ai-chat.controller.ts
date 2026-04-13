@@ -1,4 +1,16 @@
-import { Controller, Post, Body, Get, Param, Res, HttpStatus, UseGuards, Request, Patch, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Res,
+  HttpStatus,
+  UseGuards,
+  Request,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 import { AiChatService } from './ai-chat.service';
 import * as express from 'express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -24,7 +36,11 @@ export class AiChatController {
   }
 
   @Patch('session/:id')
-  async updateSession(@Request() req, @Param('id') id: string, @Body() body: { name: string }) {
+  async updateSession(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() body: { name: string },
+  ) {
     return this.aiChatService.updateSession(req.user.dbName, id, body.name);
   }
 
@@ -34,7 +50,11 @@ export class AiChatController {
   }
 
   @Patch('history/:id')
-  async updateHistory(@Request() req, @Param('id') id: string, @Body() body: { message: string }) {
+  async updateHistory(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() body: { message: string },
+  ) {
     return this.aiChatService.updateHistory(req.user.dbName, id, body.message);
   }
 

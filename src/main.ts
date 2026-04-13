@@ -16,14 +16,14 @@ async function bootstrap() {
     origin: [
       /^http:\/\/localhost(:\d+)?$/,
       'https://osonpos.com',
-      "https://admin.osonpos.com",
+      'https://admin.osonpos.com',
       'capacitor://localhost',
       'http://192.168.1.6',
       'https://app.osonpos.com',
       'https://dashboard.osonpos.com',
       'file://',
       'app://.',
-      /^vscode-webview:\/\//
+      /^vscode-webview:\/\//,
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,

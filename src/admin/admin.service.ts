@@ -46,18 +46,22 @@ export class AdminService {
     });
 
     return businesses.map((business) => {
-      const businessOwner = users.find((user) => user.business_id === business.id);
+      const businessOwner = users.find(
+        (user) => user.business_id === business.id,
+      );
       return {
         ...business,
-        owner: businessOwner ? {
-          id: businessOwner.id,
-          login: businessOwner.login,
-          full_name: businessOwner.full_name,
-          role: businessOwner.role,
-          public_name: businessOwner.public_name,
-          email: businessOwner.details, // If business table doesn't have it, maybe it is in user details
-          dt_created: businessOwner.dt_created,
-        } : null,
+        owner: businessOwner
+          ? {
+              id: businessOwner.id,
+              login: businessOwner.login,
+              full_name: businessOwner.full_name,
+              role: businessOwner.role,
+              public_name: businessOwner.public_name,
+              email: businessOwner.details, // If business table doesn't have it, maybe it is in user details
+              dt_created: businessOwner.dt_created,
+            }
+          : null,
       };
     });
   }

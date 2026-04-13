@@ -10,7 +10,7 @@ export class OrderService {
     private tenantService: TenantService,
     private logService: LogService,
     private inventarizationService: InventarizationService,
-  ) { }
+  ) {}
 
   async create(dbName: string, dto: CreateOrderDto, userId: string) {
     const client = await this.tenantService.getClient(dbName);

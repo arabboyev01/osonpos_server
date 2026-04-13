@@ -20,7 +20,7 @@ export class ItemModifierService {
     private tenantService: TenantService,
     private logService: LogService,
     private prisma: PrismaService,
-  ) { }
+  ) {}
 
   // Items
   async createItem(dbName: string, userId: string, dto: CreateItemDto) {
