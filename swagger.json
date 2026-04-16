@@ -816,7 +816,17 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1400,71 +1410,6 @@
         "responses": {
           "201": {
             "description": ""
-          }
-        },
-        "tags": [
-          "Order"
-        ]
-      }
-    },
-    "/orders/all": {
-      "get": {
-        "operationId": "OrderController_findAll",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Order"
-        ]
-      }
-    },
-    "/orders/last-open": {
-      "get": {
-        "operationId": "OrderController_findLastOpen",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Order"
-        ]
-      }
-    },
-    "/orders/{id}": {
-      "get": {
-        "operationId": "OrderController_findOne",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
           }
         },
         "tags": [
@@ -3169,6 +3114,293 @@
           "Settlment"
         ]
       }
+    },
+    "/admin/login": {
+      "post": {
+        "operationId": "AdminController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/admin/registered-businesses": {
+      "get": {
+        "operationId": "AdminController_getRegisteredBusinesses",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/admin/users-list": {
+      "get": {
+        "operationId": "AdminController_getAllUsers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/ai-chat/session": {
+      "post": {
+        "operationId": "AiChatController_createSession",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AiChat"
+        ]
+      }
+    },
+    "/ai-chat/sessions": {
+      "get": {
+        "operationId": "AiChatController_getSessions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AiChat"
+        ]
+      }
+    },
+    "/ai-chat/history/{session_id}": {
+      "get": {
+        "operationId": "AiChatController_getHistory",
+        "parameters": [
+          {
+            "name": "session_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AiChat"
+        ]
+      }
+    },
+    "/ai-chat/session/{id}": {
+      "patch": {
+        "operationId": "AiChatController_updateSession",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AiChat"
+        ]
+      },
+      "delete": {
+        "operationId": "AiChatController_deleteSession",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AiChat"
+        ]
+      }
+    },
+    "/ai-chat/history/{id}": {
+      "patch": {
+        "operationId": "AiChatController_updateHistory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AiChat"
+        ]
+      },
+      "delete": {
+        "operationId": "AiChatController_deleteHistory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AiChat"
+        ]
+      }
+    },
+    "/ai-chat/message": {
+      "post": {
+        "operationId": "AiChatController_sendMessage",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "AiChat"
+        ]
+      }
+    },
+    "/natural-chat/session": {
+      "post": {
+        "operationId": "NaturalChatController_createSession",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "NaturalChat"
+        ]
+      }
+    },
+    "/natural-chat/sessions": {
+      "get": {
+        "operationId": "NaturalChatController_getSessions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "NaturalChat"
+        ]
+      }
+    },
+    "/natural-chat/history/{session_id}": {
+      "get": {
+        "operationId": "NaturalChatController_getHistory",
+        "parameters": [
+          {
+            "name": "session_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "NaturalChat"
+        ]
+      }
+    },
+    "/natural-chat/employees": {
+      "get": {
+        "operationId": "NaturalChatController_getEmployees",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "NaturalChat"
+        ]
+      }
     }
   },
   "info": {
@@ -4250,6 +4482,9 @@
         "type": "object",
         "properties": {
           "item_id": {
+            "type": "string"
+          },
+          "order_id": {
             "type": "string"
           },
           "discount_value": {
@@ -5416,6 +5651,23 @@
             "type": "string"
           }
         }
+      },
+      "AdminLoginDto": {
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string",
+            "example": "osonpos_admin"
+          },
+          "password": {
+            "type": "string",
+            "example": "osonpos_pass123"
+          }
+        },
+        "required": [
+          "login",
+          "password"
+        ]
       }
     }
   }

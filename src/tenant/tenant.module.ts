@@ -34,6 +34,8 @@ import { ClientService } from './services/client.service';
 import { ClientController } from './controllers/client.controller';
 import { SettlmentService } from './services/settlment.service';
 import { SettlmentController } from './controllers/settlment.controller';
+import { ClientDebtService } from './services/client-debt.service';
+import { ClientDebtController } from './controllers/client-debt.controller';
 
 @Module({
   providers: [
@@ -52,6 +54,7 @@ import { SettlmentController } from './controllers/settlment.controller';
     BaseConfigService,
     ClientService,
     SettlmentService,
+    ClientDebtService,
   ],
   controllers: [
     EmployeeController,
@@ -74,6 +77,7 @@ import { SettlmentController } from './controllers/settlment.controller';
     BaseConfigController,
     ClientController,
     SettlmentController,
+    ClientDebtController,
   ],
   exports: [
     TenantService,

@@ -639,6 +639,7 @@ model S_Supplier {
   dt_updated     DateTime @updatedAt
 }
 
+// Client models
 model S_Clients {
   id           String    @id @default(uuid())
   full_name    String
@@ -649,6 +650,28 @@ model S_Clients {
   is_deleted   Boolean   @default(false)
   dt_created   DateTime  @default(now())
   dt_updated   DateTime  @updatedAt
+}
+
+model S_Client_Debt {
+  id                 String   @id @default(uuid())
+  client_id          String
+  debt_amount        String
+  is_deleted         Boolean  @default(false)
+  dt_created         DateTime @default(now())
+  dt_updated         DateTime @updatedAt
+  employee_id        String
+  id_automated_point String
+}
+
+model S_Client_Debt_Transaction {
+  id                 String   @id @default(uuid())
+  client_id          String
+  debt_amount        String
+  is_deleted         Boolean  @default(false)
+  dt_created         DateTime @default(now())
+  dt_updated         DateTime @updatedAt
+  employee_id        String
+  id_automated_point String
 }
 
 model S_Settlments {
