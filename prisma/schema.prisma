@@ -672,6 +672,7 @@ model S_Client_Debt_Transaction {
   dt_updated         DateTime @updatedAt
   employee_id        String
   id_automated_point String
+  signature_url      String?
 }
 
 model S_Settlments {

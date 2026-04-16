@@ -44,4 +44,8 @@ export class CreateClientDebtTransactionDto {
   @IsString()
   @IsNotEmpty()
   id_automated_point: string;
+
+  @IsString()
+  @IsOptional()
+  signature_url?: string;
 }
