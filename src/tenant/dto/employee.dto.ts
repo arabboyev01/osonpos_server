@@ -6,6 +6,7 @@ import {
   IsEmail,
   MaxLength,
   IsArray,
+  IsNumberString,
 } from 'class-validator';
 
 export class CreateEmployeeDto {
@@ -23,6 +24,7 @@ export class CreateEmployeeDto {
 
   @IsString()
   @IsNotEmpty()
+  @IsNumberString({}, { message: 'PIN kod faqat raqamlardan iborat bo\'lishi kerak' })
   @MinLength(4)
   @MaxLength(4)
   password: string;
@@ -63,6 +65,7 @@ export class UpdateEmployeeDto {
 
   @IsString()
   @IsOptional()
+  @IsNumberString({}, { message: 'PIN kod faqat raqamlardan iborat bo\'lishi kerak' })
   @MinLength(4)
   @MaxLength(4)
   password?: string;

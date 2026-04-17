@@ -1,20 +1,27 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { TenantService } from '../tenant.service';
 import { CreateEmployeeDto, UpdateEmployeeDto } from '../dto/employee.dto';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class EmployeeService {
-  constructor(private tenantService: TenantService) {}
+  constructor(private tenantService: TenantService) { }
 
   async create(dbName: string, dto: CreateEmployeeDto) {
     const client = await this.tenantService.getClient(dbName);
-    const hashedPassword = await bcrypt.hash(dto.password, 10);
+
+    // Check for password uniqueness
+    const existing = await client.s_Employee.findFirst({
+      where: { password: dto.password, is_deleted: false },
+    });
+    if (existing) {
+      throw new BadRequestException(
+        'Ushbu PIN kod allaqachon boshqa xodimga biriktirilgan'
+      );
+    }
 
     const employee = await client.s_Employee.create({
       data: {
         ...dto,
-        password: hashedPassword,
       },
     });
     const { password, ...result } = employee;
@@ -35,23 +42,34 @@ export class EmployeeService {
       where: { id, is_deleted: false },
     });
     if (!employee) throw new NotFoundException('Employee not found');
-    const { password, ...result } = employee;
-    return result;
+    return employee;
   }
 
   async update(dbName: string, id: string, dto: UpdateEmployeeDto) {
     const client = await this.tenantService.getClient(dbName);
     const updateData: any = { ...dto };
+
     if (dto.password) {
-      updateData.password = await bcrypt.hash(dto.password, 10);
+      // Check for password uniqueness excluding current employee
+      const existing = await client.s_Employee.findFirst({
+        where: {
+          password: dto.password,
+          is_deleted: false,
+          id: { not: id },
+        },
+      });
+      if (existing) {
+        throw new BadRequestException(
+          'Ushbu PIN kod allaqachon boshqa xodimga biriktirilgan'
+        );
+      }
     }
 
     const employee = await client.s_Employee.update({
       where: { id },
       data: updateData,
     });
-    const { password, ...result } = employee;
-    return result;
+    return employee;
   }
 
   async remove(dbName: string, id: string) {

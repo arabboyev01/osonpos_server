@@ -101,7 +101,7 @@ model S_Employee {
   full_name        String
   guid             String?
   role_id          String   @default("0")
-  password         String
+  password         String   @unique
   employee_address String?
   workplace_id     String?
   telegram_id      String?

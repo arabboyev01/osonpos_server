@@ -271,7 +271,7 @@ export class AuthService {
 
     let authenticatedEmployee: any = null;
     for (const employee of employees) {
-      const isMatch = await bcrypt.compare(dto.pincode, employee.password);
+      const isMatch = dto.pincode === employee.password;
       if (isMatch) {
         authenticatedEmployee = employee;
         break;
