@@ -8,6 +8,7 @@ import { TenantModule } from './tenant/tenant.module';
 import { AdminModule } from './admin/admin.module';
 import { AiChatModule } from './ai-chat/ai-chat.module';
 import { NaturalChatModule } from './natural-chat/natural-chat.module';
+import { SyncModule } from './sync/sync.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { NaturalChatModule } from './natural-chat/natural-chat.module';
     AdminModule,
     AiChatModule,
     NaturalChatModule,
+    SyncModule,
   ],
   controllers: [AppController],
   providers: [AppService],
