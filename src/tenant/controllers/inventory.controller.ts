@@ -20,9 +20,9 @@ import { Roles } from '../../auth/roles.decorator';
 
 @Controller('inventory')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('OWNER', 'ADMIN')
+@Roles('OWNER', 'ADMIN', "EMPLOYEE")
 export class InventoryController {
-  constructor(private readonly service: InventarizationService) {}
+  constructor(private readonly service: InventarizationService) { }
 
   @Post('create')
   create(@Request() req, @Body() dto: CreateInventoryDto) {

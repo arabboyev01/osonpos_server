@@ -20,9 +20,9 @@ import { Roles } from '../../auth/roles.decorator';
 
 @Controller('write-off')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('OWNER', 'ADMIN')
+@Roles('OWNER', 'ADMIN', "EMPLOYEE")
 export class WriteOffController {
-  constructor(private readonly service: InventarizationService) {}
+  constructor(private readonly service: InventarizationService) { }
 
   @Post('create')
   create(@Request() req, @Body() dto: CreateCancellationDto) {
