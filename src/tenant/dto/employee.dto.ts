@@ -49,7 +49,6 @@ export class CreateEmployeeDto {
   @IsOptional()
   notes?: string;
 
-  @IsEmail()
   @IsOptional()
   email?: string;
 }
