@@ -3115,6 +3115,170 @@
         ]
       }
     },
+    "/client-debts/create": {
+      "post": {
+        "operationId": "ClientDebtController_createDebt",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateClientDebtDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "ClientDebt"
+        ]
+      }
+    },
+    "/client-debts/all": {
+      "get": {
+        "operationId": "ClientDebtController_findAllDebts",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "ClientDebt"
+        ]
+      }
+    },
+    "/client-debts/{id}": {
+      "get": {
+        "operationId": "ClientDebtController_findOneDebt",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "ClientDebt"
+        ]
+      }
+    },
+    "/client-debts/update/{id}": {
+      "patch": {
+        "operationId": "ClientDebtController_updateDebt",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateClientDebtDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "ClientDebt"
+        ]
+      }
+    },
+    "/client-debts/delete/{id}": {
+      "delete": {
+        "operationId": "ClientDebtController_removeDebt",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "ClientDebt"
+        ]
+      }
+    },
+    "/client-debts/transactions/create": {
+      "post": {
+        "operationId": "ClientDebtController_createTransaction",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateClientDebtTransactionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "ClientDebt"
+        ]
+      }
+    },
+    "/client-debts/transactions/all": {
+      "get": {
+        "operationId": "ClientDebtController_findAllTransactions",
+        "parameters": [
+          {
+            "name": "client_id",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "ClientDebt"
+        ]
+      }
+    },
     "/admin/login": {
       "post": {
         "operationId": "AdminController_login",
@@ -3399,6 +3563,34 @@
         },
         "tags": [
           "NaturalChat"
+        ]
+      }
+    },
+    "/sync/pull": {
+      "post": {
+        "operationId": "SyncController_pull",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Sync"
+        ]
+      }
+    },
+    "/sync/push": {
+      "post": {
+        "operationId": "SyncController_push",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Sync"
         ]
       }
     }
@@ -5651,6 +5843,66 @@
             "type": "string"
           }
         }
+      },
+      "CreateClientDebtDto": {
+        "type": "object",
+        "properties": {
+          "client_id": {
+            "type": "string"
+          },
+          "debt_amount": {
+            "type": "string"
+          },
+          "employee_id": {
+            "type": "string"
+          },
+          "id_automated_point": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_id",
+          "debt_amount",
+          "employee_id",
+          "id_automated_point"
+        ]
+      },
+      "UpdateClientDebtDto": {
+        "type": "object",
+        "properties": {
+          "debt_amount": {
+            "type": "string"
+          },
+          "is_deleted": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CreateClientDebtTransactionDto": {
+        "type": "object",
+        "properties": {
+          "client_id": {
+            "type": "string"
+          },
+          "debt_amount": {
+            "type": "string"
+          },
+          "employee_id": {
+            "type": "string"
+          },
+          "id_automated_point": {
+            "type": "string"
+          },
+          "signature_url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_id",
+          "debt_amount",
+          "employee_id",
+          "id_automated_point"
+        ]
       },
       "AdminLoginDto": {
         "type": "object",
