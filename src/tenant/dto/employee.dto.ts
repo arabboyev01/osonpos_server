@@ -89,7 +89,6 @@ export class UpdateEmployeeDto {
   @IsOptional()
   notes?: string;
 
-  @IsEmail()
   @IsOptional()
   email?: string;
 }
